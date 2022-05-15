@@ -1,0 +1,199 @@
+import java.util.*;
+java
+   Timer manager=new Timer();
+   Vector<cbtask> vTask=new Vector<cbtask>();
+end java
+
+func static int rechTache(taskmanager btk,string identifiant)
+   int i,n
+   task tache
+   java
+      n.val=btk.vTask.size();
+   end java
+   for i while i<n
+      java
+         tache=btk.vTask.elementAt(i.val);
+      end java
+      if tache.id==identifiant
+         return i
+      end if
+   end for
+   return -1
+end func
+
+func public string[][]listTask(taskmanager btk)
+   /*!
+   Retourne un tableau comportant 4 colonnes:
+   +------------+----------------------------------+--------------+-------------+
+   | colonne 0  | colonne 1                        |  colonne 2   | colonne 3   |
+   +------------+----------------------------------+--------------+-------------+
+   | identifiant| nom de la procedure              |  type        | proprietes  |
+   |            | ou executable associe a la tache |  de la tache | de la tache |
+   +------------+----------------------------------+--------------+-------------+
+   */
+   string[][]t
+   int i,n
+   task tache
+   java
+      btk.manager.purge();
+      n.val=btk.vTask.size();
+   end java
+   dim t[n][4]
+   for i while i<n
+      java
+         tache=btk.vTask.elementAt(i.val);
+      end java
+      t[i][0]=tache.id
+      t[i][1]=tache.nomProc
+      t[i][2]=tache.typeTache
+      t[i][3]=tache.frequence
+   end for
+   return t
+end func
+
+proc public addTaskDelay(taskmanager btk,string identifiant,string typeTache,string nomTache,int nbSecondes)exception
+   /*!
+   typeTache :
+   "proc" pour un procedure sans parametres interne a l'application
+   "exe"  pour un programme executable
+   Execute la tache apres un delai de nbSecondes
+   */
+   task t
+   if rechTache(btk,identifiant)!=-1
+      throwex("Tache deja definie "+identifiant)
+   end if
+   createTask(t,identifiant,typeTache,nomTache,"state=running;type=delay;nssecond="+itos(nbSecondes)+";")
+   java
+      btk.vTask.add(t);
+      long delai=nbSecondes.val*1000;
+      btk.manager.schedule(t.tache,delai);
+   end java
+end proc
+
+proc public addTaskDate(taskmanager btk,string identifiant,string typeTache,string nomTache,
+   int jour,int mois,int annee,int heure,int minute,int seconde)exception
+   /*!
+   Execute la tache a la date specifiee
+   Si la date specifiee est anterieure a la date courante, la tache n'est pas executee
+   typeTache :
+   "proc" pour un procedure sans parametres interne a l'application
+   "exe"  pour un programme executable
+   */
+   task t
+   string sta
+   if rechTache(btk,identifiant)!=-1
+      throwex("Tache deja definie "+identifiant)
+   end if
+   java
+      GregorianCalendar gc=new GregorianCalendar(annee.val,mois.val-1,jour.val,heure.val,minute.val,seconde.val);
+      GregorianCalendar dateCourante=new GregorianCalendar();
+      if(dateCourante.getTimeInMillis()>gc.getTimeInMillis())return;
+   end java
+   sta=padIntZeroLeft(annee,4)+padIntZeroLeft(mois,2)+padIntZeroLeft(jour,2)+
+   padIntZeroLeft(heure,2)+padIntZeroLeft(minute,2)+padIntZeroLeft(seconde,2)+"000"
+   createTask(t,identifiant,typeTache,nomTache,"state=running;type=date;stamp="+sta+
+   ";stampstring="+stampToString(sta)+";")
+   java
+      btk.vTask.add(t);
+      btk.manager.schedule(t.tache,new Date(gc.getTimeInMillis()));
+   end java
+end proc
+
+proc public addTaskFixedDate(taskmanager btk,string identifiant,string typeTache,string nomTache,
+   int jour,int mois,int annee,int heure,int minute,int seconde,int periode)exception
+   string sta
+   /*!
+   Execute la tache a la date specifiee, puis a chaque fois que la periode est depassee.
+   Si la date specifiee est anterieure a la date courante, la tache n'est pas executee
+   Le parametre periode est exprime en secondes
+   typeTache :
+   "proc" pour un procedure sans parametres interne a l'application
+   "exe"  pour un programme executable
+   */
+   task t
+   if rechTache(btk,identifiant)!=-1
+      throwex("Tache deja definie "+identifiant)
+   end if
+   java
+      GregorianCalendar gc=new GregorianCalendar(annee.val,mois.val-1,jour.val,heure.val,minute.val,seconde.val);
+      GregorianCalendar dateCourante=new GregorianCalendar();
+      if(dateCourante.getTimeInMillis()>gc.getTimeInMillis())return;
+   end java
+   sta=padIntZeroLeft(annee,4)+padIntZeroLeft(mois,2)+padIntZeroLeft(jour,2)+
+   padIntZeroLeft(heure,2)+padIntZeroLeft(minute,2)+padIntZeroLeft(seconde,2)+"000"
+   createTask(t,identifiant,typeTache,nomTache,"state=running;type=fixed;stamp="+sta+
+   ";stampstring="+stampToString(sta)+";periode="+itos(periode)+";")
+   java
+      btk.vTask.add(t);
+      long period=periode.val*1000;
+      btk.manager.scheduleAtFixedRate(t.tache,new Date(gc.getTimeInMillis()),period);
+   end java
+end proc
+
+proc public addTaskPeriodic(taskmanager btk,string identifiant,string typeTache,string nomTache,
+   int periode)exception
+   string sta
+   /*!
+   Execute la tache immediatement puis a chaque fois que la periode est depassee.
+   Le parametre periode est exprime en milli secondes
+   typeTache :
+   "proc" pour un procedure sans parametres interne a l'application
+   "exe"  pour un programme executable
+   */
+   task t
+   if rechTache(btk,identifiant)!=-1
+      throwex("Tache deja definie "+identifiant)
+   end if
+   createTask(t,identifiant,typeTache,nomTache,"state=running;type=periodic;periode="+itos(periode)+";")
+   java
+      btk.vTask.add(t);
+      long period=periode.val;
+      btk.manager.schedule(t.tache,0,period);
+   end java
+end proc
+
+proc public cancelTask(taskmanager btk,string identifiant)exception
+   /*!
+   Arrete la tache
+   si la tache est deja terminee, cela ne provoque pas d'erreur
+   on a une exception si la tache est n'existe pas
+   */
+   task t
+   int numeroTache
+   numeroTache=rechTache(btk,identifiant)
+   if numeroTache==-1
+      throwex("Tache non trouvee "+identifiant)
+   end if
+   java
+      t=btk.vTask.elementAt(numeroTache.val);
+      t.tache.cancel();
+   end java
+   setState(t,"canceled")
+end proc
+
+proc public clearTaskManager(taskmanager btk)
+   /*!
+   Supprime toutes les taches dont l'etat est "completed" ou "canceled"
+   */
+   task t
+   int i,n
+   string statut
+   java
+      n.val=btk.vTask.size();
+   end java
+   i=n-1
+   while i>=0
+      java
+         t=btk.vTask.elementAt(i.val);
+      end java
+      statut=getState(t)
+      // println(itos(i)+" "+statut)
+      if startsWith(statut,"completed")or startsWith(statut,"canceled")
+         java
+            btk.vTask.removeElementAt(i.val);
+         end java
+      end if
+      i=i-1
+   end while
+end proc
+

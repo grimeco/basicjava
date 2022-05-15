@@ -1,0 +1,197 @@
+string nomFichier
+string[]tSource
+int margeBcj,pasMargeBcj
+string[] tInc,tDec,tDecInc
+
+func public boolean isNumber(string op)
+   /*!
+   Retourne vrai si et seulement si op contient une notation de nombre
+   Une notation de nombre est définie par:
+   . une suite facultative d'espaces
+   . le symbole facultif - ou +
+   . puis par une suite de chiffres suivie éventuellement
+   par un point décimal ou une virgule suivie d'un exposant et d'une suite de chiffres
+   Exemples:
+   3
+   3.14
+   -3
+   -3,1415
+   +3
+   +3,14
+   3.14e-5
+   */
+   lexical lex
+   string w,u
+   try
+      w=replace(op,",",".")
+      start(lex,w,true)
+      u=us(lex)
+      if u=="+" or u=="-"
+         u=us(lex)
+      end if
+      u=us(lex)
+      if u!=""
+         return false
+      end if
+      return getType(lex)=="E" or getType(lex)=="R"
+   catch
+      return false
+   end catch
+end func
+
+func public string[] getBcjTypes()exception
+   /*!
+    * Retourne la liste des types definis dans le langage bcj
+    */
+    string[] t,tw
+    int i,n
+    inifile gfi
+    open(gfi,"bc/bcj.ini")
+    t=getWords(gfi,"types","type")
+    n=length(t)
+    for i while i<n
+       tw=getWords(t[i],":")
+       t[i]=tw[0]
+    end for
+    return t
+end func
+
+func static string[] supprimerLignesVides(string[]td)
+   int i,n,nbLig
+   string[]tr
+   n=length(td)
+   nbLig=0
+   for i while i<n
+      if trim(td[i])!=""
+         nbLig=nbLig+1
+      end if
+   end for
+   dim tr[nbLig]
+   nbLig=0
+   for i while i<n
+      if trim(td[i])!=""
+         tr[nbLig]=td[i]
+         nbLig=nbLig+1
+      end if
+   end for
+   return tr
+end func
+
+func static string[] ajouterLignesVides(tools ig,string[]td)
+   int i,n,nbLig
+   string[]tr
+   n=length(td)
+   nbLig=n
+   for i while i<n
+      if startsWith(ig.tSource[i],"proc")or startsWith(ig.tSource[i],"func")
+         nbLig=nbLig+1
+      end if
+   end for
+   dim tr[nbLig]
+   nbLig=0
+   for i while i<n
+      if startsWith(ig.tSource[i],"proc")or startsWith(ig.tSource[i],"func")
+         tr[nbLig]=""
+         nbLig=nbLig+1
+      end if
+      tr[nbLig]=td[i]
+      nbLig=nbLig+1
+   end for
+   return tr
+end func
+
+func static string genspace(int n)
+   string r
+   int i
+   r=""
+   for i while i<n
+      r=r+" "
+   end for
+   return r
+end func
+
+func static string space(tools ig,string d)
+   string r,w
+   w=trim(replace(d,"\t"," "))
+   return genspace(ig.margeBcj)+w
+end func
+
+func static boolean starts(string d,string[]t)
+   int i,n
+   n=length(t)
+   for i while i<n
+      if startsWith(d,t[i])
+         return true
+      end if
+   end for
+   return false
+end func
+
+func static string[] indenter(tools ig,string[]td)
+   int i,n,javaDeb,javaFin
+   string[]tr
+   string ligne
+   n=length(td)
+   dim tr[n]
+   ig.margeBcj=0
+   for i while i<n
+      ligne=trim(replace(td[i],"\t"," "))
+      switch
+      case starts(ligne,ig.tInc)
+         tr[i]=space(ig,td[i])
+         ig.margeBcj=ig.margeBcj+ig.pasMargeBcj
+      case starts(ligne,ig.tDec)
+         ig.margeBcj=ig.margeBcj-ig.pasMargeBcj
+         tr[i]=space(ig,td[i])
+      case starts(ligne,ig.tDecInc)
+         ig.margeBcj=ig.margeBcj-ig.pasMargeBcj
+         tr[i]=space(ig,td[i])
+         ig.margeBcj=ig.margeBcj+ig.pasMargeBcj
+      default
+         tr[i]=space(ig,td[i])
+      end switch
+   end for
+   return tr
+end func
+
+proc public indenterUnModule(tools ig,string nomFichier,
+   string debInc,string debDec,string debDecInc,int pas,boolean bSave)exception
+   /*!
+   Permet d'indenter un fichier texte
+   
+   - debInc contient la liste des debuts de lignes impliquant une augmentation de la marge,
+   ........exemple : for,while,if,proc,{
+   - debDec contient la liste des debuts de lignes impliquant une diminution de la marge
+   ........exemple : end,}
+   - debDecInc contient la liste des debuts de lignes impliquant une diminution puis une augmentation de la marge
+   ........exemple : catch,else
+   Ces listes utilisent la virgule comme séparateur
+   - pas : nombre d'espaces utilises pour l'indentation
+   - bSave : si vrai , enregistre une copie de sauvegarde en ajoutant ".bak" au nomFichier
+   */
+   ig.pasMargeBcj=pas
+   ig.tInc=getWords(debInc,",")
+   ig.tDec=getWords(debDec,",")
+   ig.tDecInc=getWords(debDecInc,",")
+   ig.tSource=getFileArray(nomFichier)
+   if bSave
+      putFileArray(nomFichier+".bak",ig.tSource)
+   end if
+   ig.tSource=supprimerLignesVides(ig.tSource)
+   ig.tSource=indenter(ig,ig.tSource)
+   ig.tSource=ajouterLignesVides(ig,ig.tSource)
+   putFileArray(nomFichier,ig.tSource)
+   //print(ig.tSource)
+end proc
+
+func public double mapx(double x,
+  double in_min,double in_max,double out_min,double out_max)
+  /*!
+  Convertit le nombre x dans l'échelle [out_min,out_max]
+  in_min et in_max sont les valeurs minimale et maximale possibles pour le nombre x
+  la conversion de in_min donne out_min
+  la conversion de in_max donne out_max   
+   */
+  return (x-in_min)*(out_max-out_min)/(in_max-in_min)+out_min
+end func
+

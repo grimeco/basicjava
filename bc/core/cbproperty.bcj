@@ -1,0 +1,137 @@
+/*!
+Les proprietes sont contenues dans une chaine de caracteres
+structuree sous la forme:
+motcle=valeur;
+*/
+
+proc public saveProperty(string proprietes,string nomFichierDisque)exception
+   /*!
+   Sauvegarde une chaine contenant des proprietes sur disque
+   ATTENTION si le fichier existe existe deja, il est ecrase par le nouveau
+   Exemple (on suppose que p a ete declare de type string) :
+   saveProperty(p,"toto.sav")
+   */
+   putFileString(nomFichierDisque,proprietes)
+end proc
+
+func public string loadProperty(string nomFichierDisque)exception
+   /*!
+   Exemple d'appel (on suppose que p a ete declare de type string) :
+   p=loadProperty("toto.sav")
+   */
+   return getFileString(nomFichierDisque)
+end func
+
+func static string stringToProperty(string d)
+   string r
+   r=d
+   r=replace(r,"$","$D") // Dollar
+   r=replace(r,"=","$E") // Egal
+   r=replace(r,";","$P")  // Point-virgule
+   r=replace(r,"\n","$L") // Line
+   r=replace(r,"\t","$T") // Tab
+   return r
+end func
+
+func static string propertyToString(string d)
+   string r
+   r=d
+   r=replace(r,"$T","\t")
+   r=replace(r,"$L","\n")
+   r=replace(r,"$P",";")
+   r=replace(r,"$E","=")
+   r=replace(r,"$D","$")
+   return r
+end func
+
+func public string stringPropertyDelim(string proprietes,string motCle,string delimiteurs)
+   /*!
+   Si la propriete n'existe pas la valeur "???" est retournee
+   */
+   string[]t
+   int i,n
+   t=getWords(proprietes,delimiteurs)
+   n=length(t)
+   i=0
+   while i<n
+      if t[i]==motCle
+         return propertyToString(t[i+1])
+      end if
+      i=i+2
+   end while
+   return "???"
+end func
+
+func public string stringProperty(string proprietes,string motCle)
+   /*!
+   Si la propriete n'existe pas la valeur "???" est retournee
+   */
+   return stringPropertyDelim(proprietes,motCle,"=;")
+end func
+
+func public int intProperty(string proprietes,string motCle)
+   /*!
+   Si la propriete n'existe pas la valeur -999999 est retournee
+   */
+   string w
+   w=stringProperty(proprietes,motCle)
+   if w=="???"
+      return -999999
+   end if
+   try
+      return stoi(w)
+   catch
+      return -999999
+   end catch
+end func
+
+func public double doubleProperty(string proprietes,string motCle)
+   /*!
+   Si la propriete n'existe pas la valeur -999999.99 est retournee
+   */
+   string w
+   w=stringProperty(proprietes,motCle)
+   if w=="???"
+      return -999999.99
+   end if
+   try
+      return stod(w)
+   catch
+      return -999999.99
+   end catch
+end func
+
+func public string updateProperty(string proprietes,string motCle,string valeur)
+   /*!
+   Modifie la valeur d'une propriete.
+   Si la propriete n'existe pas, une nouvelle propriete est ajoutee a la fin.
+   */
+   string[]t
+   int i,n
+   string r
+   boolean bTrouve
+   if trim(valeur)==""
+      valeur="???"
+   end if
+   t=getWords(proprietes,"=;")
+   n=length(t)
+   i=0
+   bTrouve=false
+   while bTrouve==false and i<n
+      if t[i]==motCle
+         t[i+1]=stringToProperty(valeur)
+         bTrouve=true
+      end if
+      i=i+2
+   end while
+   r=""
+   i=0
+   while i<n
+      r=r+t[i]+"="+t[i+1]+";"
+      i=i+2
+   end while
+   if bTrouve==false
+      r=r+motCle+"="+stringToProperty(valeur)+";"
+   end if
+   return r
+end func

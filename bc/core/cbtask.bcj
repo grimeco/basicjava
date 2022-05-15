@@ -1,0 +1,70 @@
+import java.util.*;
+java
+   class RemindTask extends TimerTask
+   {
+      public void run()
+      {
+         executerTache();
+      }
+   }
+   RemindTask tache=new RemindTask();
+end java
+/*!
+Type utilise par taskmanager
+NE PAS UTILISER DIRECTEMENT
+*/
+string nomModule,nomProc,typeTache,frequence,id
+
+proc executerTache()
+   string w
+   try
+      w=toLowerCase(typeTache)
+      switch
+      case typeTache=="proc"
+     // println("nommodule ["+nomModule+"]")
+     // println("nomproc   ["+nomProc+"]")
+      if nomModule==""
+         execMethod(nomProc)
+      else
+         execute(nomModule,nomProc)
+      end if
+      case typeTache=="exe"
+         startCmd(nomProc)
+      default
+         println("TypeTache incorrect "+typeTache)
+      end switch
+      if stringProperty(frequence,"type")!="fixed"
+         frequence=updateProperty(frequence,"state","completed")
+      end if
+   catch
+      println(exceptionToString())
+   end catch
+end proc
+
+proc public createTask(task bt,string identifiant,string typeTask,string nomTask,string frequence)
+   /*!
+   NE PAS UTILISER DIRECTEMENT
+   */
+   bt.id=identifiant
+   bt.nomProc=nomTask
+   bt.typeTache=typeTask
+   bt.frequence=frequence
+end proc
+
+proc public setState(task bt,string valeur)
+
+   /*!
+   NE PAS UTILISER DIRECTEMENT
+   */
+
+   bt.frequence=updateProperty(bt.frequence,"state","canceled at "+stampToString(stamp()))
+end proc
+
+func public string getState(task bt)
+
+   /*!
+   NE PAS UTILISER DIRECTEMENT
+   */
+
+   return stringProperty(bt.frequence,"state")
+end func
