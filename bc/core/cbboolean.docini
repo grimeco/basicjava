@@ -1,6 +1,0 @@
-[boolean]
-affectation=boolean = boolean
-operateur=boolean ( boolean and boolean )
-operateur=boolean ( boolean or boolean )
-operateur=boolean ( boolean ==  boolean )
-operateur=boolean ( boolean != boolean )
