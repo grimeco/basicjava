@@ -1,4 +1,0 @@
-filesToZip	cbzip		filesToZip;Scbstring;Tcbstring;	public static 	P	 	 	2	0	true	true
-nomArchive	cbzip	cbstring			V	S	 	0	0	false	false
-listeNoms	cbzip	cbstring			V	T	 	0	0	false	false
-nbFich	cbzip	cbint			V	S	 	0	0	false	false
