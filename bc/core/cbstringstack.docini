@@ -1,9 +1,0 @@
-[stringstack]
-proto=proc raz(stringstack pile)
-proto=$L   Supprime tous les elements de la pile$L  
-proto=proc push(stringstack pile,string valeur)
-proto=$L   Empile une valeur$L  
-proto=func string pop(stringstack pile)
-proto=$L   Depile une valeur$L  
-proto=func boolean isEmpty(stringstack pile)
-proto=$L   Retourne vrai ssi la pile est vide$L  
