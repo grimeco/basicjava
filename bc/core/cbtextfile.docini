@@ -1,0 +1,25 @@
+[textfile]
+proto=proc open(textfile fichier,string nom,int mode)exception
+proto=$L   Ouvre un fichier.$L   Mode$L   0 INPUT                 Lecture$L   1 OUTPUT                Creation$L   2 EXTEND                Ajout de lignes a la fin du fichier$L   3 OUTPUT TEMPORARY FILE Creation d'un fichier temporaire detruit a la fin de l'execution de l'application$L  
+proto=proc setTmp(string nomRepTmp)exception
+proto=$L   Initialise le nom du repertoire repTmp contenant les fichiers temporaires,$L   par defaut, ce nom est egal a "tmptmp"$L  
+proto=func string openTmp(textfile fichier,string nom,int mode)exception
+proto=$L   cree un fichier temporaire avec generation automatique du nom:$L   repTmp+"/"+nomUtilisateur+"/"+nom+stamp()$L   le parametre mode ne sert a rien, il est conserve pour compatibilite$L   avec l'open classique$L  
+proto=func boolean readLine(textfile fichier,string ligne)exception
+proto=$L   Lit une ligne$L   Retourne vrai si OK$L   Retourne faux si on est arrive en fin de fichier$L   Exemple:$L   textfile fich$L   string ligne$L   boolean b$L   try$L      open(fich,"toto.txt",0)$L      b=readLine(fich,ligne)$L      while b$L         println(ligne)$L         b=readLine(fich,ligne)$L      end while$L      close(fich)$L   catch$L      println(exceptionToString())$L   end catch$L  
+proto=proc close(textfile fichier)exception
+proto=$L   Fermeture du fichier$L  
+proto=proc print(textfile fichier,string d)exception
+proto=$L   Ecrit dans le fichier sans passer a la ligne$L  
+proto=proc println(textfile fichier,string d)exception
+proto=$L   Ecrit dans le fichier en passant a la ligne$L  
+proto=func int getLineNumber(string nomFichier)exception
+proto=$L   Retourne le nombre de lignes du fichier$L  
+proto=func string[] getFileArray(string nomFichier)exception
+proto=$L   Charger un tableau directement$L  
+proto=proc putFileArray(string nomFichier,string[] t)exception
+proto=$L   Ecrit le contenu d'un tableau$L  
+proto=proc putFileString(string nomFichier,string data)exception
+proto=$L   Ecrit un fichier contenant la chaine data$L  
+proto=func string getFileString(string nomFichier)exception
+proto=$LRetourne le contenu d'un fichier texte

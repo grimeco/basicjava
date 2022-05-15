@@ -1,0 +1,240 @@
+<html><body><a name="tablematieres"></a><h1><center>conversions</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#arrondi">arrondi</a></td>
+</tr><tr>
+<td><a href="#arrondiString">arrondiString</a></td>
+</tr><tr>
+<td><a href="#btos">btos</a></td>
+</tr><tr>
+<td><a href="#bytoi">bytoi</a></td>
+</tr><tr>
+<td><a href="#dtoi">dtoi</a></td>
+</tr><tr>
+<td><a href="#dtos">dtos</a></td>
+</tr><tr>
+<td><a href="#fdtos">fdtos</a></td>
+</tr><tr>
+<td><a href="#formatDouble">formatDouble</a></td>
+</tr><tr>
+<td><a href="#getWords">getWords</a></td>
+</tr><tr>
+<td><a href="#hexToString">hexToString</a></td>
+</tr><tr>
+<td><a href="#htoi">htoi</a></td>
+</tr><tr>
+<td><a href="#initIntArray">initIntArray</a></td>
+</tr><tr>
+<td><a href="#initIntArraySep">initIntArraySep</a></td>
+</tr><tr>
+<td><a href="#itod">itod</a></td>
+</tr><tr>
+<td><a href="#itoh">itoh</a></td>
+</tr><tr>
+<td><a href="#itol">itol</a></td>
+</tr><tr>
+<td><a href="#itos">itos</a></td>
+</tr><tr>
+<td><a href="#ltod">ltod</a></td>
+</tr><tr>
+<td><a href="#ltos">ltos</a></td>
+</tr><tr>
+<td><a href="#normeDouble">normeDouble</a></td>
+</tr><tr>
+<td><a href="#padIntLeft">padIntLeft</a></td>
+</tr><tr>
+<td><a href="#padIntZeroLeft">padIntZeroLeft</a></td>
+</tr><tr>
+<td><a href="#stob">stob</a></td>
+</tr><tr>
+<td><a href="#stod">stod</a></td>
+</tr><tr>
+<td><a href="#stoi">stoi</a></td>
+</tr><tr>
+<td><a href="#stol">stol</a></td>
+</tr><tr>
+<td><a href="#stringToHex">stringToHex</a></td>
+</tr><tr>
+<td><a href="#vtos">vtos</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>conversions</b> est implemente dans le fichier source <b>bc/core/cbconversions.bcj</b>.<br>
+<hr><a name="btos"></a><b>func string btos(boolean op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un booleen en chaine de caracteres true ou false
+</b>
+<hr><a name="stob"></a><b>func boolean stob(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="stringToHex"></a><b>func string stringToHex(string input)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne une chaine ou chaque caractere de la chaine Ascii input
+   a ete converti en deux caracteres hexadecimaux
+</b>
+<hr><a name="hexToString"></a><b>func string hexToString(string txtInHex)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne une chaine ou chaque doublet de caracteres hexadecimaux
+   de la chaine txtInHex a ete converti en un caractere Ascii
+</b>
+<hr><a name="itos"></a><b>func string itos(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un entier en chaine de caracteres
+</b>
+<hr><a name="ltod"></a><b>func double ltod(long d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Convertit un long en double</b>
+<hr><a name="htoi"></a><b>func int htoi(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un chaine de caracteres hexa en entier
+</b>
+<hr><a name="itoh"></a><b>func string itoh(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un entier en chaine de caracteres hexa
+</b>
+<hr><a name="dtos"></a><b>func string dtos(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un nombre reel en chaine de caracteres
+</b>
+<hr><a name="bytoi"></a><b>func int bytoi(byte op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un byte en int
+   le byte est considere comme non signe
+</b>
+<hr><a name="ltos"></a><b>func string ltos(long op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un long en chaine de caracteres
+</b>
+<hr><a name="stol"></a><b>func long stol(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Convertit une chaine en long</b>
+<hr><a name="itol"></a><b>func long itol(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un int en long
+</b>
+<hr><a name="itod"></a><b>func double itod(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un int en double
+</b>
+<hr><a name="stoi"></a><b>func int stoi(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un chaine de caracteres supposee contenir une
+   notation d'entier en entier
+   Si la chaine ne contient pas une notation d'entier,
+   la valeur 0 est retournee
+</b>
+<hr><a name="stod"></a><b>func double stod(string d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Convertit un chaine de caracteres en double
+</b>
+<hr><a name="padIntLeft"></a><b>func string padIntLeft(int val,int max,string car)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="println"></a><b>
+   retourne une chaine comportant max caracteres cadre a gauche
+   par la chaine car
+   Exemple:
+   println(padIntLeft(2012,20,"*"))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="padIntZeroLeft"></a><b>func string padIntZeroLeft(int val,int max)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne une chaine ou la valeur val a ete completee a gauche par des zeros
+</b>
+<hr><a name="getWords"></a><b>func string[] getWords(string donnee,string separateurs)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne les mots d'une chaine donnee en utilisant LES separateurs specifies
+</b>
+<hr><a name="vtos"></a><b>func string[] vtos(stringvector v)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne un tableau de string correspondant au vecteur
+</b>
+<hr><a name="dtoi"></a><b>func int dtoi(double d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne la partie entiere d'un nombre reel
+</b>
+<hr><a name="arrondi"></a><b>func double arrondi(double d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le nombre reel arrondi en ajoutant 0.5
+</b>
+<hr><a name="arrondiString"></a><b>func string arrondiString(string d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Si la chaine d contient un nombre reel
+   retourne l'arrondi par ajout de 0.5
+   Sinon
+   retourne la chaine initiale d
+   Fin si
+</b>
+<hr><a name="fdtos"></a><b>func string fdtos(string pattern,double value)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Pattern:
+   [A][Z]000000[.000]
+   Le symbole A est facultatif (si utilise, fait un arrondi)
+   Le symbole Z est facultatif (si utilise, remplace les zeros a gauche par des espaces)
+   Le symbole 0 represente une position a afficher
+   Exemple:
+   double x
+   x=3.141
+   println(fdtos("Z0000000000",x))
+   println(fdtos("0000000000",x))
+   println(fdtos("Z00000000.00",x))
+   println(fdtos("00000000.00",x))
+   println(fdtos("AZ0000000000",x))
+   println(fdtos("A0000000000",x))
+   println(fdtos("AZ00000000.00",x))
+   println(fdtos("A00000000.00",x))
+   x=3.145
+   println(fdtos("Z0000000000",x))
+   println(fdtos("0000000000",x))
+   println(fdtos("Z00000000.00",x))
+   println(fdtos("00000000.00",x))
+   println(fdtos("AZ0000000000",x))
+   println(fdtos("A0000000000",x))
+   println(fdtos("AZ00000000.00",x))
+   println(fdtos("A00000000.00",x))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="normeDouble"></a><b>func string normeDouble(double d,int max)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Conserve 2 chifres apres la virgule et retourne une chaine contenant max caracteres
+</b>
+<hr><a name="formatDouble"></a><b>func string formatDouble(double d,int maxi)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   fait un arrondi puis appel normeDouble
+</b>
+<hr><a name="initIntArraySep"></a><b>func int[] initIntArraySep(string valeurs,string separateur)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="t=initIntArraySep"></a><b>
+   Permet d'initialiser un tableau d'entiers
+   Les valeurs doivent etre separees par le separateur
+   Exemple:
+   int[]t
+   t=initIntArraySep("72;74;45;200;800",";")
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="initIntArray"></a><b>func int[] initIntArray(string valeurs)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Les valeurs doivent etre separees par des virgules
+</b>
+</pre></body></html>

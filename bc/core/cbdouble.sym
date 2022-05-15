@@ -1,0 +1,92 @@
+set	cbdouble		set;Scbdouble;Scbdouble;	public static 	P	 	 	2	0	true	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+d	cbdouble	cbdouble			V	S	 	0	0	false	false
+cmplt	cbdouble	cbboolean	cmplt;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+cmple	cbdouble	cbboolean	cmple;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+cmpgt	cbdouble	cbboolean	cmpgt;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+cmpge	cbdouble	cbboolean	cmpge;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+cmpeq	cbdouble	cbboolean	cmpeq;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+cmpne	cbdouble	cbboolean	cmpne;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbboolean			V	S	 	0	0	false	false
+add	cbdouble	cbdouble	add;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+sub	cbdouble	cbdouble	sub;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+div	cbdouble	cbdouble	div;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+mul	cbdouble	cbdouble	mul;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op1	cbdouble	cbdouble			V	S	 	0	0	false	false
+op2	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+neg	cbdouble	cbdouble	neg;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+abs	cbdouble	cbdouble	abs;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+sin	cbdouble	cbdouble	sin;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+cos	cbdouble	cbdouble	cos;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+tan	cbdouble	cbdouble	tan;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+asin	cbdouble	cbdouble	asin;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+acos	cbdouble	cbdouble	acos;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+atan	cbdouble	cbdouble	atan;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+atan2	cbdouble	cbdouble	atan2;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+y	cbdouble	cbdouble			V	S	 	0	0	false	false
+x	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+sinh	cbdouble	cbdouble	sinh;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+cosh	cbdouble	cbdouble	cosh;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+tanh	cbdouble	cbdouble	tanh;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+sqrt	cbdouble	cbdouble	sqrt;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+exp	cbdouble	cbdouble	exp;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+log	cbdouble	cbdouble	log;Scbdouble;	public static 	F	S	 	1	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false
+pow	cbdouble	cbdouble	pow;Scbdouble;Scbdouble;	public static 	F	S	 	2	0	true	false
+op	cbdouble	cbdouble			V	S	 	0	0	false	false
+exposant	cbdouble	cbdouble			V	S	 	0	0	false	false
+r	cbdouble	cbdouble			V	S	 	0	0	false	false

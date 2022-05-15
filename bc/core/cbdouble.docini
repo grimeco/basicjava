@@ -1,0 +1,44 @@
+[double]
+affectation=double = double
+operateur=boolean ( double <  double )
+operateur=boolean ( double <= double )
+operateur=boolean ( double >  double )
+operateur=boolean ( double >= double )
+operateur=boolean ( double ==  double )
+operateur=boolean ( double != double )
+operateur=double ( double +  double )
+operateur=double ( double - double )
+operateur=double ( double /  double )
+operateur=double ( double *  double )
+operateur=double ( - double )
+proto=$LLe type double definit des nombres reels sur 8 octets.$LType             Nombre     Nombre            Intervalle$Ld'octets   chiffres$Lsignificatifs$Lbyte    Entier   1          3                 -128 a 127$Lshort   Entier   2          5                 -32768 a 32767$Lint     Entier   4          10                -2 147 483 648 a 2 147 483 647$Llong    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807$Lfloat   flottant 4          7$Ldouble  flottant 8          15
+proto=func double abs(double op)
+proto=$Lretourne la valeur absolue
+proto=func double sin(double op)
+proto=$L   Retourne la valeur du sinus de op (op exprime en radians)$L   Exemple:$L   double x,y$L   x=3.1415926$L   y=sin(x/2.0)$L   println("Sin PI/2 "+dtos(y))$L  
+proto=func double cos(double op)
+proto=$L   Retourne la valeur du cosinus de op (op exprime en radians)$L  
+proto=func double tan(double op)
+proto=$L   Retourne la valeur de la tangente de op (op exprime en radians)$L  
+proto=func double asin(double op)
+proto=$L   Retourne la valeur de l'arc sinus de op (op exprime en radians)$L  
+proto=func double acos(double op)
+proto=$L   Retourne la valeur de l'arc cosinus de op (op exprime en radians)$L  
+proto=func double atan(double op)
+proto=$L   Retourne la valeur de l'arc tangente de op (op exprime en radians)$L  
+proto=func double atan2(double y,double x)
+proto=$L   Returns the angle theta from the conversion of rectangular coordinates (x, y) to polar coordinates (r, theta). $L  
+proto=func double sinh(double op)
+proto=$L   Retourne la valeur du sinus hyperboliquede op (op exprime en radians)$L  
+proto=func double cosh(double op)
+proto=$L   Retourne la valeur du cosinus hyperboliquede op (op exprime en radians)$L  
+proto=func double tanh(double op)
+proto=$L   Retourne la valeur de la tangente hyperbolique de op (op exprime en radians)$L  
+proto=func double sqrt(double op)
+proto=$L   Retourne la valeur de la racine carree de op (op exprime en radians)$L  
+proto=func double exp(double op)
+proto=$L   Retourne la valeur de l'exponentielle a base e de op (op exprime en radians)$L  
+proto=func double log(double op)
+proto=$L   Retourne la valeur du logarithme a base e de op (op exprime en radians)$L  
+proto=func double pow(double op,double exposant)
+proto=$L   Retourne la valeur de op a la puissance exposant$L  

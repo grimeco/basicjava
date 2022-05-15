@@ -1,0 +1,61 @@
+<html><body><a name="tablematieres"></a><h1><center>int</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#abs">abs</a></td>
+</tr><tr>
+<td><a href="#andbin">andbin</a></td>
+</tr><tr>
+<td><a href="#inc">inc</a></td>
+</tr><tr>
+<td><a href="#intRandom">intRandom</a></td>
+</tr><tr>
+<td><a href="#orbin">orbin</a></td>
+</tr><tr>
+<td><a href="#shl">shl</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>int</b> est implemente dans le fichier source <b>bc/core/cbint.bcj</b>.<br>
+<hr><b>Instruction d'affectation<br>int r,d<br>r=d</b>
+<hr><b>Operateurs</b>
+boolean ( int &lt;  int )
+boolean ( int &lt;= int )
+boolean ( int >  int )
+boolean ( int >= int )
+boolean ( int ==  int )
+boolean ( int != int )
+int ( int +  int )
+int ( int - int )
+int ( int *  int )
+int ( int /  int )
+int ( int % int )
+int ( - int )
+<hr><a name="inc"></a><b>proc inc(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Ajout 1 au parametre op
+correspond a l'operateur classique ++</b>
+<hr><a name="abs"></a><b>func int abs(int op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Retourne la valeur absolue</b>
+<hr><a name="intRandom"></a><b>func int intRandom(int mini,int maxi)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne un nombre entier au hasard compris dans l'intervalle
+   [mini,maxi]
+</b>
+<hr><a name="shl"></a><b>func int shl(int op,int decal)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Retourne la valeur de op decalee a gauche de la valeur de decal
+correspond a l'operateur classique &lt;&lt;</b>
+<hr><a name="orbin"></a><b>func int orbin(int op1,int op2)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Effectue un "ou" bit a bit des deux operandes
+Correspond a l'operateur classique |</b>
+<hr><a name="andbin"></a><b>func int andbin(int op1,int op2)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Effectue un "et" bit a bit des deux operandes
+Correspond a l'operateur classique &</b>
+</pre></body></html>

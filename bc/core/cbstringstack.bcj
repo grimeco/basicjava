@@ -1,0 +1,34 @@
+stringvector v
+
+proc public raz(stringstack pile)
+   /*!
+   Supprime tous les elements de la pile
+   */
+   removeAll(pile.v)
+end proc
+
+proc public push(stringstack pile,string valeur)
+   /*!
+   Empile une valeur
+   */
+   add(pile.v,valeur)
+end proc
+
+func public string pop(stringstack pile)
+   /*!
+   Depile une valeur
+   */
+   string r
+   int numDernier
+   numDernier=size(pile.v)-1
+   r=elementAt(pile.v,numDernier)
+   removeElementAt(pile.v,numDernier)
+   return r
+end func
+
+func public boolean isEmpty(stringstack pile)
+   /*!
+   Retourne vrai ssi la pile est vide
+   */
+   return size(pile.v)==0
+end func

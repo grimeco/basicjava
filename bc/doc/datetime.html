@@ -1,0 +1,220 @@
+<html><body><a name="tablematieres"></a><h1><center>datetime</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#addDate">addDate</a></td>
+</tr><tr>
+<td><a href="#addDateOuvrable">addDateOuvrable</a></td>
+</tr><tr>
+<td><a href="#compareDate">compareDate</a></td>
+</tr><tr>
+<td><a href="#dernierJourMoisPrecedent">dernierJourMoisPrecedent</a></td>
+</tr><tr>
+<td><a href="#diffDate">diffDate</a></td>
+</tr><tr>
+<td><a href="#diffDateMois">diffDateMois</a></td>
+</tr><tr>
+<td><a href="#durationToString">durationToString</a></td>
+</tr><tr>
+<td><a href="#getDate">getDate</a></td>
+</tr><tr>
+<td><a href="#getDateJour">getDateJour</a></td>
+</tr><tr>
+<td><a href="#getNbJoursMois">getNbJoursMois</a></td>
+</tr><tr>
+<td><a href="#getNomJour">getNomJour</a></td>
+</tr><tr>
+<td><a href="#getNomMois">getNomMois</a></td>
+</tr><tr>
+<td><a href="#getNumJour">getNumJour</a></td>
+</tr><tr>
+<td><a href="#sleep">sleep</a></td>
+</tr><tr>
+<td><a href="#stamp">stamp</a></td>
+</tr><tr>
+<td><a href="#stampToString">stampToString</a></td>
+</tr><tr>
+<td><a href="#startChrono">startChrono</a></td>
+</tr><tr>
+<td><a href="#stopChrono">stopChrono</a></td>
+</tr><tr>
+<td><a href="#stringToDate">stringToDate</a></td>
+</tr><tr>
+<td><a href="#topChrono">topChrono</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>datetime</b> est implemente dans le fichier source <b>bc/core/cbdatetime.bcj</b>.<br>
+<hr><a name="getDate"></a><b>func int[] getDate()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne la date et heure courante dans le tableau a 7 elements
+   indice definition
+   0      annee
+   1      mois
+   2      jour
+   3      heures
+   4      minutes
+   5      secondes
+   6      milli-secondes
+</b>
+<hr><a name="stamp"></a><b>func string stamp()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   retourne un stamp sous la forme
+   aaaammjjHHMMSSTTT
+   ou
+   aaaa annee
+   mm   mois
+   jj   jour
+   HH   Heures
+   MM   Minutes
+   SS   Secondes
+   TTT  Milli-secondes
+</b>
+<hr><a name="sleep"></a><b>proc sleep(int milliSecondes)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="println"></a><b>
+   Suspend l'execution pendant le nombre de millisecondes specifie
+   Exemple :
+   println("Bonjour")
+   sleep(1000)
+   println("Bonsoir")
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startChrono"></a><b>proc startChrono()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startChrono"></a><b>
+   Demarre le chronometre
+   Exemple:
+   startChrono()
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="stopChrono"></a><b>func int stopChrono()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startChrono"></a><b>
+   Arrete le chronometre, on recupere la duree en milli-secondes
+   Exemple:
+   int duree
+   startChrono()
+   sleep(1000)
+   duree=stopChrono()
+   println("Duree "+itos(duree))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="durationToString"></a><b>func string durationToString(int duration)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   * Retourne une chaine resultant de la conversion d'une duree
+   * exprimee en milli-secondes sous la forme:
+   * 99 h 99 m 99 s 999 ms
+</b>
+<hr><a name="topChrono"></a><b>func string topChrono()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+    * Arrete le chronometre, 
+    * retourne durationToString,
+    * redemarre le chronometre
+</b>
+<hr><a name="getDateJour"></a><b>func string getDateJour()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   retourne la date du jour sous le format jj/mm/aaaa
+</b>
+<hr><a name="stringToDate"></a><b>func string stringToDate(string d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   donnee verifie que d est sous la forme jj/mm/aaaa
+   retourne "null" si erreur
+   aaaammjj
+</b>
+<hr><a name="getNbJoursMois"></a><b>func int getNbJoursMois(string d)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Donnee date d sous la forme jj/mm/aaaa
+   retourne le nombre de jours du mois
+   retourne -1 si la date est incorrecte
+</b>
+<hr><a name="getNumJour"></a><b>func int getNumJour(string date)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Date donnee jj/mm/aaaa
+   retourne
+   1 Dimanche
+   2 Lundi
+   3 Mardi
+   4 Mercredi
+   5 Jeudi
+   6 Vendredi
+   7 Samedi
+   -1 si date incorrecte
+</b>
+<hr><a name="getNomJour"></a><b>func string getNomJour(string date)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Date donnee jj/mm/aaaa
+   retourne
+   Dimanche
+   Lundi
+   Mardi
+   Mercredi
+   Jeudi
+   Vendredi
+   Samedi
+   null si date incorrecte
+</b>
+<hr><a name="stampToString"></a><b>func string stampToString(string stamp)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Donnee : aaaammjjHHMMSSTTT
+   Retourne : 3 premiers caracteres du libelle du jour puis jj/mm/aaaa HH:MM:SS
+   Exemple : Lun 12/08/2011 10:56:04
+</b>
+<hr><a name="getNomMois"></a><b>func string getNomMois(string date)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Date donnee jj/mm/aaaa
+   retourne
+   Janvier
+   Fevrier
+   ...
+   Decembre
+   null si date incorrecte
+</b>
+<hr><a name="compareDate"></a><b>func string compareDate(string d1,string d2)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   d1 et d2 doivent etre sous la forme jj/mm/aaaa
+   retourne
+   &lt; si d1 &lt;  d2 ou
+   > si d1 >  d2 ou
+   = si d1 == d2 ou
+   null si d1 ou d2 ne sont pas des dates correctes
+</b>
+<hr><a name="diffDate"></a><b>func int diffDate(string date1,string date2)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   date1 et date2 de la forme jj/mm/aaa
+</b>
+<hr><a name="diffDateMois"></a><b>func int diffDateMois(string date1,string date2)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le nombre de mois entre deux dates
+   Les dates doivent etre au format jj/mm/aaaa, en cas d'erreur on retourne -1
+</b>
+<hr><a name="addDate"></a><b>func string addDate(string date,int nbJours)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Date donnee jj/mm/aaaa
+</b>
+<hr><a name="addDateOuvrable"></a><b>func string addDateOuvrable(string date,int nbJours)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Donnee date sous la forme jj/mm/aaaa
+   Ajoute le nombre de jours "ouvrables", c'est a dire ne compte pas les
+   samedi et les dimanche
+</b>
+<hr><a name="dernierJourMoisPrecedent"></a><b>func string dernierJourMoisPrecedent(string date)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   retourne le nombre de jours du dernier jour du mois precedent
+   La date doit etre sous la forme jj/mm/aaaa
+</b>
+</pre></body></html>

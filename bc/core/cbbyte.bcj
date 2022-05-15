@@ -1,0 +1,136 @@
+java
+   byte val;
+   cbbyte(byte n)
+   {
+      val=n;
+   }
+   static byte get(cbbyte d)
+   {
+      return d.val;
+   }
+end java
+/*!
+Le type byte definit des entiers signes sur un octet.
+
+Type             Nombre     Nombre            Intervalle
+                 d'octets   chiffres
+                            significatifs
+byte    Entier   1          3                 -128 a 127
+short   Entier   2          5                 -32768 a 32767
+int     Entier   4          10                -2 147 483 648 a 2 147 483 647
+long    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807
+float   flottant 4          7 
+double  flottant 8          15 
+*/
+
+proc public set(byte r,byte d)
+   java
+      r.val=d.val;
+   end java
+end proc
+
+func public boolean cmplt(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val<op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmple(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val<=op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpgt(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val>op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpge(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val>=op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpeq(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val==op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpne(byte op1,byte op2)
+   boolean r
+   java
+      r.val=op1.val!=op2.val;
+   end java
+   return r
+
+end func
+
+func public byte add(byte op1,byte op2)
+   byte r
+   java
+      r.val=(byte)(op1.val+op2.val);
+   end java
+   return r
+end func
+
+func public byte sub(byte op1,byte op2)
+   byte r
+   java
+      r.val=(byte)(op1.val-op2.val);
+   end java
+   return r
+
+end func
+
+func public byte mul(byte op1,byte op2)
+   byte r
+   java
+      r.val=(byte)(op1.val*op2.val);
+   end java
+   return r
+
+end func
+
+func public byte div(byte op1,byte op2)
+   byte r
+   java
+      r.val=(byte)(op1.val/op2.val);
+   end java
+   return r
+
+end func
+
+func public byte mod(byte op1,byte op2)
+   byte r
+   java
+      r.val=(byte)(op1.val%op2.val);
+   end java
+   return r
+
+end func
+
+func public byte neg(byte op)
+   byte r
+   java
+      r.val=(byte)(-op.val);
+   end java
+   return r
+
+end func

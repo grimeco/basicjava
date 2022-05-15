@@ -1,0 +1,426 @@
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+
+proc public mkdir(string chemin)exception
+   /*!
+   Cree un repertoire
+   */
+   java
+      new File(chemin.val).mkdir();
+   end java
+end proc
+
+proc public createDirectories(string chemin)exception
+   /*!
+   Analyse un chemin et cree TOUS les repertoires necessaires
+   */
+   string[]tw
+   int i,n
+   string rep
+   tw=getWords(replace(chemin,"\\","/"),"/")
+   n=length(tw)
+   if n<2
+      return
+   end if
+   rep="/"+tw[0]
+   //println("mkdir "+rep)
+   mkdir(rep)
+   i=1
+   while i<n-1
+      rep=rep+"/"+tw[i]
+      //println("mkdir "+rep)
+      mkdir(rep)
+      i=i+1
+   end while
+end proc
+
+proc public systemOpen(string chemin)exception
+   /*!
+   Ouvre un fichier externe avec le programme par default associe au type de
+   fichier.
+   Exemple:
+   systemOpen("book.pdf")
+   Remarque:
+   Le chemin ne doit pas debuter par . ou ..
+   */
+   //println(chemin)
+   java
+      Desktop.getDesktop().open(new File(chemin.val));
+   end java
+end proc
+
+proc public renameFile(string ancienNom,string nouveauNom)exception
+   /*!
+   Permet de renommer un fichier
+   */
+   java
+      (new File(ancienNom.val)).renameTo(new File(nouveauNom.val));
+   end java
+end proc
+
+func public boolean existsFile(string nomFichier)
+   /*!
+   Retourne vrai si et seulement le fichier ou le repertoire existe.
+   */
+   boolean r
+   java
+      r.val=new File(nomFichier.val).exists();
+   end java
+   return r
+end func
+
+func public long sizeFile(string nomFichier)
+   /*!
+   retourne la taille d'un fichier en nombre d'octets
+   */
+   long r
+   if existsFile(nomFichier)
+      java
+         r.val=new File(nomFichier.val).length();
+      end java
+   else
+      r=itol(-1)
+   end if
+   return r
+end func
+
+proc public deleteFile(string chemin)exception
+   /*!
+   Detruit le fichier ou le repertoire specifie
+   deleteFile("toto")
+   Remarque:
+   Si le chemin est un repertoire, celui-ci doit etre vide
+   */
+   java
+      new File(chemin.val).delete();
+   end java
+end proc
+
+proc public copyFile(string cheminDepart,string cheminArrivee)exception
+   /*!
+   Permet de copier un fichier
+   */
+   if cheminDepart==cheminArrivee
+      return
+   end if
+   java
+      FileInputStream entree;
+      FileOutputStream sortie;
+      int n;
+      byte[]b=new byte[1024*16];
+      entree=new FileInputStream(cheminDepart.val);
+      sortie=new FileOutputStream(cheminArrivee.val);
+      n=entree.read(b);
+      while(n!=-1)
+      {
+         sortie.write(b,0,n);
+         n=entree.read(b);
+      }
+      entree.close();
+      sortie.close();
+   end java
+end proc
+
+proc public createFile(string chemin)exception
+   /*!
+   Cree un fichier vide
+   */
+   java
+      new File(chemin.val).createNewFile();
+   end java
+end proc
+
+proc public createTmpFile(string nomFichier)exception
+   /*!
+   Cree un fichier temporaire vide, cree automatiquement tous les sous-repertoires necessaires
+   */
+   createDirectories(nomFichier)
+   java
+      File f=new File(nomFichier.val);
+      f.deleteOnExit();
+   end java
+end proc
+
+func public long lastModified(string chemin)
+/*!
+Retourne la date de derniere modification d'un fichier
+exprimee en nombre de milli-secondes ecoulees depuis le 1 janvier 1970 a 0 h GMT
+*/
+   long r
+   java
+      r.val=(new File(chemin.val)).lastModified();
+   end java
+   return r
+end func
+
+func public string lastModifiedDateFile(string chemin)
+   /*!
+   Retourne la date de derniere modification d'un fichier sous la forme
+   jj/mm/aaaa hh:mm:ttt
+   ou ttt sont les milliemes de secondes
+   */
+   int[]r
+   dim r[7]
+   java
+      File f;
+      f=new File(chemin.val);
+      Calendar calendar;
+      calendar=new GregorianCalendar();
+      calendar.setTime(new Date(f.lastModified()));
+      r[0].val=calendar.get(Calendar.YEAR);
+      r[1].val=calendar.get(Calendar.MONTH)+1;
+      r[2].val=calendar.get(Calendar.DAY_OF_MONTH);
+      r[3].val=calendar.get(Calendar.HOUR_OF_DAY);
+      r[4].val=calendar.get(Calendar.MINUTE);
+      r[5].val=calendar.get(Calendar.SECOND);
+      r[6].val=calendar.get(Calendar.MILLISECOND);
+   end java
+   return padIntZeroLeft(r[2],2)+"/"+padIntZeroLeft(r[1],2)+"/"+padIntZeroLeft(r[0],4)+" "+
+   padIntZeroLeft(r[3],2)+":"+
+   padIntZeroLeft(r[4],2)+":"+padIntZeroLeft(r[5],2)+" "+
+   padIntZeroLeft(r[6],3)
+end func
+
+func public int superCopyFile(string cheminDepart,string cheminArrivee,boolean bEcrase)exception
+   /*!
+   si bEcrase vaut vrai, le fichier est toujours recopie
+   sinon
+   le fichier est copie si la date de derniere modification du fichier de depart
+   est plus recente que la date de derniere modification du fichier d'arrivee.
+   Dans ce cas, le chemin d'arrivee est analyse, les sous-repertoires necessaires
+   sont crees automatiquement
+   fin si
+   retourne 1 si le fichier a ete copie, 0 sinon
+   */
+   boolean bCopy
+   if bEcrase
+      bCopy=true
+   else
+      if existsFile(cheminArrivee)
+         bCopy=lastModified(cheminDepart)>lastModified(cheminArrivee)
+      else
+         bCopy=true
+      end if
+   end if
+   if bCopy
+      createDirectories(cheminArrivee)
+      copyFile(cheminDepart,cheminArrivee)
+      return 1
+   else
+      return 0
+   end if
+end func
+
+func public string getCurrentDirectory()
+   /*!
+   Retourne le repertoire de courant user.dir
+   */
+   string r
+   java
+      r.val=System.getProperty("user.dir")+File.separator;
+   end java
+   return r
+end func
+
+func public string[] getDirectory(string nomDirectory)exception
+   /*!
+   Retourne le premier niveau
+   */
+   string[] tListe
+   int i,n
+   n=0
+   java
+      String[] t;
+      t=(new File(nomDirectory.val)).list();
+      if(t!=null) n.val=t.length;
+   end java
+   dim tListe[n]
+   for i while i<n
+      java
+         tListe[i.val].val=t[i.val];
+      end java
+   end for
+   return tListe
+end func
+
+func public string[] getSuffixeDirectory(string nomDirectory,string suffixe)exception
+   /*!
+   Retourne le premier niveau en ne conservant que les noms de fichiers se
+   terminant par le suffixe precise
+   Insensible a la casse
+   */
+   string[]t
+   int i,n
+   stringvector v
+   string wsuffixe
+   wsuffixe=toLowerCase(suffixe)
+   t=getDirectory(nomDirectory)
+   n=length(t)
+   for i while i<n
+      if endsWith(toLowerCase(t[i]),wsuffixe)
+         add(v,t[i])
+      end if
+   end for
+   return vtos(v)
+end func
+
+proc static listOneDirectory(string rep,stringvector vrep,stringvector v,boolean bProfondeur,string[]tSuffixe)
+   int i,j,n,k
+   string w
+   boolean bok,bdir
+   java
+      File[]liste;
+      liste=(new File(rep.val)).listFiles();
+      if(liste==null)return;
+      n.val=liste.length;
+   end java
+   for i while i<n
+      java
+         w.val=liste[i.val].getName();
+         bdir.val=liste[i.val].isDirectory();
+      end java
+      if bProfondeur and bdir   
+         add(vrep,rep+"/"+w)
+         add(v,"D"+rep+"/"+w)
+      else
+         k=length(tSuffixe)
+         if k==0
+            bok=true
+         else
+            bok=false
+            for j while bok==false and j<k
+               if endsWith(w,tSuffixe[j])
+                  bok=true
+               end if
+            end for
+          end if
+          if bok
+             add(v,"F"+rep+"/"+w)
+          end if
+      end if
+   end for
+end proc
+
+func static string[] listeProfondeurFichiers(string rep,boolean bProfondeur,string filtre)
+   stringvector vrep,v
+   string[] tSuffixe
+   tSuffixe=getWords(filtre,";")
+   if endsWith(rep,"/") or endsWith(rep,"\\")
+      rep=left(rep,size(rep))
+   end if
+   add(vrep,rep)
+   while size(vrep)>0
+         listOneDirectory(elementAt(vrep,0),vrep,v,bProfondeur,tSuffixe)
+         removeElementAt(vrep,0)
+    end while
+    return vtos(v)
+end func
+
+func public string[] getRecurseDirectory(string rep,string filtre)
+   /*!
+   Le parametre 'rep' peut se terminer eventuellement par le symbole / ou
+   le symbole \
+   Retourne la liste de tous les noms absolus de fichiers.
+   ATTENTION : Chaque nom absolu est prefixe par la lettre D ou F (Directory ou File)
+   Le parcours d'arbre est en profondeur.
+   Le parametre 'filtre' permet de definir les suffixes des fichiers a conserver.
+   Chaque suffixe doit etre separe par le symbole ;
+   Le paramere suffixe peut etre ""
+   Exemple .java;jpg;gif
+   */
+   return listeProfondeurFichiers(rep,true,filtre)
+end func
+
+func public boolean cutCopyFile(string cheminDepart,string cheminArrivee)exception
+   /*!
+   Le chemin d'arrivee ne doit pas exister
+   Equivalent de la commande Windows Cut puis Copy
+   */
+   boolean b
+   java
+      File f;
+      f=new File(cheminDepart.val);
+      b.val=f.renameTo(new File(cheminArrivee.val));
+   end java
+   return b
+end func
+
+func public boolean isDirectory(string chemin)
+   /*!
+   Retourne vrai si et seulement si le chemin est un repertoire
+   */
+   boolean b
+   java
+      File f;
+      f=new File(chemin.val);
+      b.val=f.isDirectory();
+   end java
+   return b
+end func
+
+proc public deleteDirectory(string chemin)exception
+   /*!
+   ATTENTION,
+   detruit le repertoire et TOUS ses sous-repertoires
+   */
+   java
+      File dir=new File(chemin.val);
+      int i;
+      String[]children;
+      if (dir.isDirectory())
+      {
+         children=dir.list();
+         for(i=0;i<children.length;i++)
+         {
+            deleteDirectory(new cbstring(dir+"/"+children[i]));
+         }
+      }
+      dir.delete();
+   end java
+end proc
+
+func public int superCopyDirectory(string cheminDepart,string cheminArrivee,boolean bEcrase,boolean bTrace)exception
+   /*!
+   Le chemin d'arrivee peut se terminer ou non par un slash.
+   si bEcrase vaut vrai, le repertoire est toujours recopie
+   sinon
+   chaque fichier du repertoire est copie si la date de derniere modification du fichier de depart
+   est plus recente que la date de derniere modification du fichier d'arrivee.
+   Dans ce cas, le chemin d'arrivee est analyse, les sous-repertoires necessaires
+   sont crees automatiquement
+   fin si
+   si bTrace vaut vrai affichage du detail des fichiers copies
+   fin si
+   retourne le nombre de fichiers copies
+   */
+   string[]t
+   string repDest,nom,repdest
+   int i,n,k,nbCopies,nb
+   nbCopies=0
+   repDest=cheminArrivee
+   if endsWith(repDest,"/")==false
+      repDest=repDest+"/"
+   end if
+   t=getRecurseDirectory(cheminDepart,"")
+   //print(t)
+   n=length(t)
+   for i while i<n
+      nom=t[i]
+      if charAt(nom,0)=="F"
+         k=indexOf(nom,"/")+1
+         nom=right(nom,k)
+         /*
+         if bTrace
+            print(right(t[i],1)+"==>"+repDest+nom)
+         end if
+         */
+         nb=superCopyFile(right(t[i],1),repDest+nom,bEcrase)
+         if bTrace and nb!=0
+            println("copie "+right(t[i],1))
+         end if
+         nbCopies=nbCopies+nb
+      end if
+   end for
+   return nbCopies
+end func

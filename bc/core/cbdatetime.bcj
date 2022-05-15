@@ -1,0 +1,431 @@
+import java.util.*;
+java
+  static long chrono;
+end java
+
+func public int[] getDate()
+   /*!
+   Retourne la date et heure courante dans le tableau a 7 elements
+   indice definition
+   0      annee
+   1      mois
+   2      jour
+   3      heures
+   4      minutes
+   5      secondes
+   6      milli-secondes
+   */
+   int[]r
+   dim r[7]
+   java
+      Calendar calendar;
+      calendar=new GregorianCalendar();
+      calendar.setTime(new Date());
+      r[0].val=calendar.get(Calendar.YEAR);
+      r[1].val=calendar.get(Calendar.MONTH)+1;
+      r[2].val=calendar.get(Calendar.DAY_OF_MONTH);
+      r[3].val=calendar.get(Calendar.HOUR_OF_DAY);
+      r[4].val=calendar.get(Calendar.MINUTE);
+      r[5].val=calendar.get(Calendar.SECOND);
+      r[6].val=calendar.get(Calendar.MILLISECOND);
+   end java
+   return r
+end func
+
+func public string stamp()
+   /*!
+   retourne un stamp sous la forme
+   aaaammjjHHMMSSTTT
+   ou
+   aaaa annee
+   mm   mois
+   jj   jour
+   HH   Heures
+   MM   Minutes
+   SS   Secondes
+   TTT  Milli-secondes
+   */
+   int[] date
+   date=getDate()
+   return padIntZeroLeft(date[0],4)+padIntZeroLeft(date[1],2)+
+   padIntZeroLeft(date[2],2)+padIntZeroLeft(date[3],2)+
+   padIntZeroLeft(date[4],2)+padIntZeroLeft(date[5],2)+
+   padIntZeroLeft(date[6],3)
+end func
+
+proc public sleep(int milliSecondes)
+   /*!
+   Suspend l'execution pendant le nombre de millisecondes specifie
+   Exemple :
+   println("Bonjour")
+   sleep(1000)
+   println("Bonsoir")
+   */
+   try
+   java
+     // long m=milliSecondes.val;
+      Thread.sleep(milliSecondes.val);
+   end java
+   catch
+end catch
+end proc
+
+proc public startChrono()
+   /*!
+   Demarre le chronometre
+   Exemple:
+   startChrono()
+   */
+   java
+      chrono=System.currentTimeMillis();
+   end java
+end proc
+
+func public int stopChrono()
+   /*!
+   Arrete le chronometre, on recupere la duree en milli-secondes
+   Exemple:
+   int duree
+   startChrono()
+   sleep(1000)
+   duree=stopChrono()
+   println("Duree "+itos(duree))
+   */
+   int r
+   java
+      r.val=(int)(System.currentTimeMillis()-chrono);
+   end java
+   return r
+end func
+
+func public string durationToString(int duration)
+  /*!
+   * Retourne une chaine resultant de la conversion d'une duree
+   * exprimee en milli-secondes sous la forme:
+   * 99 h 99 m 99 s 999 ms
+   */
+   int duree,h,m,s,t
+   duree=duration
+   t=duree%1000
+   duree=duree/1000
+   s=duree%60
+   duree=duree/60
+   m=duree%60
+   h=duree/60
+   return padIntZeroLeft(h,2)+" h "+padIntZeroLeft(m,2)+" m "+padIntZeroLeft(s,2)+" s "+padIntZeroLeft(t,3)+" ms"
+end func
+
+func public string topChrono()
+   /*!
+    * Arrete le chronometre, 
+    * retourne durationToString,
+    * redemarre le chronometre
+    */
+   string r
+   r=durationToString(stopChrono())
+   startChrono()
+   return r
+end func
+
+func public string getDateJour()
+   /*!
+   retourne la date du jour sous le format jj/mm/aaaa
+   */
+   int[] date
+   string d
+   date=getDate()
+   d=padIntZeroLeft(date[0],4)+padIntZeroLeft(date[1],2)+padIntZeroLeft(date[2],2)
+   return substring(d,6,8)+"/"+substring(d,4,6)+"/"+substring(d,0,4)
+end func
+
+func public string stringToDate(string d)
+   /*!
+   donnee verifie que d est sous la forme jj/mm/aaaa
+   retourne "null" si erreur
+   aaaammjj
+   */
+   int i
+   int[]t,td
+   try
+      if size(d)!=10
+         return "null"
+      end if
+      if charAt(d,2)!="/" or charAt(d,5)!="/"
+         return "null"
+      end if
+      td=initIntArraySep(d,"/")
+      td[1]=td[1]-1
+      if td[1]<0 or td[1]>11
+         return "null"
+      end if
+      t=initIntArray("31,28,31,30,31,30,31,31,30,31,30,31")
+      if td[2]%400==0 or (td[2]%4==0 and td[2]%100!=0)
+         t[1]=29
+      end if
+      if td[0]<1 or td[0]>t[td[1]]
+         return "null"
+      end if
+      return substring(d,6,6+4)+substring(d,3,3+2)+substring(d,0,0+2)
+   catch
+      return "null"
+   end catch
+end func
+
+func public int getNbJoursMois(string d)
+   /*!
+   Donnee date d sous la forme jj/mm/aaaa
+   retourne le nombre de jours du mois
+   retourne -1 si la date est incorrecte
+   */
+   int[]t
+   int a,m
+   string w
+   w=stringToDate(d)
+   if d=="null"
+      return -1
+   end if
+   t=initIntArray("31,28,31,30,31,30,31,31,30,31,30,31")
+   a=stoi(substring(w,0,0+4))
+   m=stoi(substring(w,4,4+2))
+   if a%400==0 or (a%4==0 and a%100!=0)
+      t[1]=29
+   end if
+   return t[m-1]
+end func
+
+func public int getNumJour(string date)
+   /*!
+   Date donnee jj/mm/aaaa
+   retourne
+   1 Dimanche
+   2 Lundi
+   3 Mardi
+   4 Mercredi
+   5 Jeudi
+   6 Vendredi
+   7 Samedi
+   -1 si date incorrecte
+   */
+   string d
+   int[]td
+   int a,m,j,r
+   d=stringToDate(date)
+   if d=="null"
+      return -1
+   end if
+   td=initIntArraySep(date,"/")
+   td[1]=td[1]-1
+   java
+      GregorianCalendar gc;
+      gc=new GregorianCalendar(td[2].val,td[1].val,td[0].val);
+      r.val=gc.get(Calendar.DAY_OF_WEEK);
+   end java
+   return r
+end func
+
+func public string getNomJour(string date)
+   /*!
+   Date donnee jj/mm/aaaa
+   retourne
+   Dimanche
+   Lundi
+   Mardi
+   Mercredi
+   Jeudi
+   Vendredi
+   Samedi
+   null si date incorrecte
+   */
+   int n
+   string[]tw
+   n=getNumJour(date)
+   if n==-1
+      return "null"
+   end if
+   tw=getWords("Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi",",")
+   return tw[n-1]
+end func
+
+func public string stampToString(string stamp)
+   /*!
+   Donnee : aaaammjjHHMMSSTTT
+   Retourne : 3 premiers caracteres du libelle du jour puis jj/mm/aaaa HH:MM:SS
+   Exemple : Lun 12/08/2011 10:56:04
+   */
+   string a,m,j,h,mi,s
+   a=substring(stamp,0,0+4)
+   m=substring(stamp,4,4+2)
+   j=substring(stamp,6,6+2)
+   h=substring(stamp,8,8+2)
+   mi=substring(stamp,10,10+2)
+   s=substring(stamp,12,12+2)
+   return substring(getNomJour(j+"/"+m+"/"+a),0,0+3)+" "+j+"/"+m+"/"+a+" "+h+":"+mi+":"+s
+end func
+
+func public string getNomMois(string date)
+   /*!
+   Date donnee jj/mm/aaaa
+   retourne
+   Janvier
+   Fevrier
+   ...
+   Decembre
+   null si date incorrecte
+   */
+   string d
+   string[]tw
+   int[]td
+   d=stringToDate(date)
+   if d=="null"
+      return "null"
+   end if
+   td=initIntArraySep(date,"/")
+   tw=getWords("Janvier,Fevrier,Mars,Avril,Mai,Juin,Juillet,Aout,Septembre,Octobre,Novembre,Decembre",",")
+   return tw[td[1]-1]
+end func
+
+func public string compareDate(string d1,string d2)
+   /*!
+   d1 et d2 doivent etre sous la forme jj/mm/aaaa
+   retourne
+   < si d1 <  d2 ou
+   > si d1 >  d2 ou
+   = si d1 == d2 ou
+   null si d1 ou d2 ne sont pas des dates correctes
+   */
+   string op1,op2
+   try
+      op1=stringToDate(d1)
+      op2=stringToDate(d2)
+      switch
+      case op1<op2 return "<"
+      case op1>op2 return ">"
+      default return "="
+      end switch
+   catch
+      return "null"
+   end catch
+end func
+
+func public int diffDate(string date1,string date2)
+   /*!
+   date1 et date2 de la forme jj/mm/aaa
+   */
+   string d1,d2
+   int[]t1,t2
+   int r
+   d1=stringToDate(date1)
+   if d1=="null"
+      return -1
+   end if
+   d2=stringToDate(date2)
+   if d2=="null"
+      return -1
+   end if
+   t1=initIntArraySep(date1,"/")
+   t2=initIntArraySep(date2,"/")
+   java
+      GregorianCalendar gc1, gc2;
+      long dif;
+      gc1=new GregorianCalendar(t1[2].val,t1[1].val-1,t1[0].val);
+      gc2=new GregorianCalendar(t2[2].val,t2[1].val-1,t2[0].val);
+      dif=gc1.getTimeInMillis()-gc2.getTimeInMillis();
+      dif=dif/(24*3600*1000);
+      // 24 h * 3600 s * 1000 millisecondes
+      r.val=Math.abs((int)dif);
+   end java
+   return r
+end func
+
+func public int diffDateMois(string date1,string date2)
+   /*!
+   Retourne le nombre de mois entre deux dates
+   Les dates doivent etre au format jj/mm/aaaa, en cas d'erreur on retourne -1
+   */
+   string d1,d2,d
+   int a1,m1,a2,m2,n
+   try
+      d1=stringToDate(date1)
+      d2=stringToDate(date2)
+      if d1=="null" or d2=="null"
+         return -1
+      end if
+      if d1<d2
+         // on permute d1 et d2
+         d=d1
+         d1=d2
+         d2=d
+      end if
+      //maintenant  on est sur que d1 est plus grand que d2
+      a1=stoi(substring(d1,0,0+4))
+      m1=stoi(substring(d1,4,4+2))
+      a2=stoi(substring(d2,0,0+4))
+      m2=stoi(substring(d2,4,4+2))
+      if m1<m2
+         m1=m1+12
+         a1=a1-1
+      end if
+      return (a1-a2)*12+m1-m2
+   catch
+      return -1
+   end catch
+end func
+
+func public string addDate(string date, int nbJours)
+   /*!
+   Date donnee jj/mm/aaaa
+   */
+   string d
+   int[]td
+   d=stringToDate(date)
+   if d=="null"
+      return "null"
+   end if
+   td=initIntArraySep(date,"/")
+   java
+      GregorianCalendar gc;
+      gc=new GregorianCalendar(td[2].val,td[1].val-1, td[0].val);
+      gc.add(Calendar.DATE, nbJours.val);
+      td[0].val=gc.get(Calendar.DAY_OF_MONTH);
+      td[1].val=gc.get(Calendar.MONTH)+1;
+      td[2].val=gc.get(Calendar.YEAR);
+   end java
+   return padIntZeroLeft(td[0],2)+"/"+padIntZeroLeft(td[1],2)+"/"+padIntZeroLeft(td[2],4)
+end func
+
+func public string addDateOuvrable(string date,int nbJours)
+   /*!
+   Donnee date sous la forme jj/mm/aaaa
+   Ajoute le nombre de jours "ouvrables", c'est a dire ne compte pas les
+   samedi et les dimanche
+   */
+   string r
+   int nb,num
+   nb=nbJours
+   r=addDate(date,nb)
+   num=getNumJour(r)
+   while num==7 or num==1 // Samedi ou Dimanche
+      nb=nb+1
+      r=addDate(date,nb)
+      num=getNumJour(r)
+   end while
+   return r
+end func
+
+func public string dernierJourMoisPrecedent(string date)
+   /*!
+   retourne le nombre de jours du dernier jour du mois precedent
+   La date doit etre sous la forme jj/mm/aaaa
+   */
+   string r,d
+   int m,a
+   m=stoi(substring(date,3,3+2))
+   a=stoi(substring(date,6,6+4))
+   m=m-1
+   if m<1
+      m=12
+      a=a-1
+   end if
+   d="01/"+padIntZeroLeft(m,2)+"/"+padIntZeroLeft(a,4)
+   return padIntZeroLeft(getNbJoursMois(d),2)+"/"+padIntZeroLeft(m,2)+"/"+padIntZeroLeft(a,4)
+end func

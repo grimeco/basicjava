@@ -1,0 +1,41 @@
+[datetime]
+proto=func int[] getDate()
+proto=$L   Retourne la date et heure courante dans le tableau a 7 elements$L   indice definition$L   0      annee$L   1      mois$L   2      jour$L   3      heures$L   4      minutes$L   5      secondes$L   6      milli-secondes$L  
+proto=func string stamp()
+proto=$L   retourne un stamp sous la forme$L   aaaammjjHHMMSSTTT$L   ou$L   aaaa annee$L   mm   mois$L   jj   jour$L   HH   Heures$L   MM   Minutes$L   SS   Secondes$L   TTT  Milli-secondes$L  
+proto=proc sleep(int milliSecondes)
+proto=$L   Suspend l'execution pendant le nombre de millisecondes specifie$L   Exemple :$L   println("Bonjour")$L   sleep(1000)$L   println("Bonsoir")$L  
+proto=proc startChrono()
+proto=$L   Demarre le chronometre$L   Exemple:$L   startChrono()$L  
+proto=func int stopChrono()
+proto=$L   Arrete le chronometre, on recupere la duree en milli-secondes$L   Exemple:$L   int duree$L   startChrono()$L   sleep(1000)$L   duree=stopChrono()$L   println("Duree "+itos(duree))$L  
+proto=func string durationToString(int duration)
+proto=$L   * Retourne une chaine resultant de la conversion d'une duree$L   * exprimee en milli-secondes sous la forme:$L   * 99 h 99 m 99 s 999 ms$L  
+proto=func string topChrono()
+proto=$L    * Arrete le chronometre, $L    * retourne durationToString,$L    * redemarre le chronometre$L   
+proto=func string getDateJour()
+proto=$L   retourne la date du jour sous le format jj/mm/aaaa$L  
+proto=func string stringToDate(string d)
+proto=$L   donnee verifie que d est sous la forme jj/mm/aaaa$L   retourne "null" si erreur$L   aaaammjj$L  
+proto=func int getNbJoursMois(string d)
+proto=$L   Donnee date d sous la forme jj/mm/aaaa$L   retourne le nombre de jours du mois$L   retourne -1 si la date est incorrecte$L  
+proto=func int getNumJour(string date)
+proto=$L   Date donnee jj/mm/aaaa$L   retourne$L   1 Dimanche$L   2 Lundi$L   3 Mardi$L   4 Mercredi$L   5 Jeudi$L   6 Vendredi$L   7 Samedi$L   -1 si date incorrecte$L  
+proto=func string getNomJour(string date)
+proto=$L   Date donnee jj/mm/aaaa$L   retourne$L   Dimanche$L   Lundi$L   Mardi$L   Mercredi$L   Jeudi$L   Vendredi$L   Samedi$L   null si date incorrecte$L  
+proto=func string stampToString(string stamp)
+proto=$L   Donnee : aaaammjjHHMMSSTTT$L   Retourne : 3 premiers caracteres du libelle du jour puis jj/mm/aaaa HH:MM:SS$L   Exemple : Lun 12/08/2011 10:56:04$L  
+proto=func string getNomMois(string date)
+proto=$L   Date donnee jj/mm/aaaa$L   retourne$L   Janvier$L   Fevrier$L   ...$L   Decembre$L   null si date incorrecte$L  
+proto=func string compareDate(string d1,string d2)
+proto=$L   d1 et d2 doivent etre sous la forme jj/mm/aaaa$L   retourne$L   < si d1 <  d2 ou$L   > si d1 >  d2 ou$L   = si d1 == d2 ou$L   null si d1 ou d2 ne sont pas des dates correctes$L  
+proto=func int diffDate(string date1,string date2)
+proto=$L   date1 et date2 de la forme jj/mm/aaa$L  
+proto=func int diffDateMois(string date1,string date2)
+proto=$L   Retourne le nombre de mois entre deux dates$L   Les dates doivent etre au format jj/mm/aaaa, en cas d'erreur on retourne -1$L  
+proto=func string addDate(string date,int nbJours)
+proto=$L   Date donnee jj/mm/aaaa$L  
+proto=func string addDateOuvrable(string date,int nbJours)
+proto=$L   Donnee date sous la forme jj/mm/aaaa$L   Ajoute le nombre de jours "ouvrables", c'est a dire ne compte pas les$L   samedi et les dimanche$L  
+proto=func string dernierJourMoisPrecedent(string date)
+proto=$L   retourne le nombre de jours du dernier jour du mois precedent$L   La date doit etre sous la forme jj/mm/aaaa$L  

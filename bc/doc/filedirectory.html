@@ -1,0 +1,194 @@
+<html><body><a name="tablematieres"></a><h1><center>filedirectory</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#copyFile">copyFile</a></td>
+</tr><tr>
+<td><a href="#createDirectories">createDirectories</a></td>
+</tr><tr>
+<td><a href="#createFile">createFile</a></td>
+</tr><tr>
+<td><a href="#createTmpFile">createTmpFile</a></td>
+</tr><tr>
+<td><a href="#cutCopyFile">cutCopyFile</a></td>
+</tr><tr>
+<td><a href="#deleteDirectory">deleteDirectory</a></td>
+</tr><tr>
+<td><a href="#deleteFile">deleteFile</a></td>
+</tr><tr>
+<td><a href="#existsFile">existsFile</a></td>
+</tr><tr>
+<td><a href="#getCurrentDirectory">getCurrentDirectory</a></td>
+</tr><tr>
+<td><a href="#getDirectory">getDirectory</a></td>
+</tr><tr>
+<td><a href="#getRecurseDirectory">getRecurseDirectory</a></td>
+</tr><tr>
+<td><a href="#getSuffixeDirectory">getSuffixeDirectory</a></td>
+</tr><tr>
+<td><a href="#isDirectory">isDirectory</a></td>
+</tr><tr>
+<td><a href="#lastModified">lastModified</a></td>
+</tr><tr>
+<td><a href="#lastModifiedDateFile">lastModifiedDateFile</a></td>
+</tr><tr>
+<td><a href="#mkdir">mkdir</a></td>
+</tr><tr>
+<td><a href="#renameFile">renameFile</a></td>
+</tr><tr>
+<td><a href="#sizeFile">sizeFile</a></td>
+</tr><tr>
+<td><a href="#superCopyDirectory">superCopyDirectory</a></td>
+</tr><tr>
+<td><a href="#superCopyFile">superCopyFile</a></td>
+</tr><tr>
+<td><a href="#systemOpen">systemOpen</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>filedirectory</b> est implemente dans le fichier source <b>bc/core/cbfiledirectory.bcj</b>.<br>
+<hr><a name="mkdir"></a><b>proc mkdir(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Cree un repertoire
+</b>
+<hr><a name="createDirectories"></a><b>proc createDirectories(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Analyse un chemin et cree TOUS les repertoires necessaires
+</b>
+<hr><a name="systemOpen"></a><b>proc systemOpen(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="systemOpen"></a><b>
+   Ouvre un fichier externe avec le programme par default associe au type de
+   fichier.
+   Exemple:
+   systemOpen("book.pdf")
+   Remarque:
+   Le chemin ne doit pas debuter par . ou ..
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="renameFile"></a><b>proc renameFile(string ancienNom,string nouveauNom)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Permet de renommer un fichier
+</b>
+<hr><a name="existsFile"></a><b>func boolean existsFile(string nomFichier)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne vrai si et seulement le fichier ou le repertoire existe.
+</b>
+<hr><a name="sizeFile"></a><b>func long sizeFile(string nomFichier)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   retourne la taille d'un fichier en nombre d'octets
+</b>
+<hr><a name="deleteFile"></a><b>proc deleteFile(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="deleteFile"></a><b>
+   Detruit le fichier ou le repertoire specifie
+   deleteFile("toto")
+   Remarque:
+   Si le chemin est un repertoire, celui-ci doit etre vide
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="copyFile"></a><b>proc copyFile(string cheminDepart,string cheminArrivee)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Permet de copier un fichier
+</b>
+<hr><a name="createFile"></a><b>proc createFile(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Cree un fichier vide
+</b>
+<hr><a name="createTmpFile"></a><b>proc createTmpFile(string nomFichier)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Cree un fichier temporaire vide, cree automatiquement tous les sous-repertoires necessaires
+</b>
+<hr><a name="lastModified"></a><b>func long lastModified(string chemin)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Retourne la date de derniere modification d'un fichier
+exprimee en nombre de milli-secondes ecoulees depuis le 1 janvier 1970 a 0 h GMT</b>
+<hr><a name="lastModifiedDateFile"></a><b>func string lastModifiedDateFile(string chemin)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne la date de derniere modification d'un fichier sous la forme
+   jj/mm/aaaa hh:mm:ttt
+   ou ttt sont les milliemes de secondes
+</b>
+<hr><a name="superCopyFile"></a><b>func int superCopyFile(string cheminDepart,string cheminArrivee,boolean bEcrase)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   si bEcrase vaut vrai, le fichier est toujours recopie
+   sinon
+   le fichier est copie si la date de derniere modification du fichier de depart
+   est plus recente que la date de derniere modification du fichier d'arrivee.
+   Dans ce cas, le chemin d'arrivee est analyse, les sous-repertoires necessaires
+   sont crees automatiquement
+   fin si
+   retourne 1 si le fichier a ete copie, 0 sinon
+</b>
+<hr><a name="getCurrentDirectory"></a><b>func string getCurrentDirectory()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le repertoire de courant user.dir
+</b>
+<hr><a name="getDirectory"></a><b>func string[] getDirectory(string nomDirectory)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le premier niveau
+</b>
+<hr><a name="getSuffixeDirectory"></a><b>func string[] getSuffixeDirectory(string nomDirectory,string suffixe)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le premier niveau en ne conservant que les noms de fichiers se
+   terminant par le suffixe precise
+   Insensible a la casse
+</b>
+<hr><a name="getRecurseDirectory"></a><b>func string[] getRecurseDirectory(string rep,string filtre)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Le parametre 'rep' peut se terminer eventuellement par le symbole / ou
+   le symbole \
+   Retourne la liste de tous les noms absolus de fichiers.
+   ATTENTION : Chaque nom absolu est prefixe par la lettre D ou F (Directory ou File)
+   Le parcours d'arbre est en profondeur.
+   Le parametre 'filtre' permet de definir les suffixes des fichiers a conserver.
+   Chaque suffixe doit etre separe par le symbole ;
+   Le paramere suffixe peut etre ""
+   Exemple .java;jpg;gif
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="cutCopyFile"></a><b>func boolean cutCopyFile(string cheminDepart,string cheminArrivee)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Le chemin d'arrivee ne doit pas exister
+   Equivalent de la commande Windows Cut puis Copy
+</b>
+<hr><a name="isDirectory"></a><b>func boolean isDirectory(string chemin)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne vrai si et seulement si le chemin est un repertoire
+</b>
+<hr><a name="deleteDirectory"></a><b>proc deleteDirectory(string chemin)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   ATTENTION,
+   detruit le repertoire et TOUS ses sous-repertoires
+</b>
+<hr><a name="superCopyDirectory"></a><b>func int superCopyDirectory(string cheminDepart,string cheminArrivee,boolean bEcrase,boolean bTrace)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Le chemin d'arrivee peut se terminer ou non par un slash.
+   si bEcrase vaut vrai, le repertoire est toujours recopie
+   sinon
+   chaque fichier du repertoire est copie si la date de derniere modification du fichier de depart
+   est plus recente que la date de derniere modification du fichier d'arrivee.
+   Dans ce cas, le chemin d'arrivee est analyse, les sous-repertoires necessaires
+   sont crees automatiquement
+   fin si
+   si bTrace vaut vrai affichage du detail des fichiers copies
+   fin si
+   retourne le nombre de fichiers copies
+</b>
+</pre></body></html>

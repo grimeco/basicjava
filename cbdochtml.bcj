@@ -1,0 +1,197 @@
+string repout
+stringvector crossRef
+int nbColTableMat
+
+proc usage()
+   println("cbdochtml, usage:")
+   println("   cbdochtml pathin pathout")
+   println("   ou pathin est le chemin d'un fichier de type bcj.ini")
+   println("   ou pathout est le chemin du repertoire de destination des fichiers doc html")
+   println(" il faut avoir executer cbgendoc prealablement")
+   exit()
+end proc
+
+func string searchNomProcFunc(string d)
+   string r
+   int k
+   k=indexOf(d,"(")
+   if k==-1
+      return "???"
+   end if
+   r=left(d,k)
+   k=lastIndexOf(r," ")
+   if k==-1
+      return "???"
+   end if
+   return right(r,k+1)
+end func
+
+func string asciiToHtml(string d)
+   string r,c
+   int i,n
+   n=size(d)
+   r=""
+   for i while i<n
+      c=charAt(d,i)
+      switch
+         case c=="<"
+         r=r+"&lt;"
+         default
+         r=r+c
+      end switch
+   end for
+   return r
+end func
+
+func string mefSautLigne(string d)
+   return replace(d,"$L","\n")
+end func
+
+proc genDocUnFichier(string nomType,string pathin)exception
+   string pathdoc,pathout
+   int k
+   inifile fichini
+   string t,nomProcFunc,w
+   string[]tw,tProtos,tTable
+   int i,n,iCol
+   stringvector vTable
+   k=lastIndexOf(pathin,".")
+   pathdoc=left(pathin,k)+".docini"
+   print(nomType+"="+pathdoc)
+   pathout=repout+"/"+nomType+".html"
+   println(" pathout="+pathout)
+   t="<html><body><a name=\"tablematieres\"></a><h1><center>"+nomType+
+   "</center></h1>\n"
+   open(fichini,pathdoc)
+   tProtos=getWords(fichini,nomType,"proto")
+   if length(tProtos)!=0
+      iCol=0
+      t=t+"<hr><h3>Procedures et fonctions</h3>\n"
+      t=t+"<pre><table border=\"1\"><tr>\n"
+      //------------------
+      removeAll(vTable)
+      for i while i<length(tProtos)
+         if startsWith(tProtos[i],"proc")or startsWith(tProtos[i],"func")
+            add(vTable,searchNomProcFunc(tProtos[i]))
+         end if
+      end for
+      tTable=vtos(vTable)
+      sort(tTable)
+      for i while i<length(tTable)
+         nomProcFunc=tTable[i]
+         add(crossRef,nomProcFunc+";"+nomType)
+         if iCol>nbColTableMat
+            t=t+"</tr><tr>\n"
+            iCol=0
+         end if
+         iCol=iCol+1
+         t=t+"<td><a href=\"#"+nomProcFunc+"\">"+nomProcFunc+"</a></td>\n"
+      end for
+      t=t+"</tr></table></pre><hr>\n"
+   end if
+   //tw=getWords(fichini,nomType,"source")
+   t=t+"<pre>Le module <b>"+nomType+"</b> est implemente dans le fichier source <b>"+pathin+"</b>.<br>\n"
+   tw=getWords(fichini,nomType,"affectation")
+   if length(tw)!=0
+      t=t+"<hr><b>Instruction d'affectation<br>"+nomType+" r,d<br>r=d</b>\n"
+   end if
+   tw=getWords(fichini,nomType,"operateur")
+   if length(tw)!=0
+      t=t+"<hr><b>Operateurs</b>\n"
+      for i while i<length(tw)
+         t=t+asciiToHtml(tw[i])+"\n"
+      end for
+   end if
+   /*GG
+   w=trim(getAttributs(nomSourceDef))
+   if w!=""
+      t=t+"<hr><b>Variables publiques</b><br>"+w+"<hr>"
+   end if
+   */
+   if length(tProtos)!=0
+      for i while i<length(tProtos)
+         nomProcFunc=searchNomProcFunc(tProtos[i])
+         if nomProcFunc!="???"
+            t=t+"<hr><a name=\""+nomProcFunc+"\"></a>"
+         end if
+         t=t+"<b>"+mefSautLigne(asciiToHtml(tProtos[i]))+"</b>\n"
+         if nomProcFunc!="???"
+            t=t+"<a href=\"#tablematieres\">Retour a la liste procedures et fonctions</a>\n"
+         end if
+      end for
+   end if
+   t=t+"</pre></body></html>\n"
+   putFileString(repout+"/"+nomType+".html",t)
+end proc
+
+proc genCrossRef()exception
+   textfile fich
+   string[]t,tw
+   int i,n
+   t=vtos(crossRef)
+   sort(t)
+   n=length(t)
+   open(fich,repout+"/crossref.html",1)
+   println(fich,"<html><body><h2>References croisees</h2>\n")
+   println(fich,"<table border=\"1\">\n")
+   for i while i<n
+      tw=getWords(t[i],";")
+      println(fich,"<tr><td>"+tw[0]+"</td><td><a href=\""+tw[1]+".html#"+tw[0]+"\" target=\"doc\">"+tw[1]+"</a></td></tr>\n")
+   end for
+   println(fich,"</table><hr></body></html>\n")
+   close(fich)
+end proc
+
+proc genDoc(string pathIniFile)exception
+   inifile gfi
+   string[] t,tw
+   string w,path,tabl
+   int i,n,k
+   k=lastIndexOf(pathIniFile,"/")
+   if k!=-1
+      path=left(pathIniFile,k)
+   else
+      path="."
+   end if
+   tabl="<html><body>\n<a href=\"crossref.html\" target=\"doc\">References croisees</a><br>\n"
+   deleteDirectory(repout)
+   mkdir(repout)
+   open(gfi,pathIniFile)
+   t=getWords(gfi,"types","type")
+   sort(t)
+   n=length(t)
+   for i while i<n
+      w=t[i]
+      tw=getWords(w,":")
+      tabl=tabl+"<a href=\""+tw[0]+".html\" target=\"doc\">"+tw[0]+"</a><br>\n"
+      genDocUnFichier(tw[0],path+"/"+tw[1])
+   end for
+   tabl=tabl+"</body></html>\n"
+   putFileString(repout+"/bcj_tabmat_bcj.html",tabl)
+   genCrossRef()
+   putFileString(repout+"/doc.html","<html><head><title>doc</title></head><body></body></html>")
+   putFileString(repout+"/index.html","<HTML><HEAD><TITLE>"+pathIniFile+"</TITLE>"+
+   "</HEAD><FRAMESET COLS=\"20%, 80%\">"+
+   "<FRAME SRC=\"bcj_tabmat_bcj.html\" NAME=\"table\">"+
+   "<FRAME SRC=\"doc.html\" NAME=\"doc\"></FRAMESET></HTML>")
+end proc
+
+proc demarrer()exception
+   int n
+   nbColTableMat=0
+   n=argCount()
+   switch
+      case n==2
+      repout=argGet(1)
+      genDoc(argGet(0))
+      default
+      usage()
+   end switch
+end proc
+//setMsdosPrint(true)
+try
+   demarrer()
+catch
+   println(exceptionToString())
+   exit()
+end catch

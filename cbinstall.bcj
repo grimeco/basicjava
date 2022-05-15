@@ -1,0 +1,69 @@
+proc usage()
+ exit()
+end proc
+
+proc install()exception
+end proc
+
+proc genzip(string filename)exception
+ inifile gfi
+ string[] tsections,tfichiers,tliste
+ int i,n,j,k,l,m
+ string rep,nom
+ stringvector v
+ open(gfi,"cbinstall.ini")
+ tsections=getSections(gfi)
+ n=length(tsections)
+ for i while i<n
+    rep=tsections[i]
+    //println("*** "+rep)
+    tfichiers=getWords(gfi,rep,"f")
+    k=length(tfichiers)
+    for j while j<k
+       nom=tfichiers[j]
+       if startsWith(nom,"*.")
+          tliste=getSuffixeDirectory(rep,replace(nom,"*",""))
+          m=length(tliste)
+          for l while l<m
+           // println(rep+"/"+tliste[l])
+            add(v,rep+"/"+tliste[l])
+          end for
+       else
+        if rep=="."
+         //println(nom)
+         add(v,nom)
+        else
+         //println(rep+"/"+nom)
+         add(v,rep+"/"+nom)
+        end if
+       end if  
+    end for
+ end for
+ print(vtos(v))
+ filesToZip(filename,vtos(v))
+end proc
+
+proc demarrer()exception
+ string cmd,filename
+ cmd=argGet(0)
+ filename=argGet(1)
+ if filename==""
+   usage()
+ end if  
+ switch
+ case cmd=="install"
+  install()
+ case cmd=="genzip"
+  genzip(filename)
+ default
+    usage()
+ end switch
+end proc
+
+//--- MAIN ---
+try
+ demarrer()
+catch
+ println(exceptionToString())
+ exit()
+end catch  

@@ -1,0 +1,70 @@
+proc public sort(string[]t)
+   /*!
+   Tri le tableau par ordre croissant par la methode des bulles (Bubble Sort)
+   */
+   int i,n
+   string x
+   boolean bPermut
+   n=length(t)-1
+   bPermut=true
+   while bPermut
+      bPermut=false
+      for i while i<n
+         if t[i]>t[i+1]
+            x=t[i]
+            t[i]=t[i+1]
+            t[i+1]=x
+            bPermut=true
+         end if
+      end for
+   end while
+end proc
+
+proc public print(string[]t)
+   /*!
+   Affiche dans la fenetre d'execution un tableau a de chaines a 1 dimension
+   */
+   int i,n
+   n=length(t)
+   for i while i<n
+      println(itos(i)+"\t"+t[i])
+   end for
+end proc
+
+proc public printArray(string[][]t)
+   /*!
+   Affiche dans la fenetre d'execution un tableau de chaines a 2 dimensions
+   */
+   int i,j,nbLig,nbCol
+   nbLig=length(t)
+   if nbLig==0
+      return
+   end if
+   nbCol=collength(t)
+   for i while i<nbLig
+      print(itos(i))
+      for j while j<nbCol
+         print("\t"+t[i][j])
+      end for
+      println("")
+   end for
+end proc
+
+proc public printIntArray(int[][]t)
+   /*!
+   Affiche dans la fenetre d'execution un tableau d'entiers a 2 dimensions
+   */
+   int i,j,nbLig,nbCol
+   nbLig=length(t)
+   if nbLig==0
+      return
+   end if
+   nbCol=collength(t)
+   for i while i<nbLig
+      print(itos(i))
+      for j while j<nbCol
+         print("\t"+itos(t[i][j]))
+      end for
+      println("")
+   end for
+end proc

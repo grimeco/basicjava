@@ -1,0 +1,236 @@
+lexical lex
+string u,typus
+textfile fichDoc
+
+proc usage()
+   println("cbgendoc, usage:")
+   println("   cbgendoc path")
+   println("   ou path est le chemin d'un fichier de type bcj.ini")
+   exit()
+end proc
+
+proc getUs()exception
+   u=us(lex)
+   typus=getType(lex)
+end proc
+
+func string convert(string op)
+   int n
+   try
+      n=size(op)
+      return replace(substring(op,3,n-3),"\n","$L")
+   catch
+      return ""
+   end catch
+end func
+
+proc skipEndProcFunc()exception
+   boolean bContinue
+   bContinue=true
+   while bContinue
+      if u=="end"
+         getUs()
+         if u=="proc" or u=="func"
+            getUs()
+            bContinue=false
+         end if
+      else
+         if typus=="/"
+            if startsWith(u,"/*!") or startsWith(u,"/*!")
+               println(fichDoc,"proto="+convert(u))
+            end if
+         end if
+         getUs()
+         if u==""
+            bContinue=false
+         end if
+      end if
+   end while
+end proc
+
+func boolean operateur(string d)
+   string r
+   string[]t
+   t=getWords(d," ")
+   if startsWith(d,"proc")
+      if t[1]=="set"
+         return true
+      end if
+      return false
+   end if
+   if t[2]=="or" or t[2]=="and" or
+      t[2]=="cmplt" or t[2]=="cmple" or t[2]=="cmpgt" or t[2]=="cmpge" or t[2]=="cmpeq" or t[2]=="cmpne" or
+      t[2]=="add" or t[2]=="sub" or
+      t[2]=="mul" or t[2]=="div" or t[2]=="mod" or
+      t[2]=="neg"
+      return true
+   end if
+   return false
+end func
+
+func string purgeSpace(string data)
+   string d
+   d=replace(data," (","(")
+   d=replace(d,"( ","(")
+   d=replace(d," )",")")
+   d=replace(d,") ",")")
+   d=replace(d," [","[")
+   d=replace(d,"[ ","[")
+   d=replace(d," ,",",")
+   d=replace(d,", ",",")
+   return d
+end func
+
+func string mefProto(string d)
+   string r
+   string[]t
+   t=getWords(d," ")
+   if startsWith(d,"proc")
+      if t[1]=="set"
+         return "affectation="+t[3]+" = "+t[6]
+      end if
+      return "proto="+purgeSpace(d)
+   end if
+   if t[2]=="or"
+      return "operateur="+t[1]+" ( "+t[4]+" or "+t[7]+" )"
+   end if
+   if t[2]=="and"
+      return "operateur="+t[1]+" ( "+t[4]+" and "+t[7]+" )"
+   end if
+   if t[2]=="cmplt"
+      return "operateur="+t[1]+" ( "+t[4]+" <  "+t[7]+" )"
+   end if
+   if t[2]=="cmple"
+      return "operateur="+t[1]+" ( "+t[4]+" <= "+t[7]+" )"
+   end if
+   if t[2]=="cmpgt"
+      return "operateur="+t[1]+" ( "+t[4]+" >  "+t[7]+" )"
+   end if
+   if t[2]=="cmpge"
+      return "operateur="+t[1]+" ( "+t[4]+" >= "+t[7]+" )"
+   end if
+   if t[2]=="cmpeq"
+      return "operateur="+t[1]+" ( "+t[4]+" ==  "+t[7]+" )"
+   end if
+   if t[2]=="cmpne"
+      return "operateur="+t[1]+" ( "+t[4]+" != "+t[7]+" )"
+   end if
+   if t[2]=="add"
+      return "operateur="+t[1]+" ( "+t[4]+" +  "+t[7]+" )"
+   end if
+   if t[2]=="sub"
+      return "operateur="+t[1]+" ( "+t[4]+" - "+t[7]+" )"
+   end if
+   if t[2]=="mul"
+      return "operateur="+t[1]+" ( "+t[4]+" *  "+t[7]+" )"
+   end if
+   if t[2]=="div"
+      return "operateur="+t[1]+" ( "+t[4]+" /  "+t[7]+" )"
+   end if
+   if t[2]=="mod"
+      return "operateur="+t[1]+" ( "+t[4]+" % "+t[7]+" )"
+   end if
+   if t[2]=="neg"
+      return "operateur="+t[1]+" ( - "+t[4]+" )"
+   end if
+   return "proto="+purgeSpace(d)
+end func
+
+proc genProcFunc()exception
+   string ligne,memu,critere
+   boolean bMefProto
+   ligne=u+" "
+   getUs()
+   if u!="public"
+      skipEndProcFunc()
+      return
+   end if
+   memu=u
+   getUs()
+   while u!=")"
+      //ligne=ligne+trad(u)+" "
+      ligne=ligne+u+" "
+      memu=u
+      getUs()
+   end while
+   ligne=ligne+")"
+   getUs()
+   if u=="exception"
+      ligne=ligne+" exception"
+      getUs()
+   end if
+   if operateur(ligne)
+      ligne=mefProto(ligne)
+      println(fichDoc,ligne)
+      skipEndProcFunc()
+      return
+   end if
+   ligne=mefProto(ligne)
+   println(fichDoc,ligne)
+   skipEndProcFunc()
+end proc
+
+proc genDocUnFichier(string typ,string nomFichier)exception
+   string pathout
+   int k
+   k=lastIndexOf(nomFichier,".")
+   pathout=left(nomFichier,k)+".docini"
+   open(fichDoc,pathout,1)
+   println(typ+"\t"+nomFichier+"\t"+pathout)
+   println(fichDoc,"["+typ+"]")
+   start(lex,getFileString(nomFichier),false)
+   getUs()
+   while u!=""
+      switch
+         case u=="proc" or u=="func"
+         genProcFunc()
+         case typus=="/"
+         if startsWith(u,"/*!") or startsWith(u,"/*!")
+            println(fichDoc,"proto="+convert(u))
+         end if
+         getUs()
+         default
+         getUs()
+      end switch
+   end while
+   close(fichDoc)
+end proc
+
+proc genDoc(string pathIniFile)exception
+   inifile gfi
+   string[] t,tw
+   string w,path
+   int i,n,k
+   k=lastIndexOf(pathIniFile,"/")
+   if k!=-1
+      path=left(pathIniFile,k)
+   else
+      path="."
+   end if
+   open(gfi,pathIniFile)
+   t=getWords(gfi,"types","type")
+   n=length(t)
+   for i while i<n
+      w=t[i]
+      tw=getWords(w,":")
+      genDocUnFichier(tw[0],path+"/"+tw[1])
+   end for
+end proc
+
+proc demarrer()exception
+   int n
+   n=argCount()
+   switch
+      case n==1
+      genDoc(argGet(0))
+      default
+      usage()
+   end switch
+end proc
+//--- MAIN -----------------
+try
+   demarrer()
+catch
+   println(exceptionToString())
+   exit()
+end catch

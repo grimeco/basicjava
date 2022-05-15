@@ -1,0 +1,57 @@
+<html><body><a name="tablematieres"></a><h1><center>stringhashmap</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#get">get</a></td>
+</tr><tr>
+<td><a href="#getHashmap">getHashmap</a></td>
+</tr><tr>
+<td><a href="#getKeys">getKeys</a></td>
+</tr><tr>
+<td><a href="#put">put</a></td>
+</tr><tr>
+<td><a href="#putArray">putArray</a></td>
+</tr><tr>
+<td><a href="#remove">remove</a></td>
+</tr><tr>
+<td><a href="#removeAll">removeAll</a></td>
+</tr><tr>
+<td><a href="#size">size</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>stringhashmap</b> est implemente dans le fichier source <b>bc/core/cbstringhashmap.bcj</b>.<br>
+<hr><a name=""></a><b>
+Le type &lt;b>stringhashmap&lt;/b> permet de constituer une hash de couples (cle,valeur)
+de string dont on ne connait pas a priori le nombre d'elements</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="size"></a><b>func int size(stringhashmap v)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le nombre d'elements de la hashmap
+</b>
+<hr><a name="removeAll"></a><b>proc removeAll(stringhashmap v)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Supprime tous les elements de la hashmap
+</b>
+<hr><a name="get"></a><b>func string get(stringhashmap v,string cle)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne l'element situe de valeur de cle
+   Retourne ??? si non trouve
+</b>
+<hr><a name="remove"></a><b>proc remove(stringhashmap v,string cle)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Supprime l'element de valeur de cle
+</b>
+<hr><a name="put"></a><b>proc put(stringhashmap v,string cle,string valeur)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Modifie le i-ieme élement
+</b>
+<hr><a name="putArray"></a><b>proc putArray(stringhashmap v,string[] tCle,string[] tVal)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="getKeys"></a><b>func string[] getKeys(stringhashmap v)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="getHashmap"></a><b>func string[][] getHashmap(stringhashmap v)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+</pre></body></html>

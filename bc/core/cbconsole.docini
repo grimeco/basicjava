@@ -1,0 +1,9 @@
+[console]
+proto=proc print(string d)
+proto=$LAffiche dans la console la chaine d sans passer a la ligne
+proto=proc println(string d)
+proto=$LAffiche dans la console la chaine d et passe a la ligne
+proto=func string readLine()
+proto=$LLit une ligne a partir de la console
+proto=func string readPassword()
+proto=$LLit une ligne a partir de la console sans afficher les caracteres tapes

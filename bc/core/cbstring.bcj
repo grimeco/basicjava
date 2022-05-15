@@ -1,0 +1,462 @@
+//import java.nio.charset.*;
+java
+   
+   String val="";
+   cbstring(String d)
+   {
+      val=d;
+   }
+   static String get(cbstring d)
+   {
+    return d.val;
+   }
+end java
+
+proc public set(string r,string d)
+   java
+      r.val=d.val;
+   end java
+end proc
+
+func public boolean cmplt(string op1,string op2)
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)<0;
+   end java
+   return r
+end func
+
+func public boolean cmple(string op1,string op2)
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)<=0;
+   end java
+   return r
+
+end func
+
+func public boolean cmpgt(string op1,string op2)
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)>0;
+   end java
+   return r
+
+end func
+
+func public boolean cmpge(string op1,string op2)
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)>=0;
+   end java
+   return r
+
+end func
+
+func public boolean cmpeq(string op1,string op2)
+ 
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)==0;
+   end java
+   return r
+
+end func
+
+func public boolean cmpne(string op1,string op2)
+  
+   boolean r
+   java
+      r.val=op1.val.compareTo(op2.val)!=0;
+   end java
+   return r
+
+end func
+
+func public string add(string op1,string op2)
+   string r
+   java
+      r.val=op1.val+op2.val;
+   end java
+   return r
+
+end func
+
+func public string trim(string op)
+   /*!
+   Retourne une chaine apres avoir elimine les espaces a droite et a gauche
+   Exemple:
+   cbstring d
+   d="        ABC              "
+   println(trim(d))
+   */
+   string r
+   java
+      r.val=op.val.trim();
+   end java
+   return r
+end func
+
+func public boolean startsWith(string op,string critere)
+   /*!
+   Retourne vrai si la chaine op commence par le critere fourni
+   Exemple:
+   cbstring d
+   d="Hello"
+   if startsWith(d,"He")
+      println("Vrai pour He")
+   end if
+   if startsWith(d,"Hell")==true
+      println("Vrai pour Hell")
+   end if
+   if startsWith(d,"Bonsoir")==false
+      println("Faux pour Bonsoir")
+   end if
+   */
+   boolean r
+   java
+      r.val=op.val.startsWith(critere.val);
+   end java
+   return r
+end func
+
+
+func public boolean endsWith(string op,string critere)
+   /*!
+   Retourne vrai si la chaine op se termine par le critere fourni
+   Exemple:
+   cbstring d
+   d="Hello"
+   if endsWith(d,"lo")
+      println("Vrai pour lo")
+   end if
+   if endsWith(d,"ello")==true
+      println("Vrai pour ello")
+   end if
+   if endsWith(d,"soir")==false
+      println("Faux pour soir")
+   end if
+   */
+   boolean r
+   java
+      r.val=op.val.endsWith(critere.val);
+   end java
+   return r
+end func
+
+
+func public string substring(string op,int debut,int fin)
+   /*!
+   Retourne la sous-chaine de op commencant a l'indice debut inclusif et
+   se terminant a l'indice fin exclusif
+   Attention :
+   utiliser un schema try...catch...end catch si un indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=subcbstring(d,1,3)
+   println(r)
+   */
+   string r
+   java
+      r.val=op.val.substring(debut.val,fin.val);
+   end java
+   return r
+end func
+
+func public string charAt(string op,int indice)
+   /*!
+   Retourne la sous-chaine de longueur 1 de op commencant a l'indice debut
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=charAt(d,1)
+   println(r)
+   */
+   string r
+   java
+      r.val=op.val.substring(indice.val,indice.val+1);
+   end java
+   return r
+end func
+
+func public string right(string op,int debut)
+   /*!
+   Retourne la sous-chaine de op commencant a l'indice debut
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=right(d,1)
+   println(r)
+   */
+   string r
+   java
+      r.val=op.val.substring(debut.val);
+   end java
+   return r
+end func
+
+func public string left(string op,int fin)
+   /*!
+   Retourne la sous-chaine de op commencant a l'indice 0 et se terminant
+   a 'indice exclusif fin
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   string d,r
+   d="Hello"
+   r=left(d,1)
+   println(r)
+   */
+   string r
+   java
+      r.val=op.val.substring(0,fin.val);
+   end java
+   return r
+end func
+
+func public int size(string op)
+   /*!
+   Retourne le nombre de caracteres de op commencant a l'indice 0
+   Exemple:
+   string d
+   int n
+   d="Hello"
+   n=size(d)
+   println(itos(n))
+   */
+   int r
+   java
+      r.val=op.val.length();
+   end java
+   return r
+end func
+
+func public int indexOf(string op,string critere)
+   /*!
+   Retourne l'indice dans op ou se trouve la premiere occurence de critere
+   Retourne -1 si critere ne se trouve pas dans op
+   Exemple:
+   cbstring d
+   int n
+   d="Hello"
+   n=indexOf(d,"lo")
+   println(itos(n))
+   n=indexOf(d,"zut")
+   println(itos(n))
+   */
+   int r
+   java
+      r.val=op.val.indexOf(critere.val);
+   end java
+   return r
+end func
+
+func public int lastIndexOf(string op,string critere)
+   /*!
+   Retourne l'indice dans op ou se trouve la derniere occurence de critere
+   Retourne -1 si critere ne se trouve pas dans op
+   Exemple:
+   string d
+   int n
+   d="Hello"
+   n=lastIndexOf(d,"l")
+   println(itos(n))
+   n=lastIndexOf(d,"zut")
+   println(itos(n))
+   */
+   int r
+   java
+      r.val=op.val.lastIndexOf(critere.val);
+   end java
+   return r
+end func
+
+func public string replace(string op,string marqueur,string remplacement)
+   /*!
+   Retourne une chaine a partir de op
+   ou toutes les occurences du parametre marqueur ont ete remplacees
+   par le parametre remplacement
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=replace(d,"lo","AZERTY")
+   println(r)
+   */
+   string r
+   int n,k
+   r=op
+   k=size(marqueur)
+   n=indexOf(r,marqueur)
+   while n!=-1
+      r=substring(r,0,n)+remplacement+substring(r,n+k,size(r))
+      n=indexOf(r,marqueur)
+   end while
+   return r
+end func
+
+func public string toLowerCase(string op)
+   /*!
+   Retourne une chaine a partir de op
+   ou toutes les lettres majuscules ont ete remplacees par
+   leur equivalent minuscule
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=toLowerCase(d)
+   println(r)
+   */
+   string r 
+   java
+      r.val=op.val.toLowerCase();
+   end java
+   return r
+end func
+
+func public string toUpperCase(string op)
+   /*!
+   Retourne une chaine a partir de op
+   ou toutes les lettres minuscules ont ete remplacees par
+   leur equivalent majuscule
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=toUpperCase(d)
+   println(r)
+   */
+   string r
+   java
+      r.val=op.val.toUpperCase();
+   end java
+   return r
+end func
+//1
+
+func public boolean isDigit(string op)
+   /*!
+   Retourne vrai si et seulement si op ne contient que des chiffres
+   Exemple:
+   string d
+   d="2012"
+   if isDigit(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+   */
+   int i,n
+   string c
+   n=size(op)
+   for i while i<n
+      c=substring(op,i,i+1)
+      if c<"0" or c>"9"
+         return false
+      end if
+   end for
+   return true
+end func
+
+func public boolean isAscii(string op)
+   /*!
+   Retourne vrai si et seulement si op ne contient que des
+   caracteres >= a l'espace
+   */
+   int i,n
+   string c
+   n=size(op)
+   for i while i<n
+      c=substring(op,i,i+1)
+      if c<" "
+         return false
+      end if
+   end for
+   return true
+end func
+
+func public boolean isMinusLetter(string op)
+   /*!
+   Retourne vrai si et seulement si op ne contient que des lettres minuscules
+   Exemple:
+   cbstring d
+   d="abCd"
+   if isMinusLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+   */
+   int i,n
+   string c
+   n=size(op)
+   for i while i<n
+      c=substring(op,i,i+1)
+      if c<"a" or c>"z"
+         return false
+      end if
+   end for
+   return true
+end func
+
+func public boolean isMajusLetter(string op)
+   /*!
+   Retourne vrai si et seulement si op ne contient que des lettres majuscules
+   Exemple:
+   string d
+   d="abCd"
+   if isMajusLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+   */
+   int i,n
+   string c
+   n=size(op)
+   for i while i<n
+      c=substring(op,i,i+1)
+      if c<"A" or c>"Z"
+         return false
+      end if
+   end for
+   return true
+end func
+//1
+
+func public boolean isLetter(string op)
+   /*!
+   Retourne vrai si et seulement si op ne contient que des lettres
+   Exemple:
+   string d
+   d="abCd"
+   if isLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+   */
+   int i,n
+   string c
+   n=size(op)
+   for i while i<n
+      c=substring(op,i,i+1)
+      if isMinusLetter(c)==false and isMajusLetter(c)==false
+         return false
+      end if
+   end for
+   return true
+end func
+
+func public string deleteLastChar(string op)
+ string r
+ int n
+ r=op
+ n=size(r)
+ if n>0
+   r=left(r,n-1)
+ end if
+ return r
+end func

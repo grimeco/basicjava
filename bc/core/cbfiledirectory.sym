@@ -1,0 +1,100 @@
+mkdir	cbfiledirectory		mkdir;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+createDirectories	cbfiledirectory		createDirectories;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+tw	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+i	cbfiledirectory	cbint			V	S	 	0	0	false	false
+n	cbfiledirectory	cbint			V	S	 	0	0	false	false
+rep	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+systemOpen	cbfiledirectory		systemOpen;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+renameFile	cbfiledirectory		renameFile;Scbstring;Scbstring;	public static 	P	 	 	2	0	true	true
+ancienNom	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+nouveauNom	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+existsFile	cbfiledirectory	cbboolean	existsFile;Scbstring;	public static 	F	S	 	1	0	true	false
+nomFichier	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+r	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+sizeFile	cbfiledirectory	cblong	sizeFile;Scbstring;	public static 	F	S	 	1	0	true	false
+nomFichier	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+r	cbfiledirectory	cblong			V	S	 	0	0	false	false
+deleteFile	cbfiledirectory		deleteFile;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+copyFile	cbfiledirectory		copyFile;Scbstring;Scbstring;	public static 	P	 	 	2	0	true	true
+cheminDepart	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+cheminArrivee	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+createFile	cbfiledirectory		createFile;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+createTmpFile	cbfiledirectory		createTmpFile;Scbstring;	public static 	P	 	 	1	0	true	true
+nomFichier	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+lastModified	cbfiledirectory	cblong	lastModified;Scbstring;	public static 	F	S	 	1	0	true	false
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+r	cbfiledirectory	cblong			V	S	 	0	0	false	false
+lastModifiedDateFile	cbfiledirectory	cbstring	lastModifiedDateFile;Scbstring;	public static 	F	S	 	1	0	true	false
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+r	cbfiledirectory	cbint			V	T	 	0	0	false	false
+superCopyFile	cbfiledirectory	cbint	superCopyFile;Scbstring;Scbstring;Scbboolean;	public static 	F	S	 	3	0	true	true
+cheminDepart	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+cheminArrivee	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+bEcrase	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+bCopy	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+getCurrentDirectory	cbfiledirectory	cbstring	getCurrentDirectory;	public static 	F	S	 	0	0	true	false
+r	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+getDirectory	cbfiledirectory	cbstring	getDirectory;Scbstring;	public static 	F	T	 	1	0	true	true
+nomDirectory	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+tListe	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+i	cbfiledirectory	cbint			V	S	 	0	0	false	false
+n	cbfiledirectory	cbint			V	S	 	0	0	false	false
+getSuffixeDirectory	cbfiledirectory	cbstring	getSuffixeDirectory;Scbstring;Scbstring;	public static 	F	T	 	2	0	true	true
+nomDirectory	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+suffixe	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+t	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+i	cbfiledirectory	cbint			V	S	 	0	0	false	false
+n	cbfiledirectory	cbint			V	S	 	0	0	false	false
+v	cbfiledirectory	cbstringvector			V	S	 	0	0	false	false
+wsuffixe	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+listOneDirectory	cbfiledirectory		listOneDirectory;Scbstring;Scbstringvector;Scbstringvector;Scbboolean;Tcbstring;	public static 	P	 	 	5	0	true	false
+rep	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+vrep	cbfiledirectory	cbstringvector			V	S	 	0	0	false	false
+v	cbfiledirectory	cbstringvector			V	S	 	0	0	false	false
+bProfondeur	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+tSuffixe	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+i	cbfiledirectory	cbint			V	S	 	0	0	false	false
+j	cbfiledirectory	cbint			V	S	 	0	0	false	false
+n	cbfiledirectory	cbint			V	S	 	0	0	false	false
+k	cbfiledirectory	cbint			V	S	 	0	0	false	false
+w	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+bok	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+bdir	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+listeProfondeurFichiers	cbfiledirectory	cbstring	listeProfondeurFichiers;Scbstring;Scbboolean;Scbstring;	public static 	F	T	 	3	0	true	false
+rep	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+bProfondeur	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+filtre	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+vrep	cbfiledirectory	cbstringvector			V	S	 	0	0	false	false
+v	cbfiledirectory	cbstringvector			V	S	 	0	0	false	false
+tSuffixe	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+getRecurseDirectory	cbfiledirectory	cbstring	getRecurseDirectory;Scbstring;Scbstring;	public static 	F	T	 	2	0	true	false
+rep	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+filtre	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+cutCopyFile	cbfiledirectory	cbboolean	cutCopyFile;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	true
+cheminDepart	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+cheminArrivee	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+b	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+isDirectory	cbfiledirectory	cbboolean	isDirectory;Scbstring;	public static 	F	S	 	1	0	true	false
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+b	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+deleteDirectory	cbfiledirectory		deleteDirectory;Scbstring;	public static 	P	 	 	1	0	true	true
+chemin	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+superCopyDirectory	cbfiledirectory	cbint	superCopyDirectory;Scbstring;Scbstring;Scbboolean;Scbboolean;	public static 	F	S	 	4	0	true	true
+cheminDepart	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+cheminArrivee	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+bEcrase	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+bTrace	cbfiledirectory	cbboolean			V	S	 	0	0	false	false
+t	cbfiledirectory	cbstring			V	T	 	0	0	false	false
+repDest	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+nom	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+repdest	cbfiledirectory	cbstring			V	S	 	0	0	false	false
+i	cbfiledirectory	cbint			V	S	 	0	0	false	false
+n	cbfiledirectory	cbint			V	S	 	0	0	false	false
+k	cbfiledirectory	cbint			V	S	 	0	0	false	false
+nbCopies	cbfiledirectory	cbint			V	S	 	0	0	false	false
+nb	cbfiledirectory	cbint			V	S	 	0	0	false	false

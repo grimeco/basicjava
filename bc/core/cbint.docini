@@ -1,0 +1,26 @@
+[int]
+affectation=int = int
+operateur=boolean ( int <  int )
+operateur=boolean ( int <= int )
+operateur=boolean ( int >  int )
+operateur=boolean ( int >= int )
+operateur=boolean ( int ==  int )
+operateur=boolean ( int != int )
+operateur=int ( int +  int )
+operateur=int ( int - int )
+operateur=int ( int *  int )
+operateur=int ( int /  int )
+operateur=int ( int % int )
+operateur=int ( - int )
+proto=proc inc(int op)
+proto=$LAjout 1 au parametre op$Lcorrespond a l'operateur classique ++
+proto=func int abs(int op)
+proto=$LRetourne la valeur absolue
+proto=func int intRandom(int mini,int maxi)
+proto=$L   Retourne un nombre entier au hasard compris dans l'intervalle$L   [mini,maxi]$L  
+proto=func int shl(int op,int decal)
+proto=$LRetourne la valeur de op decalee a gauche de la valeur de decal$Lcorrespond a l'operateur classique <<
+proto=func int orbin(int op1,int op2)
+proto=$LEffectue un "ou" bit a bit des deux operandes$LCorrespond a l'operateur classique |
+proto=func int andbin(int op1,int op2)
+proto=$LEffectue un "et" bit a bit des deux operandes$LCorrespond a l'operateur classique &

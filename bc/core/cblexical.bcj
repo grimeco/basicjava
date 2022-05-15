@@ -1,0 +1,305 @@
+/*!
+Types lexicaux:
+IDENTIFICATEUR "I"
+ENTIER         "E"
+REEL           "R"
+LITTERAL       "L"
+SYMBOLE        "S"
+COMMENTAIRE    "/"
+BOOLEEN        "B"
+*/
+string IDENTIFICATEUR,ENTIER,REEL,LITTERAL,SYMBOLE,COMMENTAIRE,BOOLEEN
+IDENTIFICATEUR="I"
+ENTIER="E"
+REEL="R"//hello
+LITTERAL="L"
+SYMBOLE="S"
+COMMENTAIRE="/"
+BOOLEEN="B"
+//-------------------------------------
+string d,u
+string c,typus
+int id,nd,numligne
+string nomFichier
+boolean noComment
+noComment=true
+//-------------------------------------
+
+proc static demarrerLexico(lexical lex,string data)
+   /*!
+   Les commentaires sont elimines
+   */
+   lex.d=data+" "
+   lex.c=" "
+   lex.id=0
+   lex.numligne=1
+   lex.nd=size(lex.d)
+end proc
+
+proc public start (lexical lex,string data,boolean noComment)
+   /*!
+   si noComment vaut true, les commentaires sont elimines
+   */
+   lex.noComment=noComment
+   demarrerLexico(lex,data)
+end proc
+
+proc static erreur(lexical lex,string msg)exception
+   throwex("Erreur a la ligne :"+itos(lex.numligne)+": fichier ["+lex.nomFichier+"]\n"+msg)
+end proc
+
+proc static getc(lexical lex)
+   if lex.id>=lex.nd
+      lex.c=""
+      return
+   end if
+   lex.c=substring(lex.d,lex.id,lex.id+1)
+   lex.id=lex.id+1
+   if lex.c=="\n"
+      lex.numligne=lex.numligne+1
+   end if
+end proc
+
+proc static lirc(lexical lex)
+   getc(lex)
+   if lex.c==""
+      return
+   end if
+   if lex.c<" "
+      lex.c=" "
+   end if
+end proc
+
+proc static rangc(lexical lex)
+   lex.u=lex.u+lex.c
+   lirc(lex)
+end proc
+
+proc static rangcar(lexical lex)exception
+   if lex.c=="\\"
+      rangc(lex)
+      if indexOf("\\\"'ntbrf",lex.c)!=-1
+         rangc(lex)
+      else
+         erreur(lex,"Caractere incorrect apres \\")
+      end if
+   else
+      rangc(lex)
+   end if
+end proc
+
+func static boolean eliminerEspace(lexical lex)
+   if lex.c!=" "
+      return false
+   end if
+   while lex.c==" "
+      lirc(lex)
+   end while
+   return true
+end func
+/*! Caracteres speciaux
+\n  newline         0A
+\t  tabulation      09
+\b  backspace       08
+\r  carriage return 0D
+\f  form feed       0C
+\\  anti slash      5C
+\'  simple quote    27
+\"  double quote    22
+*/
+
+func static boolean eliminerCommentaire(lexical lex)exception
+   boolean bcontinue
+   if lex.c!="/"
+      return false
+   end if
+   switch
+   case substring(lex.d,lex.id,lex.id+1)=="*"
+      getc(lex)
+      lex.u="/*"
+      getc(lex)
+      bcontinue=true
+      while bcontinue
+         while lex.c!="*" and lex.c!=""
+            if lex.c=="\r"
+               lex.c=" "
+            end if
+            lex.u=lex.u+lex.c
+            getc(lex)
+         end while
+         if lex.c==""
+            erreur(lex,"commentaire /* non termine")
+         end if
+         if substring(lex.d,lex.id,lex.id+1)!="/"
+            if lex.c=="\r"
+               lex.c=" "
+            end if
+            lex.u=lex.u+lex.c
+            getc(lex)
+         else
+            bcontinue=false
+         end if
+      end while
+      lirc(lex)
+      lirc(lex)
+      lex.u=lex.u+"*/"
+      return true
+   case substring(lex.d,lex.id,lex.id+1)=="/"
+      lex.u="/"
+      getc(lex)
+      while lex.c!="\n" and lex.c!=""
+         lex.u=lex.u+lex.c
+         getc(lex)
+      end while
+      lirc(lex)
+      return true
+   default
+      return false
+   end switch
+end func
+
+func public string us(lexical lex)exception
+   /*!
+   Retourne le mot suivant
+   Retourne "" si on est arrive a la fin
+   */
+   string w,carfin
+   if lex.noComment
+      while eliminerEspace(lex)or eliminerCommentaire(lex)
+      end while
+   else
+      while eliminerEspace(lex)
+      end while
+      if eliminerCommentaire(lex)
+         lex.typus=lex.COMMENTAIRE
+         return lex.u
+      end if
+   end if
+   if lex.c==""
+      return ""
+   end if
+   if isLetter(lex.c) or lex.c=="_"
+      lex.typus=lex.IDENTIFICATEUR
+   else
+      if isDigit(lex.c)
+         lex.typus=lex.ENTIER
+      else
+         if lex.c=="\"" or lex.c=="'"
+            lex.typus=lex.LITTERAL
+         else
+            lex.typus=lex.SYMBOLE
+         end if
+      end if
+   end if
+   carfin=lex.c
+   lex.u=""
+   rangc(lex)
+   switch
+   case lex.typus==lex.IDENTIFICATEUR
+      while isLetter(lex.c) or isDigit(lex.c) or lex.c=="_"
+         rangc(lex)
+      end while
+      w=toLowerCase(lex.u)
+      if w=="true" or w=="false"
+         lex.u=w
+         lex.typus=lex.BOOLEEN
+      end if
+   case lex.typus==lex.ENTIER
+      if lex.u=="0"
+         if lex.c=="x" or lex.c=="X"
+            rangc(lex)
+            while indexOf("0123456789abcdefABCDEF",lex.c)!=-1
+               rangc(lex)
+            end while
+            return lex.u
+         end if
+      end if
+      while isDigit(lex.c)
+         rangc(lex)
+      end while
+      if lex.c=="."
+         lex.typus=lex.REEL
+         rangc(lex)
+         while isDigit(lex.c)
+            rangc(lex)
+         end while
+         if lex.c=="e" or lex.c=="E"
+            rangc(lex)
+            if lex.c=="-"
+               rangc(lex)
+            end if
+            while isDigit(lex.c)
+               rangc(lex)
+            end while
+         end if
+      end if
+   case lex.typus==lex.LITTERAL
+      while lex.c!=carfin and lex.c!=""
+         rangcar(lex)
+      end while
+      if lex.c==""
+         erreur(lex,"notation de litteral non terminee par un guillemet ou une quote")
+      end if
+      rangc(lex)
+   case lex.typus==lex.SYMBOLE
+      if indexOf("<>=!+-*/%&^",substring(lex.u,0,1))!=-1 and lex.c=="="
+         rangc(lex)
+      else
+         if substring(lex.u,0,1)=="&" and lex.c=="&"
+            rangc(lex)
+         end if
+         if substring(lex.u,0,1)=="|" and lex.c=="|"
+            rangc(lex)
+         end if
+         if substring(lex.u,0,1)=="<" and lex.c=="<"
+            rangc(lex)
+            if lex.c=="="
+               rangc(lex)
+            end if
+         end if
+         if substring(lex.u,0,1)==">" and lex.c==">"
+            rangc(lex)
+            if lex.c=="="
+               rangc(lex)
+            else
+               if lex.c==">"
+                  rangc(lex)
+                  if lex.c=="="
+                     rangc(lex)
+                  end if
+               end if
+            end if
+         end if
+         if substring(lex.u,0,1)=="+" and lex.c=="+"
+            rangc(lex)
+         end if
+         if substring(lex.u,0,1)=="-" and lex.c=="-"
+            rangc(lex)
+         end if
+      end if
+   default
+      erreur(lex,"Contacter votre distributeur, typus incorrect")
+   end switch
+   return lex.u
+end func
+
+func public string getType(lexical lex)
+   /*!
+   Retourne le type du mot courant
+   */
+   return lex.typus
+end func
+
+func public int getNum(lexical lex)
+   /*!
+   Retourne le numero de ligne du mot courant
+   */
+   return lex.numligne
+end func
+
+func public int getPos(lexical lex)
+   /*!
+   Retourne l'indice courant dans la chaine
+   */
+   return lex.id
+end func

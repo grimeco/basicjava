@@ -1,0 +1,9 @@
+[arraytools]
+proto=proc sort(string[] t)
+proto=$L   Tri le tableau par ordre croissant par la methode des bulles (Bubble Sort)$L  
+proto=proc print(string[] t)
+proto=$L   Affiche dans la fenetre d'execution un tableau a de chaines a 1 dimension$L  
+proto=proc printArray(string[][] t)
+proto=$L   Affiche dans la fenetre d'execution un tableau de chaines a 2 dimensions$L  
+proto=proc printIntArray(int[][] t)
+proto=$L   Affiche dans la fenetre d'execution un tableau d'entiers a 2 dimensions$L  

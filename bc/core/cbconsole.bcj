@@ -1,0 +1,52 @@
+import java.io.*;
+java
+  static Console console=System.console();
+end java
+
+proc public print(string d)
+/*!
+Affiche dans la console la chaine d sans passer a la ligne
+*/
+   java
+      console.printf("%s",d.val);
+      console.flush();
+   end java
+end proc
+
+proc public println(string d)
+/*!
+Affiche dans la console la chaine d et passe a la ligne
+*/
+   print(d)
+   print("\n")
+end proc
+
+func public string readLine()
+/*!
+Lit une ligne a partir de la console
+*/
+   string r
+   java
+      r.val=console.readLine();
+   end java
+   return r
+end func
+
+func public string readPassword()
+/*!
+Lit une ligne a partir de la console sans afficher les caracteres tapes
+*/
+   string r
+   int i,n   
+   java
+      char[] p;
+      p=console.readPassword();
+      n.val=p.length;  
+   end java
+   for i while i<n
+     java
+        r.val+=p[i.val];
+     end java
+   end for
+   return r
+end func

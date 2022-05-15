@@ -1,0 +1,106 @@
+import java.util.*;
+java   
+   HashMap<String,String> val=new HashMap<String,String>();
+end java
+
+/*!
+Le type <b>stringhashmap</b> permet de constituer une hash de couples (cle,valeur)
+de string dont on ne connait pas a priori le nombre d'elements
+*/
+
+func public int size(stringhashmap v)
+   /*!
+   Retourne le nombre d'elements de la hashmap
+   */
+   int r
+   java
+      r.val=v.val.size();
+   end java
+   return r
+end func
+
+proc public removeAll(stringhashmap v)
+   /*!
+   Supprime tous les elements de la hashmap
+   */
+   java
+      v.val.clear();
+   end java
+end proc
+
+func public string get(stringhashmap v,string cle)
+   /*!
+   Retourne l'element situe de valeur de cle
+   Retourne ??? si non trouve
+   */
+   string r
+   java
+      r.val=v.val.get(cle.val);
+      if(r.val==null)
+      {
+         r.val="???";
+      }
+   end java
+   return r
+end func
+
+proc public remove(stringhashmap v,string cle)
+   /*!
+   Supprime l'element de valeur de cle
+   */
+   java
+      v.val.remove(cle.val);
+   end java
+end proc
+
+proc public put(stringhashmap v,string cle,string valeur)
+   /*!
+   Modifie le i-ieme élement
+   */
+   java
+      v.val.put(cle.val,valeur.val);
+   end java
+end proc
+
+proc public putArray(stringhashmap v,string[]tCle,string[]tVal)
+   int i,n
+   n=length(tCle)
+   for i while i<n
+      put(v,tCle[i],tVal[i])
+   end for
+end proc
+
+func public string[]getKeys(stringhashmap v)
+   string[]t
+   int i,n
+   string w
+   java
+      Set<String> cles=v.val.keySet();
+      Iterator it=cles.iterator();
+      n.val=cles.size();
+   end java
+   dim t[n]
+   for i while i<n
+      java
+         w.val=(String)it.next();
+      end java
+      t[i]=w
+   end for
+   return t
+end func
+
+func public string[][]getHashmap(stringhashmap v)
+   string[][]t
+   string[]tCles
+   string cle
+   int i,n
+   tCles=getKeys(v)
+   n=length(tCles)
+   dim t[n][2]
+   for i while i<n
+      cle=tCles[i]
+      t[i][0]=cle
+      t[i][1]=get(v,tCles[i])
+   end for
+   return t
+end func

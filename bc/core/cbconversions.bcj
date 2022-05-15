@@ -1,0 +1,457 @@
+import java.util.*;
+import java.text.*;
+import java.math.*;
+
+func public string btos(boolean op)
+   /*!
+   Convertit un booleen en chaine de caracteres true ou false
+   */
+   string r
+   java
+      r.val=""+op.val;
+   end java
+   return r
+end func
+
+func public boolean stob(string op)
+   return op=="true"
+end func
+
+func public string stringToHex(string input)
+   /*!
+   Retourne une chaine ou chaque caractere de la chaine Ascii input
+   a ete converti en deux caracteres hexadecimaux
+   */
+   string r
+   java
+      char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+      byte[]buf=input.val.getBytes();
+      char[] chars = new char[2 * buf.length];
+      for (int i = 0; i < buf.length; ++i)
+      {
+         chars[2 * i] = HEX_CHARS[(buf[i] & 0xF0) >>> 4];
+         chars[2 * i + 1] = HEX_CHARS[buf[i] & 0x0F];
+      }
+      r.val=new String(chars);
+   end java
+   return r
+end func
+
+func public string hexToString(string txtInHex)
+   /*!
+   Retourne une chaine ou chaque doublet de caracteres hexadecimaux
+   de la chaine txtInHex a ete converti en un caractere Ascii
+   */
+   string r
+   int i,n
+   r=""
+   n=size(txtInHex)
+   i=0
+   while i<n
+      java
+         r.val+=(char)Integer.parseInt(txtInHex.val.substring(i.val,i.val+2),16);
+      end java
+      i=i+2
+   end while
+   return r
+end func
+
+func public string itos(int op)
+   /*!
+   Convertit un entier en chaine de caracteres
+   */
+   string r
+   java
+      r.val=""+op.val;
+   end java
+   return r
+end func
+
+func public double ltod(long d)
+/*!
+Convertit un long en double
+*/
+   double r
+   java
+      r.val=new Double(""+d.val);
+   end java
+   return r
+end func
+
+func public int htoi(string op)
+   /*!
+   Convertit un chaine de caracteres hexa en entier
+   */
+   int r
+   java
+      r.val=Integer.parseInt(op.val,16);
+   end java
+   return r
+end func
+
+func public string itoh(int op)
+   /*!
+   Convertit un entier en chaine de caracteres hexa
+   */
+   string r
+   java
+      r.val=Integer.toHexString(op.val);
+   end java
+   return r
+end func
+
+func public string dtos(double op)
+   /*!
+   Convertit un nombre reel en chaine de caracteres
+   */
+   string d
+   java
+      d.val=""+op.val;
+   end java
+   return replace(d,".",",")
+end func
+
+func public int bytoi(byte op)
+   /*!
+   Convertit un byte en int
+   le byte est considere comme non signe
+   */
+   int r
+   java
+      r.val=op.val & 0xff;
+   end java
+   return r
+end func
+
+func public string ltos(long op)
+   /*!
+   Convertit un long en chaine de caracteres
+   */
+   string d
+   java
+      d.val=""+op.val;
+   end java
+   return d
+end func
+
+func public long stol(string op)
+/*!
+Convertit une chaine en long
+*/
+   long r
+   java
+      r.val=Long.parseLong(op.val);
+   end java
+   return r
+end func
+
+func public long itol(int op)
+   /*!
+   Convertit un int en long
+   */
+   long r 
+   java
+      r.val=op.val;
+   end java
+   return r
+end func
+
+func public double itod(int op)
+   /*!
+   Convertit un int en double
+   */
+   double r
+   java
+      r.val=(double)op.val;
+   end java
+   return r
+end func
+
+func public int stoi(string op)
+   /*!
+   Convertit un chaine de caracteres supposee contenir une
+   notation d'entier en entier
+   Si la chaine ne contient pas une notation d'entier,
+   la valeur 0 est retournee
+   */
+   string d
+   int r
+   d=trim(op)
+   try
+      java
+          r.val=Integer.parseInt(d.val);
+      end java
+   catch
+      r=0
+   end catch 
+   return r
+end func
+
+func public double stod(string d)
+   /*!
+   Convertit un chaine de caracteres en double
+   */
+   string op
+   double r
+   op=replace(trim(d),",",".")
+   try
+      java
+         r.val=Double.parseDouble(op.val);
+      end java
+   catch
+      r=0.0
+   end catch
+   return r
+end func
+
+func public string padIntLeft(int val,int max,string car)
+   /*!
+   retourne une chaine comportant max caracteres cadre a gauche
+   par la chaine car
+   Exemple:
+   println(padIntLeft(2012,20,"*"))
+   */
+   string r
+   r=itos(val)
+   while size(r)<max
+      r=car+r
+   end while
+   return r
+end func
+
+func public string padIntZeroLeft(int val,int max)
+   /*!
+   Retourne une chaine ou la valeur val a ete completee a gauche par des zeros
+   */
+   return padIntLeft(val,max,"0")
+end func
+
+func public string[]getWords(string donnee,string separateurs)
+   /*!
+   Retourne les mots d'une chaine donnee en utilisant LES separateurs specifies
+   */
+   string[] t
+   int i,n
+   string w
+   java
+      StringTokenizer stk;
+      stk=new StringTokenizer(donnee.val,separateurs.val);
+      n.val=stk.countTokens();
+   end java
+   dim t[n]
+   for i while i<n
+      java
+         w.val=stk.nextToken();
+      end java
+      t[i]=w
+   end for
+   return t
+end func
+
+func public string[] vtos(stringvector v)
+   /*!
+   Retourne un tableau de string correspondant au vecteur
+   */
+   int i,n
+   string[] t
+   n=size(v)
+   dim t[n]
+   for i while i<n
+      t[i]=elementAt(v,i)
+   end for
+   return t
+end func
+
+func public int dtoi(double d)
+   /*!
+   Retourne la partie entiere d'un nombre reel
+   */
+   int r
+   java
+      r.val=(int)d.val;
+   end java
+   return r
+end func
+
+func public double arrondi(double d)
+   /*!
+   Retourne le nombre reel arrondi en ajoutant 0.5
+   */
+   double r
+   r=d*100.0
+   java
+      r.val=Math.floor(r.val+0.5);
+   end java
+   return r/100.0
+end func
+
+func public string arrondiString(string d)
+   /*!
+   Si la chaine d contient un nombre reel
+   retourne l'arrondi par ajout de 0.5
+   Sinon
+   retourne la chaine initiale d
+   Fin si
+   */
+   string op
+   double x
+   try
+      op=replace(trim(d),",",".")
+      java
+         x.val=Double.parseDouble(op.val);
+      end java
+      return dtos(arrondi(x))
+   catch
+      return d
+   end catch
+end func
+
+func public string fdtos(string pattern, double value)
+   /*!
+   Pattern:
+   [A][Z]000000[.000]
+   Le symbole A est facultatif (si utilise, fait un arrondi)
+   Le symbole Z est facultatif (si utilise, remplace les zeros a gauche par des espaces)
+   Le symbole 0 represente une position a afficher
+   Exemple:
+   double x
+   x=3.141
+   println(fdtos("Z0000000000",x))
+   println(fdtos("0000000000",x))
+   println(fdtos("Z00000000.00",x))
+   println(fdtos("00000000.00",x))
+   println(fdtos("AZ0000000000",x))
+   println(fdtos("A0000000000",x))
+   println(fdtos("AZ00000000.00",x))
+   println(fdtos("A00000000.00",x))
+   x=3.145
+   println(fdtos("Z0000000000",x))
+   println(fdtos("0000000000",x))
+   println(fdtos("Z00000000.00",x))
+   println(fdtos("00000000.00",x))
+   println(fdtos("AZ0000000000",x))
+   println(fdtos("A0000000000",x))
+   println(fdtos("AZ00000000.00",x))
+   println(fdtos("A00000000.00",x))
+   */
+   string c,p,r,rw
+   int n,i,nbZ
+   double v
+   boolean bZ,bMoins,bCopie
+   if startsWith(pattern,"A")
+      v=arrondi(value)
+      p=right(pattern,1)
+   else
+      v=value
+      p=pattern
+   end if
+   if startsWith(p,"Z")
+      bZ=true
+      p=right(p,1)
+      n=indexOf(p,".")
+      if n!=-1
+         nbZ=n-1
+      else
+         nbZ=size(p)-1
+      end if
+   else
+      bZ=false
+   end if
+   p=replace(p,"%","!")
+   p=replace(p,"!","'%'")
+   java
+      NumberFormat nf=NumberFormat.getNumberInstance(new Locale("fr", "FR"));
+      // NumberFormat nf=NumberFormat.getInstance(Locale.US);
+      DecimalFormat df=(DecimalFormat)nf;
+      df.applyPattern(p.val);
+      df.setRoundingMode(RoundingMode.DOWN);
+      r.val=df.format(v.val);
+   end java
+   bMoins=charAt(r,0)=="-"
+   if bMoins
+      r=" "+right(r,1)
+   end if
+   if bZ
+      bCopie=true
+      rw=""
+      n=size(r)
+      for i while i<n
+         c=charAt(r,i)
+         if i<=nbZ
+            if charAt(r,i)=="0" and bCopie
+               rw=rw+" "
+            else
+               if isDigit(charAt(r,i))
+                  bCopie=false
+               end if
+               rw=rw+c
+            end if
+         else
+            rw=rw+c
+         end if
+      end for
+      r=rw
+   end if
+   if bMoins
+      n=lastIndexOf(r," ")
+      switch
+      case n==-1
+         r="-"+r
+      case n==0
+         r="-"+right(r,n+1)
+      default
+         r=left(r,n-1)+"-"+right(r,n+1)
+      end switch
+   end if
+   r=replace(r," ,","0,")
+   return r
+end func
+
+func public string normeDouble(double d, int max)
+   /*!
+   Conserve 2 chifres apres la virgule et retourne une chaine contenant max caracteres
+   */
+   string r
+   int n
+   r=fdtos("0.00",d)
+   while size(r)<max
+      r=" "+r
+   end while
+   r=replace(r,".", ",")
+   return r
+end func
+
+func public string formatDouble(double d, int maxi)
+   /*!
+   fait un arrondi puis appel normeDouble
+   */
+   return normeDouble(arrondi(d), maxi)
+end func
+
+func public int[]initIntArraySep(string valeurs,string separateur)
+   /*!
+   Permet d'initialiser un tableau d'entiers
+   Les valeurs doivent etre separees par le separateur
+   Exemple:
+   int[]t
+   t=initIntArraySep("72;74;45;200;800",";")
+   */
+   string[]tw
+   int i,n
+   int[]t
+   tw=getWords(valeurs,separateur)
+   n=length(tw)
+   dim t[n]
+   for i while i<n
+      t[i]=stoi(tw[i])
+   end for
+   return t
+end func
+
+func public int[]initIntArray(string valeurs)
+   /*!
+   Les valeurs doivent etre separees par des virgules
+   */
+   return initIntArraySep(valeurs,",")
+end func
+

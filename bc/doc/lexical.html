@@ -1,0 +1,62 @@
+<html><body><a name="tablematieres"></a><h1><center>lexical</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#getNum">getNum</a></td>
+</tr><tr>
+<td><a href="#getPos">getPos</a></td>
+</tr><tr>
+<td><a href="#getType">getType</a></td>
+</tr><tr>
+<td><a href="#start">start</a></td>
+</tr><tr>
+<td><a href="#us">us</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>lexical</b> est implemente dans le fichier source <b>bc/core/cblexical.bcj</b>.<br>
+<b>
+Types lexicaux:
+IDENTIFICATEUR "I"
+ENTIER         "E"
+REEL           "R"
+LITTERAL       "L"
+SYMBOLE        "S"
+COMMENTAIRE    "/"
+BOOLEEN        "B"</b>
+<b>
+   Les commentaires sont elimines
+</b>
+<hr><a name="start"></a><b>proc start(lexical lex,string data,boolean noComment)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   si noComment vaut true, les commentaires sont elimines
+</b>
+<b> Caracteres speciaux
+\n  newline         0A
+\t  tabulation      09
+\b  backspace       08
+\r  carriage return 0D
+\f  form feed       0C
+\\  anti slash      5C
+\'  simple quote    27
+\"  double quote    22</b>
+<hr><a name="us"></a><b>func string us(lexical lex)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le mot suivant
+   Retourne "" si on est arrive a la fin
+</b>
+<hr><a name="getType"></a><b>func string getType(lexical lex)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le type du mot courant
+</b>
+<hr><a name="getNum"></a><b>func int getNum(lexical lex)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le numero de ligne du mot courant
+</b>
+<hr><a name="getPos"></a><b>func int getPos(lexical lex)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne l'indice courant dans la chaine
+</b>
+</pre></body></html>

@@ -1,0 +1,50 @@
+nomFichier	cbtextfile	cbstring			V	S	A	0	0	true	false
+open	cbtextfile		open;Scbtextfile;Scbstring;Scbint;	public static 	P	 	 	3	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+nom	cbtextfile	cbstring			V	S	 	0	0	false	false
+mode	cbtextfile	cbint			V	S	 	0	0	false	false
+setTmp	cbtextfile		setTmp;Scbstring;	public static 	P	 	 	1	0	true	true
+nomRepTmp	cbtextfile	cbstring			V	S	 	0	0	false	false
+openTmp	cbtextfile	cbstring	openTmp;Scbtextfile;Scbstring;Scbint;	public static 	F	S	 	3	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+nom	cbtextfile	cbstring			V	S	 	0	0	false	false
+mode	cbtextfile	cbint			V	S	 	0	0	false	false
+r	cbtextfile	cbstring			V	S	 	0	0	false	false
+readLine	cbtextfile	cbboolean	readLine;Scbtextfile;Scbstring;	public static 	F	S	 	2	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+ligne	cbtextfile	cbstring			V	S	 	0	0	false	false
+r	cbtextfile	cbboolean			V	S	 	0	0	false	false
+close	cbtextfile		close;Scbtextfile;	public static 	P	 	 	1	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+print	cbtextfile		print;Scbtextfile;Scbstring;	public static 	P	 	 	2	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+d	cbtextfile	cbstring			V	S	 	0	0	false	false
+println	cbtextfile		println;Scbtextfile;Scbstring;	public static 	P	 	 	2	0	true	true
+fichier	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+d	cbtextfile	cbstring			V	S	 	0	0	false	false
+getLineNumber	cbtextfile	cbint	getLineNumber;Scbstring;	public static 	F	S	 	1	0	true	true
+nomFichier	cbtextfile	cbstring			V	S	 	0	0	false	false
+fichIn	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+n	cbtextfile	cbint			V	S	 	0	0	false	false
+b	cbtextfile	cbboolean			V	S	 	0	0	false	false
+ligne	cbtextfile	cbstring			V	S	 	0	0	false	false
+getFileArray	cbtextfile	cbstring	getFileArray;Scbstring;	public static 	F	T	 	1	0	true	true
+nomFichier	cbtextfile	cbstring			V	S	 	0	0	false	false
+t	cbtextfile	cbstring			V	T	 	0	0	false	false
+n	cbtextfile	cbint			V	S	 	0	0	false	false
+i	cbtextfile	cbint			V	S	 	0	0	false	false
+b	cbtextfile	cbboolean			V	S	 	0	0	false	false
+fichIn	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+putFileArray	cbtextfile		putFileArray;Scbstring;Tcbstring;	public static 	P	 	 	2	0	true	true
+nomFichier	cbtextfile	cbstring			V	S	 	0	0	false	false
+t	cbtextfile	cbstring			V	T	 	0	0	false	false
+n	cbtextfile	cbint			V	S	 	0	0	false	false
+i	cbtextfile	cbint			V	S	 	0	0	false	false
+fichOut	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+putFileString	cbtextfile		putFileString;Scbstring;Scbstring;	public static 	P	 	 	2	0	true	true
+nomFichier	cbtextfile	cbstring			V	S	 	0	0	false	false
+data	cbtextfile	cbstring			V	S	 	0	0	false	false
+fichOut	cbtextfile	cbtextfile			V	S	 	0	0	false	false
+getFileString	cbtextfile	cbstring	getFileString;Scbstring;	public static 	F	S	 	1	0	true	true
+nomFichier	cbtextfile	cbstring			V	S	 	0	0	false	false
+r	cbtextfile	cbstring			V	S	 	0	0	false	false

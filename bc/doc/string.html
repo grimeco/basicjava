@@ -1,0 +1,297 @@
+<html><body><a name="tablematieres"></a><h1><center>string</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#charAt">charAt</a></td>
+</tr><tr>
+<td><a href="#deleteLastChar">deleteLastChar</a></td>
+</tr><tr>
+<td><a href="#endsWith">endsWith</a></td>
+</tr><tr>
+<td><a href="#indexOf">indexOf</a></td>
+</tr><tr>
+<td><a href="#isAscii">isAscii</a></td>
+</tr><tr>
+<td><a href="#isDigit">isDigit</a></td>
+</tr><tr>
+<td><a href="#isLetter">isLetter</a></td>
+</tr><tr>
+<td><a href="#isMajusLetter">isMajusLetter</a></td>
+</tr><tr>
+<td><a href="#isMinusLetter">isMinusLetter</a></td>
+</tr><tr>
+<td><a href="#lastIndexOf">lastIndexOf</a></td>
+</tr><tr>
+<td><a href="#left">left</a></td>
+</tr><tr>
+<td><a href="#replace">replace</a></td>
+</tr><tr>
+<td><a href="#right">right</a></td>
+</tr><tr>
+<td><a href="#size">size</a></td>
+</tr><tr>
+<td><a href="#startsWith">startsWith</a></td>
+</tr><tr>
+<td><a href="#substring">substring</a></td>
+</tr><tr>
+<td><a href="#toLowerCase">toLowerCase</a></td>
+</tr><tr>
+<td><a href="#toUpperCase">toUpperCase</a></td>
+</tr><tr>
+<td><a href="#trim">trim</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>string</b> est implemente dans le fichier source <b>bc/core/cbstring.bcj</b>.<br>
+<hr><b>Instruction d'affectation<br>string r,d<br>r=d</b>
+<hr><b>Operateurs</b>
+boolean ( string &lt;  string )
+boolean ( string &lt;= string )
+boolean ( string >  string )
+boolean ( string >= string )
+boolean ( string ==  string )
+boolean ( string != string )
+string ( string +  string )
+<hr><a name="trim"></a><b>func string trim(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="println"></a><b>
+   Retourne une chaine apres avoir elimine les espaces a droite et a gauche
+   Exemple:
+   cbstring d
+   d="        ABC              "
+   println(trim(d))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startsWith"></a><b>func boolean startsWith(string op,string critere)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startsWith"></a><b>
+   Retourne vrai si la chaine op commence par le critere fourni
+   Exemple:
+   cbstring d
+   d="Hello"
+   if startsWith(d,"He")
+      println("Vrai pour He")
+   end if
+   if startsWith(d,"Hell")==true
+      println("Vrai pour Hell")
+   end if
+   if startsWith(d,"Bonsoir")==false
+      println("Faux pour Bonsoir")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="endsWith"></a><b>func boolean endsWith(string op,string critere)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="endsWith"></a><b>
+   Retourne vrai si la chaine op se termine par le critere fourni
+   Exemple:
+   cbstring d
+   d="Hello"
+   if endsWith(d,"lo")
+      println("Vrai pour lo")
+   end if
+   if endsWith(d,"ello")==true
+      println("Vrai pour ello")
+   end if
+   if endsWith(d,"soir")==false
+      println("Faux pour soir")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="substring"></a><b>func string substring(string op,int debut,int fin)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=subcbstring"></a><b>
+   Retourne la sous-chaine de op commencant a l'indice debut inclusif et
+   se terminant a l'indice fin exclusif
+   Attention :
+   utiliser un schema try...catch...end catch si un indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=subcbstring(d,1,3)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="charAt"></a><b>func string charAt(string op,int indice)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=charAt"></a><b>
+   Retourne la sous-chaine de longueur 1 de op commencant a l'indice debut
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=charAt(d,1)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="right"></a><b>func string right(string op,int debut)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=right"></a><b>
+   Retourne la sous-chaine de op commencant a l'indice debut
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   cbstring d,r
+   d="Hello"
+   r=right(d,1)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="left"></a><b>func string left(string op,int fin)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=left"></a><b>
+   Retourne la sous-chaine de op commencant a l'indice 0 et se terminant
+   a 'indice exclusif fin
+   Attention :
+   utiliser un schema try...catch...end catch si l'indice est hors limite.
+   Exemple:
+   string d,r
+   d="Hello"
+   r=left(d,1)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="size"></a><b>func int size(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="n=size"></a><b>
+   Retourne le nombre de caracteres de op commencant a l'indice 0
+   Exemple:
+   string d
+   int n
+   d="Hello"
+   n=size(d)
+   println(itos(n))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="indexOf"></a><b>func int indexOf(string op,string critere)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="n=indexOf"></a><b>
+   Retourne l'indice dans op ou se trouve la premiere occurence de critere
+   Retourne -1 si critere ne se trouve pas dans op
+   Exemple:
+   cbstring d
+   int n
+   d="Hello"
+   n=indexOf(d,"lo")
+   println(itos(n))
+   n=indexOf(d,"zut")
+   println(itos(n))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="lastIndexOf"></a><b>func int lastIndexOf(string op,string critere)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="n=lastIndexOf"></a><b>
+   Retourne l'indice dans op ou se trouve la derniere occurence de critere
+   Retourne -1 si critere ne se trouve pas dans op
+   Exemple:
+   string d
+   int n
+   d="Hello"
+   n=lastIndexOf(d,"l")
+   println(itos(n))
+   n=lastIndexOf(d,"zut")
+   println(itos(n))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="replace"></a><b>func string replace(string op,string marqueur,string remplacement)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=replace"></a><b>
+   Retourne une chaine a partir de op
+   ou toutes les occurences du parametre marqueur ont ete remplacees
+   par le parametre remplacement
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=replace(d,"lo","AZERTY")
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="toLowerCase"></a><b>func string toLowerCase(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=toLowerCase"></a><b>
+   Retourne une chaine a partir de op
+   ou toutes les lettres majuscules ont ete remplacees par
+   leur equivalent minuscule
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=toLowerCase(d)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="toUpperCase"></a><b>func string toUpperCase(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="r=toUpperCase"></a><b>
+   Retourne une chaine a partir de op
+   ou toutes les lettres minuscules ont ete remplacees par
+   leur equivalent majuscule
+   Exemple:
+   string d,r
+   d="HelloHello"
+   r=toUpperCase(d)
+   println(r)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isDigit"></a><b>func boolean isDigit(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isDigit"></a><b>
+   Retourne vrai si et seulement si op ne contient que des chiffres
+   Exemple:
+   string d
+   d="2012"
+   if isDigit(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isAscii"></a><b>func boolean isAscii(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne vrai si et seulement si op ne contient que des
+   caracteres >= a l'espace
+</b>
+<hr><a name="isMinusLetter"></a><b>func boolean isMinusLetter(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isMinusLetter"></a><b>
+   Retourne vrai si et seulement si op ne contient que des lettres minuscules
+   Exemple:
+   cbstring d
+   d="abCd"
+   if isMinusLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isMajusLetter"></a><b>func boolean isMajusLetter(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isMajusLetter"></a><b>
+   Retourne vrai si et seulement si op ne contient que des lettres majuscules
+   Exemple:
+   string d
+   d="abCd"
+   if isMajusLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isLetter"></a><b>func boolean isLetter(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="isLetter"></a><b>
+   Retourne vrai si et seulement si op ne contient que des lettres
+   Exemple:
+   string d
+   d="abCd"
+   if isLetter(d)
+      println("vrai")
+   else
+      println("faux")
+   end if
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="deleteLastChar"></a><b>func string deleteLastChar(string op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+</pre></body></html>

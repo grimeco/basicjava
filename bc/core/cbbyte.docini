@@ -1,0 +1,15 @@
+[byte]
+proto=$LLe type byte definit des entiers signes sur un octet.$L$LType             Nombre     Nombre            Intervalle$L                 d'octets   chiffres$L                            significatifs$Lbyte    Entier   1          3                 -128 a 127$Lshort   Entier   2          5                 -32768 a 32767$Lint     Entier   4          10                -2 147 483 648 a 2 147 483 647$Llong    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807$Lfloat   flottant 4          7 $Ldouble  flottant 8          15 
+affectation=byte = byte
+operateur=boolean ( byte <  byte )
+operateur=boolean ( byte <= byte )
+operateur=boolean ( byte >  byte )
+operateur=boolean ( byte >= byte )
+operateur=boolean ( byte ==  byte )
+operateur=boolean ( byte != byte )
+operateur=byte ( byte +  byte )
+operateur=byte ( byte - byte )
+operateur=byte ( byte *  byte )
+operateur=byte ( byte /  byte )
+operateur=byte ( byte % byte )
+operateur=byte ( - byte )

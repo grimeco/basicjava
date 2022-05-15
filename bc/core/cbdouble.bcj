@@ -1,0 +1,307 @@
+java
+   double val;
+   cbdouble(double x)
+   {
+      val=x;
+   }
+   static double get(cbdouble d)
+   {
+      return d.val;
+   }
+end java
+
+proc public set(double r,double d)
+   java
+      r.val=d.val;
+   end java
+end proc
+
+func public boolean cmplt(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val<op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmple(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val<=op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpgt(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val>op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpge(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val>=op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpeq(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val==op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpne(double op1,double op2)
+   boolean r
+   java
+      r.val=op1.val!=op2.val;
+   end java
+   return r
+end func
+
+func public double add(double op1,double op2)
+   double r
+   java
+      r.val=op1.val+op2.val;
+   end java
+   return r
+end func
+
+func public double sub(double op1,double op2)
+   double r
+   java
+      r.val=op1.val-op2.val;
+   end java
+   return r
+end func
+
+func public double div(double op1,double op2)
+   double r
+   java
+      r.val=op1.val/op2.val;
+   end java
+   return r
+end func
+
+func public double mul(double op1,double op2)
+   double r
+   java
+      r.val=op1.val*op2.val;
+   end java
+   return r
+end func
+
+func public double neg(double op)
+   double r
+   java
+      r.val=-op.val;
+   end java
+   return r
+end func
+/*!
+Le type double definit des nombres reels sur 8 octets.
+Type             Nombre     Nombre            Intervalle
+d'octets   chiffres
+significatifs
+byte    Entier   1          3                 -128 a 127
+short   Entier   2          5                 -32768 a 32767
+int     Entier   4          10                -2 147 483 648 a 2 147 483 647
+long    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807
+float   flottant 4          7
+double  flottant 8          15
+*/
+
+func public double abs(double op)
+/*!
+retourne la valeur absolue
+*/
+   if op<0.0
+      return -op
+   else
+      return op
+   end if
+end func
+
+func public double sin(double op)
+   /*!
+   Retourne la valeur du sinus de op (op exprime en radians)
+   Exemple:
+   double x,y
+   x=3.1415926
+   y=sin(x/2.0)
+   println("Sin PI/2 "+dtos(y))
+   */
+   double r
+   java
+      r.val=Math.sin(op.val);
+   end java
+   return r
+end func
+
+func public double cos(double op)
+   /*!
+   Retourne la valeur du cosinus de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.cos(op.val);
+   end java
+   return r
+
+end func
+
+func public double tan(double op)
+   /*!
+   Retourne la valeur de la tangente de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.tan(op.val);
+   end java
+   return r
+
+end func
+
+func public double asin(double op)
+   /*!
+   Retourne la valeur de l'arc sinus de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.asin(op.val);
+   end java
+   return r
+
+end func
+
+func public double acos(double op)
+   /*!
+   Retourne la valeur de l'arc cosinus de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.acos(op.val);
+   end java
+   return r
+
+end func
+
+func public double atan(double op)
+   /*!
+   Retourne la valeur de l'arc tangente de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.atan(op.val);
+   end java
+   return r
+
+end func
+
+func public double atan2(double y,double x)
+   /*!
+   Returns the angle theta from the conversion of rectangular coordinates (x, y) to polar coordinates (r, theta). 
+   */
+  
+   double r
+   java
+      r.val=Math.atan2(y.val,x.val);
+   end java
+   return r
+
+end func
+
+func public double sinh(double op)
+   /*!
+   Retourne la valeur du sinus hyperboliquede op (op exprime en radians)
+   */
+  
+   double r
+   java
+      r.val=Math.sinh(op.val);
+   end java
+   return r
+
+end func
+
+func public double cosh(double op)
+   /*!
+   Retourne la valeur du cosinus hyperboliquede op (op exprime en radians)
+   */
+   
+   double r
+   java
+      r.val=Math.cosh(op.val);
+   end java
+   return r
+
+end func
+
+func public double tanh(double op)
+   /*!
+   Retourne la valeur de la tangente hyperbolique de op (op exprime en radians)
+   */
+  
+   double r
+   java
+      r.val=Math.tanh(op.val);
+   end java
+   return r
+
+end func
+
+func public double sqrt(double op)
+   /*!
+   Retourne la valeur de la racine carree de op (op exprime en radians)
+   */
+   double r
+   java
+      r.val=Math.sqrt(op.val);
+   end java
+   return r
+
+end func
+
+func public double exp(double op)
+   /*!
+   Retourne la valeur de l'exponentielle a base e de op (op exprime en radians)
+   */
+   
+   double r
+   java
+      r.val=Math.exp(op.val);
+   end java
+   return r
+
+end func
+
+func public double log(double op)
+   /*!
+   Retourne la valeur du logarithme a base e de op (op exprime en radians)
+   */
+  
+   double r
+   java
+      r.val=Math.log(op.val);
+   end java
+   return r
+
+end func
+
+func public double pow(double op,double exposant)
+   /*!
+   Retourne la valeur de op a la puissance exposant
+   */
+  
+   double r
+   java
+      r.val=Math.pow(op.val,exposant.val);
+   end java
+   return r
+
+end func

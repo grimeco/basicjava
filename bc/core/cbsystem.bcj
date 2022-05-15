@@ -1,0 +1,271 @@
+import java.io.*;
+import java.util.*;
+import java.lang.reflect.*;
+java
+   static Exception lastException;
+   static String[]args;
+   static Object racine=null;
+
+   static void setArgs(String[]arguments)
+   {
+      args=arguments;
+   }
+   static class BCJ_VJFluxThread extends Thread
+   {
+      InputStream f;
+      String nom;
+      PrintWriter fic;
+      BCJ_VJFluxThread(String n,InputStream flux)
+      {
+         nom=n;
+         f=flux;
+         start();
+      }
+      public void run()
+      {
+         try{
+            fic=new PrintWriter(new FileOutputStream(nom));
+            int c;
+            c=f.read();
+            while(c!=-1)
+            {
+               fic.write(c);
+               c=f.read();
+            }
+            f.close();
+            fic.close();
+         }
+         catch(Exception e)
+         {
+            e.printStackTrace();
+            System.exit(1);
+         }
+      }
+   }
+end java
+
+func public int argCount()
+   /*!
+   Retourne le nombre d'arguments de la ligne de commande
+   */
+   int r
+   java
+      r.val=args.length;
+   end java
+   return r
+end func
+
+func public string argGet(int numero)
+   /*!
+   Retourne l'argument de la ligne de commande dont le numero est specifie.
+   Le premier argument a 0 pour numero
+   */
+   string r
+   if numero<0 or numero>=argCount()
+      return ""
+   end if
+   java
+      r.val=args[numero.val];
+   end java
+   return r
+end func
+
+proc public exit()
+   /*!
+   Arrete l'execution de l'application
+   */
+   java
+      System.exit(0);
+   end java
+end proc
+
+proc public throwex(string msg)exception
+   /*!
+   Genere une exception
+   */
+   java
+      throw new Exception(msg.val);
+   end java
+end proc
+
+func public string exceptionToString()
+   /*!
+   Retourne la chaine de caracteres correspondant a l'exception
+   A utiliser entre catch et end catch
+   Exemple:
+   int n
+   try
+      n=1/0
+   catch
+      println(exceptionToString())
+   end catch
+   */
+   string r
+   java
+      PrintWriter out;
+      StringWriter sw;
+      String msg;
+      Properties p;
+      if(lastException!=null)
+      {
+         sw=new StringWriter();
+         out=new PrintWriter(sw);
+         lastException.printStackTrace(out);
+         p=System.getProperties();
+         out.write("Java version : "+p.getProperty("java.version")+"\n");
+         out.write("OS name : "+p.getProperty("os.name")+"\n");
+         out.write("OS version : "+p.getProperty("os.version")+"\n");
+         out.flush();
+         out.close();
+         r.val=sw.toString();
+      }
+      else
+      {
+       r.val="Pas d'exception!!!";
+      }
+   end java
+   return r
+end func
+
+func public string exceptionToMessage()
+   /*!
+   Retourne la chaine de caractères correspondant à l'exception
+   A utiliser entre catch et end catch
+   Exemple:
+   int n
+   try
+      n=1/0
+   catch
+      println(exceptionToMessage())
+   end catch
+   */
+   string r
+   java
+      PrintWriter out;
+      StringWriter sw;
+      String msg;
+      Properties p;
+      if(lastException!=null)
+      {
+         sw=new StringWriter();
+         out=new PrintWriter(sw);
+         out.write(lastException.getMessage());
+         out.flush();
+         out.close();
+         r.val=sw.toString();
+      }
+      else r.val="Pas d'exception!!!";
+   end java
+   return r
+end func
+
+proc public execute(string nomClasse,string methodname)exception
+/*!
+Execute une methode "static" ou "public" de la classe specifiee
+La methode ne doit pas avoir d'arguments
+*/
+   java
+      Class cls=Class.forName(nomClasse.val);
+      @SuppressWarnings("unchecked")
+      Method met=cls.getMethod(methodname.val,(Class[])null);
+      met.invoke((Object)null,(Object[])null);
+   end java
+end proc
+
+proc public execMethod(string nomMethod)exception
+   /*!
+   Execute une methode
+   Reserve au systeme
+   Ne doit pas etre execute directement
+   */
+   java
+      Method methode;
+      methode=(racine.getClass()).getMethod(nomMethod.val,(Class[])null);
+      methode.invoke(racine,(Object[])null);
+   end java
+end proc
+
+func public string[] systemGetPropertyNames()exception
+/*!
+Retourne les noms des proprietes systeme disponibles
+*/
+   int i,n
+   string[]t
+   string w
+   java
+      Set<String> ts=System.getProperties().stringPropertyNames();
+      String[] tws=ts.toArray(new String[0]);
+      n.val=tws.length;
+   end java
+   dim t[n]
+   for i while i<n
+      java
+         w.val=tws[i.val];
+      end java
+      t[i]=w
+   end for
+   return t
+end func
+
+func public string systemGetProperty(string nomPropriete)
+   /*!
+   Exemple :
+   string[]t
+   int i,n
+   try
+      t=systemGetPropertyNames()
+      n=length(t)
+      for i while i<n
+         println(t[i]+"="+systemGetProperty(t[i]))
+      end for
+      println(systemGetProperty("azerty"))
+   catch
+      println(exceptionToString())
+      exit()
+   end catch
+   */
+   string w
+   java
+      w.val=System.getProperties().getProperty(nomPropriete.val);
+      if(w.val==null)w.val="???";
+   end java
+   return w
+end func
+
+proc public executerCmd(string commande)exception
+   /*!
+   Execute une commande de type MSDOS ou SHELL.
+   L'application attend que la commande soit terminee.
+   Deux fichiers de type texte stderr.txt et stdout.txt contiennent
+   les traces de l'execution.
+   Exemple:
+   try
+      executerCmd("explorer toto.txt")
+   catch
+   end catch
+   */
+   java
+      Process p;
+      BCJ_VJFluxThread stderr,stdout;
+      p=Runtime.getRuntime().exec(commande.val);
+      stderr=new BCJ_VJFluxThread("stderr.txt",p.getErrorStream());
+      stdout=new BCJ_VJFluxThread("stdout.txt",p.getInputStream());
+      p.waitFor();
+      Thread.sleep(1000);
+   end java
+end proc
+
+proc public startCmd(string commande)exception
+   /*!
+   Execute une commande de type MSDOS ou SHELL.
+   L'application n'attend pas que la commande soit terminee.
+   Exemple:
+   try
+      startCmd("explorer toto.txt")
+   catch
+   end catch
+   */
+   java
+      Runtime.getRuntime().exec(commande.val);
+   end java
+end proc

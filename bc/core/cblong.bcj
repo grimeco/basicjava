@@ -1,0 +1,136 @@
+java
+   long val;
+   cblong(long n)
+   {
+   val=n;
+   }
+   cblong(int n)
+   {
+   val=n;
+   }
+   static long get(cblong d)
+   {
+   return d.val;
+   }
+end java
+
+/*!
+Le type long definit des entiers signes sur 8 octets.
+
+Type             Nombre     Nombre            Intervalle
+                 d'octets   chiffres
+                            significatifs
+byte    Entier   1          3                 -128 a 127
+short   Entier   2          5                 -32768 a 32767
+int     Entier   4          10                -2 147 483 648 a 2 147 483 647
+long    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807
+float   flottant 4          7 
+double  flottant 8          15 
+*/
+proc public set(long r,long d)
+   java
+      r.val=d.val;
+   end java
+end proc
+
+func public boolean cmplt(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val<op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmple(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val<=op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpgt(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val>op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpge(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val>=op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpeq(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val==op2.val;
+   end java
+   return r
+
+end func
+
+func public boolean cmpne(long op1,long op2)
+   boolean r
+   java
+      r.val=op1.val!=op2.val;
+   end java
+   return r
+
+end func
+
+func public long add(long op1,long op2)
+   long r
+   java
+      r.val=op1.val+op2.val;
+   end java
+   return r
+end func
+
+func public long sub(long op1,long op2)
+   long r
+   java
+      r.val=op1.val-op2.val;
+   end java
+   return r
+
+end func
+
+func public long mul(long op1,long op2)
+   long r
+   java
+      r.val=op1.val*op2.val;
+   end java
+   return r
+end func
+
+func public long div(long op1,long op2)
+   long r
+   java
+      r.val=op1.val/op2.val;
+   end java
+   return r
+end func
+
+func public long mod(long op1,long op2)
+   long r
+   java
+      r.val=op1.val%op2.val;
+   end java
+   return r
+end func
+
+func public long neg(long op)
+   long r
+   java
+      r.val=-op.val;
+   end java
+   return r
+end func

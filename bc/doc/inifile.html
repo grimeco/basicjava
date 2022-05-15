@@ -1,0 +1,68 @@
+<html><body><a name="tablematieres"></a><h1><center>inifile</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#getFirstWord">getFirstWord</a></td>
+</tr><tr>
+<td><a href="#getSections">getSections</a></td>
+</tr><tr>
+<td><a href="#getWord">getWord</a></td>
+</tr><tr>
+<td><a href="#getWords">getWords</a></td>
+</tr><tr>
+<td><a href="#open">open</a></td>
+</tr><tr>
+<td><a href="#setFirstWord">setFirstWord</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>inifile</b> est implemente dans le fichier source <b>bc/core/cbinifile.bcj</b>.<br>
+<b>
+Structure d'un fichier ini
+- une ligne commencant par // est un commentaire
+- un fichier ini peut comporter plusieurs sections:
+[nom de section]
+- une section contient des definitions:
+motcle=valeur
+- Une section peut comporter plusieurs fois le meme mot-cle.</b>
+<hr><a name="open"></a><b>proc open(inifile fichier,string nom)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="open"></a><b>
+   Ouvre et charge en memoire un fichier ini.
+   Ensuite, on peut utiliser toutes les fonctions decrites dans ce module.
+   Il n'y a pas de close a faire
+   Exemple:
+   inifile fich
+   string w
+   try
+      open(fich,"toto.ini")
+      w=getWord(fich,"general","nom")
+   catch
+      println(exceptionToString())
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="getSections"></a><b>func string[] getSections(inifile fichier)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne les noms de sections
+</b>
+<hr><a name="getWords"></a><b>func string[] getWords(inifile fichier,string nomSection,string motCle)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Si motCle == "" la fonction retourne tous les mots de la section
+</b>
+<hr><a name="getFirstWord"></a><b>func string getFirstWord(inifile fichier,string nomSection,string motCle)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Provoque une exception si non trouve
+</b>
+<hr><a name="setFirstWord"></a><b>proc setFirstWord(inifile fichier,string nomSection,string motCle,string valeur)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Modifie un fichier ini
+en remplacant le premier mot d'une section par la valeur specifiee
+Pas d'erreur si le mot-cle n'existe pas</b>
+<hr><a name="getWord"></a><b>func string getWord(inifile fichier,string nomSection,string motCle)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne "null" si non trouve
+</b>
+</pre></body></html>

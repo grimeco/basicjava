@@ -1,0 +1,14 @@
+[lexical]
+proto=$LTypes lexicaux:$LIDENTIFICATEUR "I"$LENTIER         "E"$LREEL           "R"$LLITTERAL       "L"$LSYMBOLE        "S"$LCOMMENTAIRE    "/"$LBOOLEEN        "B"
+proto=$L   Les commentaires sont elimines$L  
+proto=proc start(lexical lex,string data,boolean noComment)
+proto=$L   si noComment vaut true, les commentaires sont elimines$L  
+proto= Caracteres speciaux$L\n  newline         0A$L\t  tabulation      09$L\b  backspace       08$L\r  carriage return 0D$L\f  form feed       0C$L\\  anti slash      5C$L\'  simple quote    27$L\"  double quote    22
+proto=func string us(lexical lex)exception
+proto=$L   Retourne le mot suivant$L   Retourne "" si on est arrive a la fin$L  
+proto=func string getType(lexical lex)
+proto=$L   Retourne le type du mot courant$L  
+proto=func int getNum(lexical lex)
+proto=$L   Retourne le numero de ligne du mot courant$L  
+proto=func int getPos(lexical lex)
+proto=$L   Retourne l'indice courant dans la chaine$L  

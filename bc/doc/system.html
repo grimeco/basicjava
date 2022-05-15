@@ -1,0 +1,139 @@
+<html><body><a name="tablematieres"></a><h1><center>system</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#argCount">argCount</a></td>
+</tr><tr>
+<td><a href="#argGet">argGet</a></td>
+</tr><tr>
+<td><a href="#exceptionToMessage">exceptionToMessage</a></td>
+</tr><tr>
+<td><a href="#exceptionToString">exceptionToString</a></td>
+</tr><tr>
+<td><a href="#execMethod">execMethod</a></td>
+</tr><tr>
+<td><a href="#execute">execute</a></td>
+</tr><tr>
+<td><a href="#executerCmd">executerCmd</a></td>
+</tr><tr>
+<td><a href="#exit">exit</a></td>
+</tr><tr>
+<td><a href="#startCmd">startCmd</a></td>
+</tr><tr>
+<td><a href="#systemGetProperty">systemGetProperty</a></td>
+</tr><tr>
+<td><a href="#systemGetPropertyNames">systemGetPropertyNames</a></td>
+</tr><tr>
+<td><a href="#throwex">throwex</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>system</b> est implemente dans le fichier source <b>bc/core/cbsystem.bcj</b>.<br>
+<hr><a name="argCount"></a><b>func int argCount()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le nombre d'arguments de la ligne de commande
+</b>
+<hr><a name="argGet"></a><b>func string argGet(int numero)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne l'argument de la ligne de commande dont le numero est specifie.
+   Le premier argument a 0 pour numero
+</b>
+<hr><a name="exit"></a><b>proc exit()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Arrete l'execution de l'application
+</b>
+<hr><a name="throwex"></a><b>proc throwex(string msg)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Genere une exception
+</b>
+<hr><a name="exceptionToString"></a><b>func string exceptionToString()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="println"></a><b>
+   Retourne la chaine de caracteres correspondant a l'exception
+   A utiliser entre catch et end catch
+   Exemple:
+   int n
+   try
+      n=1/0
+   catch
+      println(exceptionToString())
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="exceptionToMessage"></a><b>func string exceptionToMessage()</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="println"></a><b>
+   Retourne la chaine de caractères correspondant à l'exception
+   A utiliser entre catch et end catch
+   Exemple:
+   int n
+   try
+      n=1/0
+   catch
+      println(exceptionToMessage())
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="execute"></a><b>proc execute(string nomClasse,string methodname)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Execute une methode "static" ou "public" de la classe specifiee
+La methode ne doit pas avoir d'arguments</b>
+<hr><a name="execMethod"></a><b>proc execMethod(string nomMethod)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Execute une methode
+   Reserve au systeme
+   Ne doit pas etre execute directement
+</b>
+<hr><a name="systemGetPropertyNames"></a><b>func string[] systemGetPropertyNames()exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Retourne les noms des proprietes systeme disponibles</b>
+<hr><a name="systemGetProperty"></a><b>func string systemGetProperty(string nomPropriete)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="t=systemGetPropertyNames"></a><b>
+   Exemple :
+   string[]t
+   int i,n
+   try
+      t=systemGetPropertyNames()
+      n=length(t)
+      for i while i&lt;n
+         println(t[i]+"="+systemGetProperty(t[i]))
+      end for
+      println(systemGetProperty("azerty"))
+   catch
+      println(exceptionToString())
+      exit()
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="executerCmd"></a><b>proc executerCmd(string commande)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="executerCmd"></a><b>
+   Execute une commande de type MSDOS ou SHELL.
+   L'application attend que la commande soit terminee.
+   Deux fichiers de type texte stderr.txt et stdout.txt contiennent
+   les traces de l'execution.
+   Exemple:
+   try
+      executerCmd("explorer toto.txt")
+   catch
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startCmd"></a><b>proc startCmd(string commande)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="startCmd"></a><b>
+   Execute une commande de type MSDOS ou SHELL.
+   L'application n'attend pas que la commande soit terminee.
+   Exemple:
+   try
+      startCmd("explorer toto.txt")
+   catch
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+</pre></body></html>

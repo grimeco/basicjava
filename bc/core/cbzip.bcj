@@ -1,0 +1,44 @@
+import java.io.*;
+import java.util.*;
+import java.util.zip.*;
+
+proc public filesToZip(string nomArchive, string[] listeNoms)exception
+/*!
+ *  Cree un fichier zip contenant tous les fichiers definis par listeNoms
+ */
+   int nbFich
+   nbFich=length(listeNoms)
+   java
+      FileOutputStream archive;
+      FileInputStream file;
+      ZipOutputStream out;
+      BufferedInputStream buffi;
+      ZipEntry entry;
+      byte data[] ;
+      int i, n;
+      String nomZipEntree;
+      int MAXBLOC=1024*2024;
+      data=new byte[MAXBLOC] ;
+      archive=new FileOutputStream(nomArchive.val);
+      out=new ZipOutputStream(new BufferedOutputStream(archive));
+      out.setMethod(ZipOutputStream.DEFLATED);
+      out.setLevel(9);
+      for(i=0;i<nbFich.val;i++)
+      {
+         file=new FileInputStream(listeNoms[i].val);
+         buffi=new BufferedInputStream(file, MAXBLOC);
+         nomZipEntree=listeNoms[i].val;
+         entry=new ZipEntry(nomZipEntree);
+         out.putNextEntry(entry);
+         n=buffi.read(data, 0, MAXBLOC);
+         while(n!=-1)
+         {
+            out.write(data, 0, n);
+            n=buffi.read(data, 0, MAXBLOC);
+         }
+         out.closeEntry();
+         buffi.close();
+      }
+      out.close();
+   end java
+end proc

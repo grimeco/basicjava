@@ -1,0 +1,240 @@
+import java.io.*;
+java
+   BufferedReader fichierIn=null;
+   PrintWriter fichierOut=null;
+   File fichierTmp=null;
+   static String repTemp="tmptmp";
+end java
+string nomFichier
+
+
+proc public open(textfile fichier,string nom,int mode)exception
+   /*!
+   Ouvre un fichier.
+   Mode
+   0 INPUT                 Lecture
+   1 OUTPUT                Creation
+   2 EXTEND                Ajout de lignes a la fin du fichier
+   3 OUTPUT TEMPORARY FILE Creation d'un fichier temporaire detruit a la fin de l'execution de l'application
+   */
+   fichier.nomFichier=nom
+   switch
+   case mode==0
+      java
+         fichier.fichierIn=new BufferedReader(new FileReader(nom.val));
+      end java
+   case mode==1
+      java
+         fichier.fichierOut=new PrintWriter(new FileOutputStream(nom.val));
+      end java
+   case mode==2
+      java
+         fichier.fichierOut=new PrintWriter(new FileOutputStream(nom.val,true));
+      end java
+   case mode==3
+      java
+         fichier.fichierTmp=new File(nom.val);
+         fichier.fichierTmp.deleteOnExit();
+         fichier.fichierOut=new PrintWriter(new FileOutputStream(fichier.fichierTmp));
+      end java
+   default
+      throwex("Mode d'ouverture incorrect pour le fichier '"+nom+"'")
+   end switch
+end proc
+
+proc public setTmp(string nomRepTmp)exception
+   /*!
+   Initialise le nom du repertoire repTmp contenant les fichiers temporaires,
+   par defaut, ce nom est egal a "tmptmp"
+   */
+   if trim(nomRepTmp)==""
+      throwex("Nom de repertoire temporaire vide")
+   end if
+   java
+      repTemp=nomRepTmp.val;
+   end java
+end proc
+
+func public string openTmp(textfile fichier,string nom,int mode)exception
+   /*!
+   cree un fichier temporaire avec generation automatique du nom:
+   repTmp+"/"+nomUtilisateur+"/"+nom+stamp()
+   le parametre mode ne sert a rien, il est conserve pour compatibilite
+   avec l'open classique
+   */
+   string r
+   java
+      r.val=repTemp;
+   end java
+   r=r+"/"+systemGetProperty("user.name")+"/"+nom+stamp()
+/*   
+   java
+      r.val=r.val+bcjprofun.systemGetProperty(new bcjstring("user.name")).val;
+   end java
+   r=r+"/"+nom
+
+   java
+      r.val=r.val+bcjsystem.stamp().val;
+      bcjsystem.createDirectories(r);
+   end java
+*/
+   createDirectories(r)
+   open(fichier,r,3)
+   return r
+end func
+
+func public boolean readLine(textfile fichier,string ligne)exception
+   /*!
+   Lit une ligne
+   Retourne vrai si OK
+   Retourne faux si on est arrive en fin de fichier
+   Exemple:
+   textfile fich
+   string ligne
+   boolean b
+   try
+      open(fich,"toto.txt",0)
+      b=readLine(fich,ligne)
+      while b
+         println(ligne)
+         b=readLine(fich,ligne)
+      end while
+      close(fich)
+   catch
+      println(exceptionToString())
+   end catch
+   */
+   boolean r
+   java
+      String w;
+      w=fichier.fichierIn.readLine();
+      if(w==null)
+      {
+         ligne.val="";
+         r.val=false;
+      }
+      else
+      {
+         ligne.val=w;
+         r.val=true;
+      }
+   end java
+   return r
+end func
+
+proc public close(textfile fichier)exception
+   /*!
+   Fermeture du fichier
+   */
+   java
+      if(fichier.fichierIn!=null)
+      {
+         fichier.fichierIn.close();
+         fichier.fichierIn=null;
+         return;
+      }
+      if(fichier.fichierOut!=null)
+      {
+         fichier.fichierOut.close();
+         fichier.fichierOut=null;
+         return;
+      }
+   end java
+   throwex("'close' sur le fichier '"+fichier.nomFichier+"' non ouvert")
+end proc
+
+proc public print(textfile fichier,string d)exception
+   /*!
+   Ecrit dans le fichier sans passer a la ligne
+   */
+   java
+      fichier.fichierOut.print(d.val);
+   end java
+end proc
+
+proc public println(textfile fichier,string d)exception
+   /*!
+   Ecrit dans le fichier en passant a la ligne
+   */
+   java
+      fichier.fichierOut.println(d.val);
+   end java
+end proc
+
+func public int getLineNumber(string nomFichier)exception
+   /*!
+   Retourne le nombre de lignes du fichier
+   */
+   textfile fichIn
+   int n
+   boolean b
+   string ligne
+   n=0
+   open(fichIn,nomFichier,0)
+   b=readLine(fichIn,ligne)
+   while b
+      n=n+1
+      b=readLine(fichIn,ligne)
+   end while
+   close(fichIn)
+   return n
+end func
+
+func public string[] getFileArray(string nomFichier)exception
+   /*!
+   Charger un tableau directement
+   */
+   string[]t
+   int n,i
+   boolean b
+   textfile fichIn
+   dim t[getLineNumber(nomFichier)]
+   n=length(t)
+   open(fichIn,nomFichier,0)
+   for i while i<n
+      b=readLine(fichIn,t[i])
+   end for
+   close(fichIn)
+   return t
+end func
+
+proc public putFileArray(string nomFichier,string[]t)exception
+   /*!
+   Ecrit le contenu d'un tableau
+   */
+   int n,i
+   textfile fichOut
+   n=length(t)
+   open(fichOut,nomFichier,1)
+   for i while i<n
+      println(fichOut,t[i])
+   end for
+   close(fichOut)
+end proc
+
+proc public putFileString(string nomFichier,string data)exception
+   /*!
+   Ecrit un fichier contenant la chaine data
+   */
+   textfile fichOut
+   open(fichOut,nomFichier,1)
+   print(fichOut,data)
+   close(fichOut)
+end proc
+
+func public string getFileString(string nomFichier)exception
+/*!
+Retourne le contenu d'un fichier texte
+*/
+   string r
+   java
+      FileInputStream fich;
+      fich=new FileInputStream(nomFichier.val);
+      byte[]b=new byte[fich.available()];
+      fich.read(b,0,b.length);
+      fich.close();
+      r.val=new String(b,0,b.length);
+   end java
+   r=replace(r,"\r","")
+   return r
+end func

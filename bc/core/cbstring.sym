@@ -1,0 +1,112 @@
+set	cbstring		set;Scbstring;Scbstring;	public static 	P	 	 	2	0	true	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+d	cbstring	cbstring			V	S	 	0	0	false	false
+cmplt	cbstring	cbboolean	cmplt;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+cmple	cbstring	cbboolean	cmple;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+cmpgt	cbstring	cbboolean	cmpgt;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+cmpge	cbstring	cbboolean	cmpge;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+cmpeq	cbstring	cbboolean	cmpeq;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+cmpne	cbstring	cbboolean	cmpne;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+add	cbstring	cbstring	add;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op1	cbstring	cbstring			V	S	 	0	0	false	false
+op2	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+trim	cbstring	cbstring	trim;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+startsWith	cbstring	cbboolean	startsWith;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+critere	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+endsWith	cbstring	cbboolean	endsWith;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+critere	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbboolean			V	S	 	0	0	false	false
+substring	cbstring	cbstring	substring;Scbstring;Scbint;Scbint;	public static 	F	S	 	3	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+debut	cbstring	cbint			V	S	 	0	0	false	false
+fin	cbstring	cbint			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+charAt	cbstring	cbstring	charAt;Scbstring;Scbint;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+indice	cbstring	cbint			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+right	cbstring	cbstring	right;Scbstring;Scbint;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+debut	cbstring	cbint			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+left	cbstring	cbstring	left;Scbstring;Scbint;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+fin	cbstring	cbint			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+size	cbstring	cbint	size;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbint			V	S	 	0	0	false	false
+indexOf	cbstring	cbint	indexOf;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+critere	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbint			V	S	 	0	0	false	false
+lastIndexOf	cbstring	cbint	lastIndexOf;Scbstring;Scbstring;	public static 	F	S	 	2	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+critere	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbint			V	S	 	0	0	false	false
+replace	cbstring	cbstring	replace;Scbstring;Scbstring;Scbstring;	public static 	F	S	 	3	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+marqueur	cbstring	cbstring			V	S	 	0	0	false	false
+remplacement	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+k	cbstring	cbint			V	S	 	0	0	false	false
+toLowerCase	cbstring	cbstring	toLowerCase;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+toUpperCase	cbstring	cbstring	toUpperCase;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+isDigit	cbstring	cbboolean	isDigit;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+i	cbstring	cbint			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+c	cbstring	cbstring			V	S	 	0	0	false	false
+isAscii	cbstring	cbboolean	isAscii;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+i	cbstring	cbint			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+c	cbstring	cbstring			V	S	 	0	0	false	false
+isMinusLetter	cbstring	cbboolean	isMinusLetter;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+i	cbstring	cbint			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+c	cbstring	cbstring			V	S	 	0	0	false	false
+isMajusLetter	cbstring	cbboolean	isMajusLetter;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+i	cbstring	cbint			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+c	cbstring	cbstring			V	S	 	0	0	false	false
+isLetter	cbstring	cbboolean	isLetter;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+i	cbstring	cbint			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false
+c	cbstring	cbstring			V	S	 	0	0	false	false
+deleteLastChar	cbstring	cbstring	deleteLastChar;Scbstring;	public static 	F	S	 	1	0	true	false
+op	cbstring	cbstring			V	S	 	0	0	false	false
+r	cbstring	cbstring			V	S	 	0	0	false	false
+n	cbstring	cbint			V	S	 	0	0	false	false

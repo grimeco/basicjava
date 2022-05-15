@@ -1,0 +1,22 @@
+sort	cbarraytools		sort;Tcbstring;	public static 	P	 	 	1	0	true	false
+t	cbarraytools	cbstring			V	T	 	0	0	false	false
+i	cbarraytools	cbint			V	S	 	0	0	false	false
+n	cbarraytools	cbint			V	S	 	0	0	false	false
+x	cbarraytools	cbstring			V	S	 	0	0	false	false
+bPermut	cbarraytools	cbboolean			V	S	 	0	0	false	false
+print	cbarraytools		print;Tcbstring;	public static 	P	 	 	1	0	true	false
+t	cbarraytools	cbstring			V	T	 	0	0	false	false
+i	cbarraytools	cbint			V	S	 	0	0	false	false
+n	cbarraytools	cbint			V	S	 	0	0	false	false
+printArray	cbarraytools		printArray;Acbstring;	public static 	P	 	 	1	0	true	false
+t	cbarraytools	cbstring			V	A	 	0	0	false	false
+i	cbarraytools	cbint			V	S	 	0	0	false	false
+j	cbarraytools	cbint			V	S	 	0	0	false	false
+nbLig	cbarraytools	cbint			V	S	 	0	0	false	false
+nbCol	cbarraytools	cbint			V	S	 	0	0	false	false
+printIntArray	cbarraytools		printIntArray;Acbint;	public static 	P	 	 	1	0	true	false
+t	cbarraytools	cbint			V	A	 	0	0	false	false
+i	cbarraytools	cbint			V	S	 	0	0	false	false
+j	cbarraytools	cbint			V	S	 	0	0	false	false
+nbLig	cbarraytools	cbint			V	S	 	0	0	false	false
+nbCol	cbarraytools	cbint			V	S	 	0	0	false	false

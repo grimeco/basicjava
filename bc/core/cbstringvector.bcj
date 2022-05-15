@@ -1,0 +1,78 @@
+import java.util.*;
+java
+   Vector<String> val=new Vector<String>();
+end java
+
+/*!
+Le type stringvector permet de constituer une suite de string dont on
+ne connait pas a priori le nombre d'elements
+*/
+
+proc public add(stringvector v,string d)
+   /*!
+   Ajoute une chaine au vecteur
+   */
+   java
+      v.val.add(d.val);
+   end java
+end proc
+
+func public int size(stringvector v)
+   /*!
+   Retourne le nombre d'elements du vecteur
+   */
+   int r
+   java
+      r.val=v.val.size();
+   end java
+   return r
+end func
+
+proc public removeAll(stringvector v)
+   /*!
+   Supprime toutes les chaines du vecteur
+   */
+   java
+      v.val.removeAllElements();
+   end java
+end proc
+
+func public string elementAt(stringvector v,int n)
+   /*!
+   Retourne l'element situe a l'indice n
+   */
+   string r
+   java
+      r.val=v.val.elementAt(n.val);
+   end java
+   return r
+end func
+
+proc public removeElementAt(stringvector v,int n)
+   /*!
+   Supprime l'element situe a l'indice n
+   */
+   java
+      v.val.removeElementAt(n.val);
+   end java
+end proc
+
+func public boolean contains(stringvector v,string d)
+/*!
+retourne vrai si et seulement si v contient d
+*/
+   boolean r
+   java
+      r.val=v.val.contains(d.val);
+   end java
+   return r
+end func
+
+proc public update(stringvector v,int n,string d)
+   /*!
+   Modifie le i-ieme element
+   */
+   java
+      v.val.setElementAt(d.val,n.val);
+   end java
+end proc

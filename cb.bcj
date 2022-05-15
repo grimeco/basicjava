@@ -1,0 +1,1982 @@
+//--- CONSTANTES --------------------------------------------------------------
+string VARIABLE,TYPE,PROCEDURE,PROTO_PROCEDURE,FONCTION,PROTO_FONCTION,SIMPLE,IDENTIFICATEUR
+string TABLEAU_1_DIM,TABLEAU_2_DIM,NULL,ATTRIBUT
+string ENTIER,REEL,BOOLEEN,LITTERAL,SYMBOLE
+stringhashmap hMotsCles
+//--- Table des symboles ------------------------------------------------------
+string[] identif,classeDef,typ,signature,modifieur,mode,dym,portee
+int[] nbParam,ptrSym
+boolean[] existe,bException
+int nbSym
+//--- Variables globales modifiables par les options de la ligne de commande --
+string pathSource,directoryPath,pathSourceCourant,pathIniFile
+boolean bMain,bSym,bCompileAll
+int MAXSYM
+//--- Variables globales ------------------------------------------------------
+stringvector vtyp,vpath,vcompil // liste des fichiers a compiler
+int ptrSymClasse // pointeur table des symboles de debut d'un type
+lexical lex
+string u
+textfile wImport,codeLocal,dclGlobales,heritageInterface,codeGlobal
+stringstack pile
+boolean bDclGlobales,bCodeLocal
+int bTry,nbLignesCompilees,genException
+int ptrSymProcFonctionCourante//,symProcFonctionCourante //GG en supprimer un
+//--- Procedures et fonctions -------------------------------------------------
+
+proc initMotsCles()
+   string[] tCle,tVal
+   tCle=getWords("type,proc,public,end,func,exception,try,catch,if,else,while,switch,extends"+
+   "case,default,for,return,dim,java,or,and,length,collength,true,false,static,import,proto,implements"
+   ,",")
+   dim tVal[length(tCle)]
+   putArray(hMotsCles,tCle,tVal)
+end proc
+
+func boolean isMotCle(string d)
+   return get(hMotsCles,d)!="???"
+end func
+
+proc initConstantes()
+   VARIABLE="V"
+   TYPE="T"
+   PROCEDURE="P"
+   PROTO_PROCEDURE="p"
+   FONCTION="F"
+   PROTO_FONCTION="f"
+   SIMPLE="S"
+   TABLEAU_1_DIM="T"
+   TABLEAU_2_DIM="A"
+   NULL=" "
+   ATTRIBUT="A"
+   IDENTIFICATEUR="I"
+   ENTIER="E"
+   REEL="R"
+   LITTERAL="L"
+   SYMBOLE="S"
+   BOOLEEN="B"
+   initMotsCles()
+end proc
+
+proc p(string d)
+   print(d)
+end proc
+
+proc pl(string d)
+   p(d)
+   p("\n")
+end proc
+
+proc affDuree()
+   string w
+   int duree,min,sec,milli
+   duree=stopChrono()
+   min=duree/60000
+   duree=duree%60000
+   sec=duree/1000
+   milli=duree%1000
+   pl("Nombre d'elements de la table des symboles .= "+itos(nbSym))
+   w= "Duree de compilation .......................= "+itos(min)+" minute(s) "+itos(sec)+" seconde(s) "+itos(milli)+" ms"
+   pl(w)
+   pl("Nombre de lignes compilees .................= "+itos(nbLignesCompilees))
+   try
+      pl("Vitesse de compilation (nb lignes / sec )...= "+itos(nbLignesCompilees*1000/duree))
+   catch
+   end catch
+end proc
+
+proc errex(string msg)
+   pl(exceptionToMessage())
+   pl("ERREUR INTERNE : "+msg)
+   affDuree()
+   exit()
+end proc
+
+proc usage()
+   pl("cb, usage:")
+   pl("   cb [options] pathname")
+   pl("      pathname est le chemin du fichier a compiler")
+   pl("      options:")
+   pl("      -main-boolean      si faux pas de generation de la methode main, par defaut true")
+   pl("      -symsize-integer   nb elements de la table des symboles, par defaut 20000")
+   pl("      -sym               affiche la table des symboles a la fin de la compilation, par defaut false")
+   pl("      -compileall        compilation complete, par defaut false")
+   pl("      -directory-string  ou string est le chemin du repertoire de travail du compilateur, par defaut bc")
+   pl("                         Ce repertoire doit contenir un fichier texte de type inifile: par exemple bcj.ini")
+   pl("                         bcj.ini doit contenir une section [types] contenant la definition des types sous la forme:")
+   pl("                         type=nomtype:chemin du source bcj relatif au repertoire de travail")
+   pl("                         Exemples :")
+   pl("                         type=boolean:fondamentaux/cbboolean.bcj")
+   pl("                         type=int:fondamentaux/cbint.bcj")
+   pl("                         type=string:fondamentaux/cbstring.bcj")
+   pl("                         l'ordre de definitions est important, les fichiers sont compiles dans cet ordre")
+   pl("      -inifile-string    nom d'un fichier de type bcj.ini, par defaut bcj.ini")
+   pl("                         qui doit se trouver dans le repertoire de travail du compilateur")
+   pl("integer est une suite de chiffres")
+   pl("boolean est true ou false")
+   pl("string est une suite de caracteres, utiliser \" au debut et a la fin si string contient des espaces")
+   pl("Exemples:")
+   pl("   cb test")
+   pl("   cb -directory-\"raspberry prototype\" test")
+   affDuree()
+   exit()
+end proc
+
+proc analyseLigneCommande()
+   int i,n
+   string w,tagSym,tagMain,tagDirectoryPath,tagCompileAll,tagSymSize,tagIniFile
+   try
+      tagIniFile="-inifile-"
+      tagCompileAll="-compileall"
+      tagSym="-sym"
+      tagMain="-main-"
+      tagDirectoryPath="-directory-"
+      tagSymSize="-symsize-"
+      n=argCount()-1
+      pathSource=argGet(n)
+      bMain=true
+      bSym=false
+      bMain=true
+      bCompileAll=false
+      directoryPath="bc/"
+      pathIniFile="bcj.ini"
+      MAXSYM=20000
+      for i while i<n
+         w=argGet(i)
+         switch
+            case w==tagSym
+            bSym=true
+            case w==tagCompileAll
+            bCompileAll=true
+            case startsWith(w,tagMain)
+            bMain=w==tagMain+"true"
+            case startsWith(w,tagDirectoryPath)
+            directoryPath=right(w,size(tagDirectoryPath))
+            if endsWith(directoryPath,"/")==false
+               directoryPath=directoryPath+"/"
+            end if
+            case startsWith(w,tagIniFile)
+            pathIniFile=right(w,size(tagIniFile))
+            case startsWith(w,tagSymSize)
+            MAXSYM=stoi(right(w,size(tagSymSize)))
+            default
+            usage()
+         end switch
+      end for
+      pl("Chemin du source a compiler ................= "+pathSource)
+      pl("Compilation complete .......................= "+btos(bCompileAll))
+      pl("Repertoire du compilateur ..................= "+directoryPath)
+      pl("Generation de la methode main ..............= "+btos(bMain))
+      pl("Afficher la table des symboles .............= "+btos(bSym))
+      pl("Nb max d'elements de la table des symboles .= "+itos(MAXSYM))
+   catch
+      errex("analyseLigneCommande")
+   end catch
+end proc
+
+func string symToRecord(int i)
+   return
+   identif[i]+"\t"+classeDef[i]+"\t"+typ[i]+"\t"+signature[i]+"\t"+modifieur[i]+"\t"+
+   mode[i]+"\t"+dym[i]+"\t"+portee[i]+"\t"+
+   itos(nbParam[i])+"\t"+itos(ptrSym[i])+"\t"+
+   btos(existe[i])+"\t"+btos(bException[i])
+end func
+
+proc affSym()
+   int i,n
+   for i while i<nbSym
+      pl(symToRecord(i))
+   end for
+end proc
+
+proc err(string msg)
+   int n,i
+   string[] t
+   if bSym
+      affSym()
+   end if
+   //pl("ERREUR : "+msg)
+   //pl("Source : "+pathSourceCourant)
+   //pl("Mot ...: "+u)
+   n=getNum(lex)
+   //pl("Ligne .: "+itos(n))
+   try
+      t=getFileArray(pathSourceCourant)
+      i=n-10
+      if i<0
+         i=0
+      end if
+      while i<n
+         pl(padIntZeroLeft(i+1,7)+": "+t[i])
+         i=i+1
+      end while
+   catch
+   end catch
+   pl("ERREUR : "+msg)
+   pl("Source : "+pathSourceCourant)
+   pl("Mot ...: "+u)
+   pl("Ligne .: "+itos(n))
+   affDuree()
+   exit()
+end proc
+
+func string pathToWithoutSuffixe(string path)
+   int k
+   string r
+   r=path
+   k=lastIndexOf(r,".")
+   if k!=-1
+      r=left(r,k)
+   end if
+   //println("pathwithoutsuffixe $$$"+path+"$$$"+r+"$$$")
+   return r
+end func
+
+func string pathToType(string path)
+   int k
+   string r
+   r=pathToWithoutSuffixe(path)
+   k=lastIndexOf(r,"/")
+   if k!=-1
+      r=right(r,k+1)
+   end if
+   // println("pathtotype $$$"+path+"$$$"+r+"$$$")
+   return r
+end func
+
+func boolean aCompiler(string path)
+   long dateBcj,dateSym,dateJav
+   string w
+   if bCompileAll
+      return true
+   end if
+   w=pathToWithoutSuffixe(path)
+   dateBcj=lastModified(w+".bcj")
+   dateSym=lastModified(w+".sym")
+   dateJav=lastModified(pathToType(path)+".java")
+   // println("Verif dependance "+path+" bcj "+ltos(dateBcj)+" sym "+ltos(dateSym)+" cla "+ltos(dateCla)+" A compiler "+btos(dateBcj>=dateSym or dateBcj>=dateCla))
+   return dateBcj>=dateSym or dateBcj>=dateJav
+end func
+
+func int rech(int ptrArret,string id)
+   int i
+   i=nbSym-1
+   while i>=ptrArret
+      if existe[i]
+         if identif[i]==id
+            return i
+         end if
+      end if
+      i=i-1
+   end while
+   return -1
+end func
+
+proc ajout(string pportee,int pptrArret,string pidentif,string pmode,string pdym,string ptyp,string pclasse,int pnbParam)
+   if pmode==VARIABLE and isMotCle(pidentif)
+      err("Impossible de declarer l'identificateur "+pidentif+" car c'est un mot-cle")
+   end if
+   if rech(pptrArret,pidentif)!=-1
+      err("Identificateur "+pidentif+" deja declare")
+   end if
+   if nbSym>=MAXSYM
+      err("Table des symboles pleine")
+   end if
+   identif[nbSym]=pidentif
+   classeDef[nbSym]=pclasse
+   typ[nbSym]=ptyp
+   //signature[nbSym]=
+   //modifieur[nbSym]=
+   mode[nbSym]=pmode
+   dym[nbSym]=pdym
+   portee[nbSym]=pportee
+   nbParam[nbSym]=pnbParam
+   //ptrSym[nbSym]=
+   existe[nbSym]=true
+   bException[nbSym]=false
+   nbSym=nbSym+1
+end proc
+
+proc genDependances(string[] t)exception
+   string[] tw
+   int i,n
+   textfile fout
+   if existsFile("cbdependances.bcj")
+      if bCompileAll==false
+         return
+      end if
+   end if
+   open(fout,"cbdependances.bcj",1)
+   n=length(t)
+   for i while i<n
+      tw=getWords(t[i],":")
+      println(fout,tw[0]+" ___"+itos(i)+"___")
+   end for
+   close(fout)
+end proc
+
+proc listeFichiersACompiler()
+   inifile gfi
+   string[] t,tw
+   int i,n
+   boolean bCompil
+   try
+      open(gfi,directoryPath+pathIniFile)
+      t=getWords(gfi,"types","type")
+      genDependances(t)
+      n=length(t)
+      bCompil=false
+      for i while i<n
+         tw=getWords(t[i],":")
+         add(vtyp,tw[0])
+         add(vpath,directoryPath+tw[1])
+         ajout(" ",0,tw[0],TYPE," ",pathToType(tw[1]),"",0)
+         if bCompil
+            add(vcompil,"true")
+         else
+            if aCompiler(directoryPath+tw[1])
+               add(vcompil,"true")
+               bCompil=true
+            else
+               add(vcompil,"false")
+            end if
+         end if
+      end for
+      add(vtyp,"___dependances___")
+      add(vpath,"cbdependances.bcj")
+      if aCompiler("cbdependances.bcj")
+         add(vcompil,"true")
+      else
+         add(vcompil,"false")
+      end if
+      //-----------------
+      add(vtyp,pathToType(pathSource))
+      add(vpath,pathSource)
+      if aCompiler(pathSource)
+         add(vcompil,"true")
+      else
+         add(vcompil,"false")
+      end if
+   catch
+      // println(exceptionToString())
+      err("Fichier "+directoryPath+pathIniFile+" non trouve")
+   end catch
+end proc
+
+proc initSymTable()
+   nbSym=0
+   dim identif[MAXSYM]
+   dim classeDef[MAXSYM]
+   dim typ[MAXSYM]
+   dim signature[MAXSYM]
+   dim modifieur[MAXSYM]
+   dim mode[MAXSYM]
+   dim dym[MAXSYM]
+   dim portee[MAXSYM]
+   dim nbParam[MAXSYM]
+   dim ptrSym[MAXSYM]
+   dim existe[MAXSYM]
+   dim bException[MAXSYM]
+end proc
+
+proc loadSym(string letype,string path)exception
+   string[] t,tw
+   int i,n
+   //println("loadsym "+path)
+   t=getFileArray(pathToWithoutSuffixe(path)+".sym")
+   n=length(t)
+   for i while i<n
+      tw=getWords(replace(t[i],"\t\t","\t \t"),"\t")
+      // println(itos(length(tw))+" "+t[i])
+      if nbSym>=MAXSYM
+         err("Table des symboles pleine")
+      end if
+      identif[nbSym]=tw[0]
+      classeDef[nbSym]=tw[1]
+      typ[nbSym]=tw[2]
+      signature[nbSym]=tw[3]
+      modifieur[nbSym]=tw[4]
+      mode[nbSym]=tw[5]
+      dym[nbSym]=tw[6]
+      portee[nbSym]=tw[7]
+      nbParam[nbSym]=stoi(tw[8])
+      ptrSym[nbSym]=stoi(tw[9])
+      existe[nbSym]=tw[10]=="true"
+      bException[nbSym]=tw[11]=="true"
+      nbSym=nbSym+1
+   end for
+end proc
+
+proc saveSym(string letype,string path)exception
+   string pathout
+   textfile fout
+   int i
+   pathout=pathToWithoutSuffixe(path)+".sym"
+   open(fout,pathout,1)
+   i=ptrSymClasse
+   while i<nbSym
+      println(fout,symToRecord(i))
+      i=i+1
+   end while
+   close(fout)
+end proc
+
+proc gus()
+   try
+      u=us(lex)
+   catch
+      err("mot incorrect")
+   end catch
+end proc
+
+proc s(string mot)
+   if u!=mot
+      err("Mot "+mot+" attendu")
+   end if
+   gus()
+end proc
+
+proc vi()
+   if getType(lex)!=IDENTIFICATEUR
+      err("Identificateur attendu")
+   end if
+end proc
+
+func string cvDim(string dym)
+   switch
+      case dym==SIMPLE return ""
+      case dym==TABLEAU_1_DIM return "[]"
+      case dym==TABLEAU_2_DIM return "[][]"
+      default
+      errex("cvdim")
+   end switch
+   return ""
+end func
+
+proc plImport(string d)
+   try
+      println(wImport,d)
+   catch
+      errex("pImport")
+   end catch
+end proc
+
+proc plCodeLocal(string d)
+   try
+      println(codeLocal,d)
+   catch
+      errex("plCodeLocal")
+   end catch
+end proc
+
+proc plDclGlobales(string d)
+   try
+      println(dclGlobales,d)
+   catch
+      errex("plDclGlobales")
+   end catch
+end proc
+
+proc plHeritageInterface(string d)
+   try
+      println(heritageInterface,d)
+   catch
+      errex("plHeritageInterface")
+   end catch
+end proc
+
+proc plCodeGlobal(string d)
+   try
+      println(codeGlobal,d)
+   catch
+      errex("plCodeGlobal")
+   end catch
+end proc
+
+proc genDcl(string d)
+   //  if(!parent.bGen)return;
+   if bDclGlobales
+      plDclGlobales(d)
+   else
+      plCodeLocal(d)
+   end if
+end proc
+
+proc gen(string d)
+   //GG   if(!parent.bGen)return;
+   if bCodeLocal
+      plCodeLocal(d)
+   else
+      plCodeGlobal(d)
+   end if
+end proc
+
+func boolean verifType(string d)
+   int i
+   i=nbSym-1
+   while i>=0
+      if mode[i]==TYPE
+         if identif[i]==d
+            return true
+         end if
+      end if
+      i=i-1
+   end while
+   return false
+end func
+
+proc vt()
+   if verifType(u)
+      err("Interdit de declarer un objet avec le meme nom qu'un type'")
+   end if
+end proc
+
+func  string declareur()
+   int sym
+   string dym
+   sym=rech(0,u)
+   if sym==-1
+      return "null"
+   end if
+   if mode[sym]!=TYPE
+      return "null"
+   end if
+   gus()
+   dym=SIMPLE
+   if u=="["
+      gus()
+      s("]")
+      dym=TABLEAU_1_DIM
+      if u=="["
+         gus()
+         s("]")
+         dym=TABLEAU_2_DIM
+      end if
+   end if
+   return dym+typ[sym]
+end func
+
+func boolean dclVariable(int ptrArret)
+   string decl,typ,dym,portee
+   decl=declareur()
+   if decl=="null"
+      return false
+   end if
+   dym=charAt(decl,0)
+   typ=right(decl,1)
+   vi()
+   vt()
+   if bDclGlobales
+      portee=ATTRIBUT
+   else
+      portee=" "
+   end if
+   ajout(portee,ptrArret,u,VARIABLE,dym,typ,pathToType(pathSourceCourant),0)
+   if dym==SIMPLE
+      genDcl(typ+cvDim(dym)+" "+u+"=new "+typ+cvDim(dym)+"();")
+   else
+      genDcl(typ+cvDim(dym)+" "+u+";")
+   end if
+   gus()
+   while u==","
+      gus()
+      vi()
+      vt()
+      ajout(portee,ptrArret,u,VARIABLE,dym,typ,pathToType(pathSourceCourant),0)
+      if dym==SIMPLE
+         genDcl(typ+cvDim(dym)+" "+u+"=new "+typ+cvDim(dym)+"();")
+      else
+         genDcl(typ+cvDim(dym)+" "+u+";")
+      end if
+      gus()
+   end while
+   return true
+end func
+
+func int parametres(int ptrArret)
+   string decl,typ,dym
+   int nbPara
+   s("(")
+   nbPara=0
+   while u!="" and u!=")"
+      decl=declareur()
+      if decl=="null"
+         err("Declareur incorrect pour un parametre")
+      end if
+      dym=charAt(decl,0)
+      typ=right(decl,1)
+      vi()
+      vt()
+      ajout(" ",ptrArret,u,VARIABLE,dym,typ,pathToType(pathSourceCourant),0)
+      nbPara=nbPara+1
+      gus()
+      if u!="" and u!=")"
+         s(",")
+      end if
+   end while
+   if u==""
+      err(") manquante a la fin des parametres")
+   end if
+   gus()
+   return nbPara
+end func
+
+func string getSignature(int ptrsym)
+   return dym[ptrsym]+typ[ptrsym]+";"
+end func
+
+func string genSignature(string nomObjet,int ptrSym,int nbSym)
+   string r
+   int i
+   r=nomObjet+";"
+   i=ptrSym
+   while i<ptrSym+nbSym
+      //   sym=(BCJ_Symbole)parent.vSym.elementAt(i);
+      r=r+getSignature(i)
+      i=i+1
+   end while
+   return r
+end func
+
+func int rechSignature(string d)
+   int i
+   i=nbSym-1
+   while i>=0
+      if signature[i]==d
+         return i
+      end if
+      i=i-1
+   end while
+   return -1
+end func
+
+func int rechAttribut(string classeDe,string d)
+   int i
+   i=nbSym-1
+   while i>=0
+      if classeDef[i]==classeDe
+         if identif[i]==d
+            return i
+         end if
+      end if
+      i=i-1
+   end while
+   return -1
+end func
+
+func boolean codeJava()
+   /*
+   * clause import interdite
+   */
+   if u!="java"
+      return false
+   end if
+   gus()
+   while u!="" and u!="end"
+      if u=="import"
+         err("directive import interdite dans instruction java")
+      end if
+      if bDclGlobales
+         genDcl(u+" ")
+      else
+         gen(u+" ")
+      end if
+      gus()
+   end while
+   if u==""
+      err("end java attendu")
+   end if
+   gus()
+   s("java")
+   return true
+end func
+
+proc genNeg(string signature)
+   int symNeg
+   symNeg=rechSignature("neg;"+signature)
+   if symNeg==-1
+      err("operateur moins unaire incorrect")
+   end if
+   push(pile,classeDef[symNeg]+".neg("+pop(pile)+")")
+end proc
+//=============================
+//proto func string expression()
+
+func string reference()
+   int ptr,sym,symAttribut
+   string signature1,signature2,expression1,expression2
+   if getType(lex)!=IDENTIFICATEUR
+      return "null"
+   end if
+   ptr=0
+   if ptrSymProcFonctionCourante!=-1
+      if modifieur[ptrSymProcFonctionCourante]=="public static "
+         ptr=ptrSymProcFonctionCourante
+      end if
+   end if
+   //!
+   sym=rech(ptr,u)
+   if sym==-1
+      return "null"
+   end if
+   if mode[sym]!=VARIABLE
+      return "null"
+   end if
+   //println(symToRecord(sym))
+   switch
+      case dym[sym]==SIMPLE
+      gus()
+      if u=="."
+         gus()
+         symAttribut=rechAttribut(typ[sym],u)
+         if symAttribut==-1
+            err("Attribut "+u+" non trouve dans la classe "+classeDef[sym])
+         end if
+         //    println(symToRecord(symAttribut))
+         gus()
+         switch
+            case dym[symAttribut]==SIMPLE
+            push(pile,identif[sym]+"."+identif[symAttribut])
+            return getSignature(symAttribut)
+            case dym[symAttribut]==TABLEAU_1_DIM
+            if u=="["
+               gus()
+               //GGGG
+               java
+               signature1=expression();
+               end java
+               //        println("signature 1 "+signature1)
+               if signature1=="null"
+                  err("Expression incorrecte apres [")
+               end if
+               if signature1!="Scbint;"
+                  err("Expression d'entiers attendu apres [")
+               end if
+               s("]")
+               expression1=pop(pile)
+               push(pile,identif[sym]+"."+identif[symAttribut]+"[cbint.get("+expression1+")]")
+               return"S"+typ[symAttribut]+";"
+            end if
+            push(pile,identif[sym]+"."+identif[symAttribut])
+            return"T"+typ[symAttribut]+";"
+            case dym[symAttribut]==TABLEAU_2_DIM
+            if u=="["
+               gus()
+               //signature1=expression()
+               //GGGG
+               java
+               signature1=expression();
+               end java
+               if signature1=="null"
+                  err("Expression incorrecte apres [")
+               end if
+               if signature1!="Scbint;"
+                  err("Expression d'entiers attendu apres [")
+               end if
+               s("]")
+               s("[")
+               //signature2=expression()
+               //GGGG
+               java
+               signature2=expression();
+               end java
+               if signature2=="null"
+                  err("Expression incorrecte apres [")
+               end if
+               if signature2!="Scbint;"
+                  err("Expression d'entiers attendu apres [")
+               end if
+               s("]")
+               expression2=pop(pile)
+               expression1=pop(pile)
+               push(pile,identif[sym]+"."+identif[symAttribut]+"[cbint.get("+expression1+")][cbint.get("+expression2+")]")
+               return "S"+typ[symAttribut]+";"
+            end if
+            push(pile,identif[sym]+"."+identif[symAttribut])
+            return "A"+typ[symAttribut]+";"
+            default
+            err("reference 735")
+         end switch
+         return "null"
+      else
+         push(pile,identif[sym])
+         return getSignature(sym)
+      end if
+      case dym[sym]==TABLEAU_1_DIM
+      gus()
+      if u=="["
+         gus()
+         //signature1=expression()
+         //GGGG
+               java
+               signature1=expression();
+               end java
+         if signature1=="null"
+            err("Expression incorrecte apres [")
+         end if
+         //  println("signature 1 "+signature1)
+         if signature1!="Scbint;"
+            err("Expression d'entiers attendu apres [")
+         end if
+         s("]")
+         expression1=pop(pile)
+         push(pile,identif[sym]+"[cbint.get("+expression1+")]")
+         return "S"+typ[sym]+";"
+      else
+         push(pile,identif[sym])
+         return "T"+typ[sym]+";"
+      end if
+      case dym[sym]==TABLEAU_2_DIM
+      gus()
+      if u=="["
+         gus()
+         //signature1=expression()
+         //GGGG
+               java
+               signature1=expression();
+               end java
+         if signature1=="null"
+            err("Expression incorrecte apres [")
+         end if
+         if signature1!="Scbint;"
+            err("Expression d'entiers attendu apres [")
+         end if
+         s("]")
+         s("[")
+         //signature2=expression()
+         //GGGG
+               java
+               signature2=expression();
+               end java
+         if signature2=="null"
+            err("Expression incorrecte apres [")
+         end if
+         if signature2!="Scbint;"
+            err("Expression d'entiers attendu apres [")
+         end if
+         s("]")
+         expression2=pop(pile)
+         expression1=pop(pile)
+         push(pile,identif[sym]+"[cbint.get("+expression1+")][cbint.get("+expression2+")]")
+         return "S"+typ[sym]+";"
+      else
+         push(pile,identif[sym])
+         return "A"+typ[sym]+";"
+      end if
+      default
+      err("reference 1")
+   end switch
+   err("reference 2")
+   return "null"
+end func
+
+func string appelFonctionPredefinie()
+   string signature,dym
+   switch
+      case u=="length"
+      gus()
+      s("(")
+      signature=reference()
+      if signature=="null"
+         err("Identificateur attendu apres length")
+      end if
+      dym=charAt(signature,0)
+      switch
+         case dym==TABLEAU_1_DIM push(pile,"new cbint("+pop(pile)+".length)")
+         case dym==TABLEAU_2_DIM push(pile,"new cbint("+pop(pile)+".length)")
+         default err("Tableau a 1 ou 2 dimensions attendu apres length")
+      end switch
+      s(")")
+      return"Scbint;"
+      case u=="collength"
+      gus()
+      s("(")
+      signature=reference()
+      if signature=="null"
+         err("Identificateur attendu apres length")
+      end if
+      dym=charAt(signature,0)
+      switch
+         case dym==TABLEAU_2_DIM push(pile,"new cbint("+pop(pile)+"[0].length)")
+         default err("Tableau a 2 dimensions attendu apres length")
+      end switch
+      s(")")
+      return"Scbint;"
+      default
+      return "null"
+   end switch
+end func
+
+func string passageParametres()
+   // int nbPara
+   string signatureResultat,signature,codeGen
+   signatureResultat=""
+   //  nbPara=0
+   codeGen="("
+   s("(")
+   while u!=")" and u!=""
+      //signature=expression()
+      //GGGG
+               java
+               signature=expression();
+               end java
+      //   nbPara=nbPara+1
+      if signature=="null"
+         err("Expression incorrecte")
+      end if
+      signatureResultat=signatureResultat+signature
+      codeGen=codeGen+pop(pile)
+      if u==","
+         gus()
+         codeGen=codeGen+","
+      end if
+   end while
+   if u==""
+      err("symbole ) manquant a la fin de passage de parametres")
+   end if
+   s(")")
+   codeGen=codeGen+")"
+   push(pile,codeGen)
+   return signatureResultat
+end func
+
+func string appelFonction()
+   int sym
+   boolean bVerif
+   string w,memu,signature
+   sym=rech(0,u)
+   if sym==-1
+      return "null"
+   end if
+   if mode[sym]!=FONCTION and mode[sym]!=PROTO_FONCTION
+      return "null"
+   end if
+   memu=u
+   gus()
+   signature=passageParametres()
+   sym=rechSignature(memu+";"+signature)
+   if sym==-1
+      err("Verifier les types des parametres lors de l'appel de la fonction "+memu)
+   end if
+   if mode[sym]!=FONCTION and mode[sym]!=PROTO_FONCTION
+      err("Erreur interne : instAppelProcedure 2")
+   end if
+   if classeDef[sym]!=pathToType(pathSourceCourant)
+      if modifieur[sym]!="public static "
+         err("Appel d'une fonction non public externe au source")
+      end if
+   end if
+   if ptrSymProcFonctionCourante==-1
+      bVerif=true
+   else
+      bVerif=bException[ptrSymProcFonctionCourante]==false
+   end if
+   if  bVerif and bException[sym] and bTry==0
+      err("L'appel de la fonction "+identif[sym]+" doit etre dans une instruction try")
+   end if
+   w=""
+   if modifieur[sym]=="public static "
+      w=w+classeDef[sym]+"."
+   end if
+   w=w+identif[sym]
+   push(pile,w+pop(pile))
+   return getSignature(sym)
+end func
+
+func string facteurArithmetique()
+   int sym,symNeg
+   string signature,typus
+   boolean bNeg
+   if u=="-"
+      gus()
+      bNeg=true
+   else
+      bNeg=false
+   end if
+   typus=getType(lex)
+   switch
+      case typus==ENTIER //---------------------------
+      push(pile,"new cbint("+u+")")
+      gus()
+      if bNeg
+         genNeg("Scbint;")
+      end if
+      return SIMPLE+"cbint"+";"
+      case typus==REEL //-----------------------------
+      push(pile,"new cbdouble("+u+")")
+      gus()
+      if bNeg
+         genNeg("Scbdouble;")
+      end if
+      return SIMPLE+"cbdouble"+";"
+      case typus==LITTERAL //-------------------------
+      push(pile,"new cbstring("+u+")")
+      gus()
+      if bNeg
+         genNeg("Scbstring;")
+      end if
+      return SIMPLE+"cbstring"+";"
+      case typus==BOOLEEN //--------------------------
+      push(pile,"new cbboolean("+u+")")
+      gus()
+      if bNeg
+         genNeg("Scbboolean;")
+      end if
+      return SIMPLE+"cbboolean"+";"
+      case u=="(" //---------------------------------
+      gus()
+      //signature=expression()
+      //GGGG
+               java
+               signature=expression();
+               end java
+      if signature=="null"
+         err("Expression incorrecte apres (")
+      end if
+      if bNeg
+         genNeg(signature)
+      end if
+      s(")")
+      return signature
+      default //---------------------------------------
+      signature=appelFonctionPredefinie()
+      if signature!="null"
+         if bNeg
+            genNeg(signature)
+         end if
+         return signature
+      end if
+      signature=reference()
+      if signature!="null"
+         if bNeg
+            genNeg(signature)
+         end if
+         return signature
+      end if
+      signature=appelFonction()
+      if signature!="null"
+         if bNeg
+            genNeg(signature)
+         end if
+         return signature
+      end if
+   end switch
+   return "null"
+end func
+
+func string termeArithmetique()
+   string memu,signature1,signature2,signatureResultat,operateur,operande1,operande2
+   int sym
+   sym=-1
+   signature1=facteurArithmetique()
+   if signature1=="null"
+      return "null"
+   end if
+   signatureResultat=signature1
+   while u=="*" or u=="/" or u=="%"
+      switch
+         case u=="*" operateur="mul"
+         case u=="/" operateur="div"
+         default     operateur="mod"
+      end switch
+      memu=u
+      gus()
+      signature2=facteurArithmetique()
+      if signature2=="null"
+         err("Facteur arithmetique attendu apres "+memu)
+      end if
+      sym=rechSignature(operateur+";"+signature1+signature2)
+      if sym==-1
+         err("operateur "+memu+" incorrect")
+      end if
+      operande2=pop(pile)
+      operande1=pop(pile)
+      push(pile,classeDef[sym]+"."+operateur+"("+operande1+","+operande2+")")
+      signatureResultat=getSignature(sym)
+   end while
+   return signatureResultat
+end func
+
+func string expressionArithmetique()
+   string memu,signature1,signature2,signatureResultat,operateur,operande1,operande2
+   int sym
+   sym=-1
+   signature1=termeArithmetique()
+   if signature1=="null"
+      return "null"
+   end if
+   signatureResultat=signature1
+   while u=="+" or u=="-"
+      switch
+         case u=="+" operateur="add"
+         default     operateur="sub"
+      end switch
+      memu=u
+      gus()
+      signature2=termeArithmetique()
+      if signature2=="null"
+         err("Terme arithmetique attendu apres "+memu)
+      end if
+      sym=rechSignature(operateur+";"+signature1+signature2)
+      if sym==-1
+         err("operateur "+memu+" incorrect")
+      end if
+      operande2=pop(pile)
+      operande1=pop(pile)
+      push(pile,classeDef[sym]+"."+operateur+"("+operande1+","+operande2+")")
+      signatureResultat=getSignature(sym)
+   end while
+   return signatureResultat
+end func
+
+func string facteurBooleen()
+   string memu,signature1,signature2,signatureResultat,operateur,operande1,operande2
+   int sym
+   sym=-1
+   signature1=expressionArithmetique()
+   if signature1=="null"
+      return "null"
+   end if
+   signatureResultat=signature1
+   while u=="<" or u=="<=" or u==">" or u==">=" or u=="==" or u=="!="
+      switch
+         case u=="<"  operateur="cmplt"
+         case u=="<=" operateur="cmple"
+         case u==">"  operateur="cmpgt"
+         case u==">=" operateur="cmpge"
+         case u=="==" operateur="cmpeq"
+         default      operateur="cmpne"
+      end switch
+      memu=u
+      gus()
+      signature2=expressionArithmetique()
+      if signature2=="null"
+         err("Expression arithmetique attendu apres "+memu)
+      end if
+      sym=rechSignature(operateur+";"+signature1+signature2)
+      if sym==-1
+         err("operateur "+memu+" incorrect")
+      end if
+      operande2=pop(pile)
+      operande1=pop(pile)
+      push(pile,classeDef[sym]+"."+operateur+"("+operande1+","+operande2+")")
+      signatureResultat=getSignature(sym)
+   end while
+   return signatureResultat
+end func
+
+func string termeBooleen()
+   string memu,signature1,signature2,signatureResultat,operateur,operande1,operande2
+   int sym
+   sym=-1
+   signature1=facteurBooleen()
+   if signature1=="null"
+      return "null"
+   end if
+   signatureResultat=signature1
+   while u=="and"
+      operateur="and"
+      memu=u
+      gus()
+      signature2=facteurBooleen()
+      if signature2=="null"
+         err("Facteur booleen attendu apres "+memu)
+      end if
+      sym=rechSignature(operateur+";"+signature1+signature2)
+      if sym==-1
+         err("operateur "+memu+" incorrect")
+      end if
+      operande2=pop(pile)
+      operande1=pop(pile)
+      push(pile,classeDef[sym]+"."+operateur+"("+operande1+","+operande2+")")
+      signatureResultat=getSignature(sym)
+   end while
+   return signatureResultat
+end func
+
+func string expression()
+   //retourne une signature
+   string memu,signature1,signature2,signatureResultat,operateur,operande1,operande2
+   int sym
+   sym=-1
+   signature1=termeBooleen()
+   if signature1=="null"
+      return "null"
+   end if
+   signatureResultat=signature1
+   while u=="or"
+      operateur="or"
+      memu=u
+      gus()
+      signature2=termeBooleen()
+      if signature2=="null"
+         err("Terme booleen attendu apres "+memu)
+      end if
+      sym=rechSignature(operateur+";"+signature1+signature2)
+      if sym==-1
+         err("operateur "+memu+" incorrect")
+      end if
+      operande2=pop(pile)
+      operande1=pop(pile)
+      push(pile,classeDef[sym]+"."+operateur+"("+operande1+","+operande2+")")
+      signatureResultat=getSignature(sym)
+   end while
+   return signatureResultat
+end func
+
+func boolean instReturn()
+   string signatur
+   if u!="return"
+      return false
+   end if
+   //GGgenInfoDebug()
+   if ptrSymProcFonctionCourante==-1
+      err("Instruction return hors d'une procedure ou d'une fonction")
+   end if
+   gus()
+   if mode[ptrSymProcFonctionCourante]==PROCEDURE
+      gen("return;")
+      return true
+   end if
+   signatur=expression()
+   if signatur=="null"
+      err("Expression manquante apres return")
+   end if
+   if signatur!=getSignature(ptrSymProcFonctionCourante)
+      err("Type d'expression incorrect apres return")
+   end if
+   gen("return "+pop(pile)+";")
+   return true
+end func
+
+func boolean instAffectation()
+   int sym
+   string signatureResultat,signatureExpression,operandeResultat,operandeExpression
+   signatureResultat=reference()
+   if signatureResultat=="null"
+      return false
+   end if
+   //genInfoDebug();
+   // println(signatureResultat)
+   s("=")
+   signatureExpression=expression()
+   if signatureResultat!=signatureExpression
+      err("affectation : types incorrects")
+   end if
+   if startsWith(signatureResultat,"S")
+      sym=rechSignature("set;"+signatureResultat+signatureExpression)
+      if sym==-1
+         err("affectation incorrecte")
+      end if
+      //  println(symToRecord(sym))
+      operandeExpression=pop(pile)
+      operandeResultat=pop(pile)
+      gen(classeDef[sym]+".set("+operandeResultat+","+operandeExpression+");")
+   else
+      operandeExpression=pop(pile)
+      operandeResultat=pop(pile)
+      gen(operandeResultat+"="+operandeExpression+";")
+   end if
+   return true
+end func
+
+proc genTableau1Dim(string identif,string typ)
+   string c
+   c="for(int _i_=0;_i_<"+identif+".length;_i_++){"+identif+"[_i_]=new "+typ+"();}"
+   gen(c)
+end proc
+
+proc genTableau2Dim(string identif,string typ)
+   string c
+   c="for(int _i_=0;_i_<"+identif+".length;_i_++){for(int _j_=0;_j_<"+
+   identif+"[0].length;_j_++){"+identif+"[_i_][_j_]=new "+typ+"();}}"
+   gen(c)
+end proc
+
+func boolean instDim()
+   int sym
+   string signature1,signature2,expression1,expression2,qualifieur
+   if u!="dim"
+      return false
+   end if
+   //genInfoDebug()
+   gus()
+   sym=rech(0,u)
+   if sym==-1
+      err("Identificateur attendu apres dim")
+   end if
+   if mode[sym]!=VARIABLE
+      err("Variable attendue apres dim")
+   end if
+   qualifieur=u+"."
+   gus()
+   if u=="."
+      gus()
+      sym=rech(0,u)
+      if sym==-1
+         err("Identificateur attendu apres dim")
+      end if
+      if mode[sym]!=VARIABLE
+         err("Variable attendue apres qualifieur point")
+      end if
+      gus()
+   else
+      qualifieur=""
+   end if
+   switch
+      case dym[sym]==TABLEAU_1_DIM
+      s("[")
+      signature1=expression()
+      if signature1!="Scbint;"
+         err("Expression d'entiers attenbdu apres [")
+      end if
+      s("]")
+      expression1=pop(pile)
+      gen(qualifieur+identif[sym]+"=new "+typ[sym]+"[cbint.get("+expression1+")];")
+      genTableau1Dim(qualifieur+identif[sym],typ[sym])
+      case dym[sym]==TABLEAU_2_DIM
+      s("[")
+      signature1=expression()
+      if signature1!="Scbint;"
+         err("Expression d'entiers attenbdu apres [")
+      end if
+      s("]")
+      s("[")
+      signature2=expression()
+      if signature2!="Scbint;"
+         err("Expression d'entiers attenbdu apres [")
+      end if
+      s("]")
+      expression2=pop(pile)
+      expression1=pop(pile)
+      gen(qualifieur+identif[sym]+"=new "+typ[sym]+"[cbint.get("+expression1+")][cbint.get("+expression2+")];")
+      genTableau2Dim(qualifieur+identif[sym],typ[sym])
+      default
+      err("Tableau a 1 ou 2 dimensions attendu apres dim")
+   end switch
+   return true
+end func
+
+func boolean instAppelProcedure()
+   int sym
+   boolean bVerif
+   string memu,signature
+   sym=rech(0,u)
+   if sym==-1
+      return false
+   end if
+   if mode[sym]!=PROCEDURE and mode[sym]!=PROTO_PROCEDURE
+      return false
+   end if
+   //genInfoDebug();
+   memu=u
+   gus()
+   signature=passageParametres()
+   sym=rechSignature(memu+";"+signature)
+   if sym==-1
+      err("Verifier les types des parametres lors de l'appel de la procedure "+memu)
+   end if
+   if mode[sym]!=PROCEDURE and mode[sym]!=PROTO_PROCEDURE
+      err("Erreur interne : instAppelProcedure 2")
+   end if
+   if classeDef[sym]!=pathToType(pathSourceCourant)
+      if modifieur[sym]!="public static "
+         err("Appel d'une procedure non public externe au source")
+      end if
+   end if
+   if ptrSymProcFonctionCourante==-1
+      bVerif=true
+   else
+      bVerif=bException[ptrSymProcFonctionCourante]==false
+   end if
+   if bVerif and bException[sym] and bTry==0
+      err("L'appel de la procedure "+identif[sym]+" doit etre dans une instruction try")
+   end if
+   if modifieur[sym]=="public static "
+      gen(classeDef[sym]+".")
+   end if
+   gen(identif[sym])
+   gen(pop(pile)+";")
+   return true
+end func
+//proto func boolean listeInst()
+
+func  boolean instIf()
+   string signature
+   boolean b
+   if u!="if"
+      return false
+   end if
+   // genInfoDebug();
+   gus()
+   signature=expression()
+   if signature=="null"
+      err("Expression incorrecte apres if")
+   end if
+   if signature!="Scbboolean;"
+      err("Expression non booleenne apres if")
+   end if
+   gen("if(cbboolean.get("+pop(pile)+")){")
+   //b=listeInst()
+   //GGGG
+   java
+      b=listeInst();
+      end java
+   if u=="else"
+      gus()
+      gen("}else{")
+      //b=listeInst()
+      java
+      b=listeInst();
+      end java
+   end if
+   s("end")
+   s("if")
+   gen("}")
+   return true
+end func
+
+func boolean instSwitch()
+   string signature
+   boolean b
+   if u!="switch"
+      return false
+   end if
+   //genInfoDebug();
+   gus()
+   s("case")
+   signature=expression()
+   if signature=="null"
+      err("Expression incorrecte apres case")
+   end if
+   if signature!="Scbboolean;"
+      err("Expression non booleenne apres case")
+   end if
+   gen("if(cbboolean.get("+pop(pile)+")){")
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   gen("}")
+   while u=="case"
+      gus()
+      signature=expression()
+      if signature=="null"
+         err("Expression incorrecte apres case")
+      end if
+      if signature!="Scbboolean;"
+         err("Expression non booleenne apres case")
+      end if
+      gen("else if(cbboolean.get("+pop(pile)+")){")
+      //b=listeInst()
+       //GGGG
+   java
+      b=listeInst();
+      end java
+      gen("}")
+   end while
+   s("default")
+   gen("else{")
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   gen("}")
+   s("end")
+   s("switch")
+   return true
+end func
+
+func boolean instWhile()
+   string signature
+   boolean b
+   if u!="while"
+      return false
+   end if
+   //genInfoDebug();
+   gus()
+   signature=expression()
+   if signature=="null"
+      err("Expression incorrecte apres while")
+   end if
+   if signature!="Scbboolean;"
+      err("Expression non booleenne apres while")
+   end if
+   gen("while(cbboolean.get("+pop(pile)+")){")
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   s("end")
+   s("while")
+   gen("}")
+   return true
+end func
+
+func boolean instTry()
+   boolean b
+   if u!="try"
+      return false
+   end if
+   //genInfoDebug();
+   gen("try{")
+   bTry=bTry+1
+   gus()
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   bTry=bTry-1
+   s("catch")
+   genException=genException+1
+   gen("}catch(Exception e"+itos(genException)+"){cbsystem.lastException=e"+itos(genException)+";")
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   gen("}")
+   s("end")
+   s("catch")
+   return true
+end func
+
+func boolean instFor()
+   string signature,ident
+   boolean b
+   int sym
+   if u!="for"
+      return false
+   end if
+   //genInfoDebug();
+   gus()
+   vi()
+   sym=rech(0,u)
+   if sym==-1
+      err("Variable non declaree")
+   end if
+   if getSignature(sym)!="Scbint;"
+      err("Variable de type int attendue apres for")
+   end if
+   ident=identif[sym]
+   gus()
+   s("while")
+   signature=expression()
+   if signature=="null"
+      err("Expression incorrecte apres while")
+   end if
+   if signature!="Scbboolean;"
+      err("Expression non booleenne apres while")
+   end if
+   gen("cbint.set("+ident+",new cbint(0));")
+   gen("while(cbboolean.get("+pop(pile)+")){")
+   //b=listeInst()
+    //GGGG
+   java
+      b=listeInst();
+      end java
+   gen("cbint.inc("+ident+");")
+   gen("}")
+   s("end")
+   s("for")
+   return true
+end func
+
+func boolean instHeritageInterface()
+   string w
+   if u=="extends"
+      w=" extends "
+      gus()
+      w=w+u
+      gus()
+      if u=="implements"
+         w=w+" implements "
+         gus()
+         w=w+u
+         gus()
+         while u==","
+            w=w+u
+            gus()
+            w=w+u
+         end while
+      end if
+      plHeritageInterface(w)
+      return true
+   end if
+   if u=="implements"
+      w=" implements "
+      gus()
+      w=w+u
+      gus()
+      while u==","
+         w=w+u
+         gus()
+         w=w+u
+      end while
+      plHeritageInterface(w)
+      return true
+   end if
+   return false
+end func
+
+func boolean instImport()
+   string w
+   if u!="import"
+      return false
+   end if
+   w="import "
+   gus()
+   while u!="" and u!=";"
+      w=w+u
+      gus()
+   end while
+   if u==""
+      err("; omis a la fin de import")
+   end if
+   w=w+";"
+   plImport(w)
+   gus()
+   return true
+end func
+
+func boolean inst()
+   switch
+      case instReturn()             return true
+      case codeJava()               return true
+      case instAffectation()        return true
+      case instDim()                return true
+      case instAppelProcedure()     return true
+      case instIf()                 return true
+      case instSwitch()             return true
+      case instWhile()              return true
+      case instTry()                return true
+      case instFor()                return true
+      case instHeritageInterface()  return true
+      case instImport()             return true
+      default
+      return false
+   end switch
+end func
+
+func boolean listeInst()
+   boolean b
+   b=false
+   while inst()
+      b=true
+   end while
+   return b
+end func
+
+func boolean dclProcedure()
+   string nomProc,signatur,modifieu
+   int nbPara,sym,symProto,ptrSym,i
+   boolean b
+   if u!="proc"
+      return false
+   end if
+   bDclGlobales=false
+   bCodeLocal=true
+   gus()
+   switch
+      case u=="public"
+      modifieu="public static "
+      gus()
+      case u=="static"
+      modifieu="public static "
+      gus()
+      default
+      modifieu=""
+   end switch
+   vi()
+   vt()
+   nomProc=u
+   symProto=rech(ptrSymClasse,nomProc)
+   if modifieu==""
+      gen("public void "+nomProc+"(")
+   else
+      gen(modifieu+"void "+nomProc+"(")
+   end if
+   ptrSym=nbSym
+   ajout(" ",ptrSym,nomProc,PROCEDURE," ","",pathToType(pathSourceCourant),0)
+   ptrSymProcFonctionCourante=ptrSym
+   modifieur[ptrSymProcFonctionCourante]=modifieu
+   gus()
+   nbPara=parametres(ptrSym)
+   i=1
+   while i<=nbPara
+      //   sym=(BCJ_Symbole)parent.vSym.elementAt(ptrSym+i);
+      gen(typ[ptrSym+i]+cvDim(dym[ptrSym+i])+" "+identif[ptrSym+i])
+      if i<nbPara
+         gen(",")
+      end if
+      i=i+1
+   end while
+   gen(")")
+   if u=="exception"
+      gus()
+      gen("throws Exception")
+      bException[ptrSymProcFonctionCourante]=true
+   end if
+   gen("{")
+   signatur=genSignature(nomProc,ptrSym+1,nbPara)
+   if symProto!=-1
+      if mode[symProto]!=PROTO_PROCEDURE
+         err("Procedure deja definie")
+      end if
+      if signature[symProto]!=signatur
+         err("Incoherence de parametres entre le prototype et la declaration")
+      end if
+      if bException[symProto]!=bException[ptrSymProcFonctionCourante]
+         err("Incoherence sur le mot-cle exception entre le prototype et la declaration")
+      end if
+      if modifieur[symProto]!=modifieur[ptrSymProcFonctionCourante]
+         err("Incoherence sur le mot-cle public entre le prototype et la declaration")
+      end if
+   end if
+   // sym=(BCJ_Symbole)parent.vSym.elementAt(ptrSym);
+   signature[ptrSym]=signatur
+   nbParam[ptrSym]=nbPara
+   while dclVariable(ptrSym)
+   end while
+   b=listeInst()
+   i=ptrSym+1
+   while i<nbSym
+      existe[i]=false
+      i=i+1
+   end while
+   gen("}")
+   bDclGlobales=true
+   bCodeLocal=false
+   ptrSymProcFonctionCourante=-1
+   s("end")
+   s("proc")
+   return true
+end func
+
+func boolean dclFonction()
+   //GG detecter si il y a au moins un return
+   string dymf,nomProc,signatur,decl,dimJava,typf,modifieu
+   int nbPara,sym,symProto,ptrSym,i
+   boolean b
+   if u!="func"
+      return false
+   end if
+   bDclGlobales=false
+   bCodeLocal=true
+   gus()
+   switch
+      case u=="public"
+      modifieu="public static "
+      gus()
+      case u=="static"
+      modifieu="public static "
+      gus()
+      default
+      modifieu=""
+   end switch
+   decl=declareur()
+   if decl=="null"
+      err("Type de fonction incorrect")
+   end if
+   vi()
+   vt()
+   nomProc=u
+   symProto=rech(ptrSymClasse,nomProc)
+   dymf=charAt(decl,0)
+   switch
+      case dymf==TABLEAU_1_DIM
+      dimJava="[]"
+      case dymf==TABLEAU_2_DIM
+      dimJava="[][]"
+      default
+      dimJava=""
+   end switch
+   typf=right(decl,1)
+   if modifieu==""
+      gen("public "+typf+dimJava+" "+nomProc+"(")
+   else
+      gen(modifieu+typf+dimJava+" "+nomProc+"(")
+   end if
+   ptrSym=nbSym
+   ajout(" ",ptrSym,nomProc,FONCTION,dymf,typf,pathToType(pathSourceCourant),0)
+   ptrSymProcFonctionCourante=ptrSym
+   modifieur[ptrSymProcFonctionCourante]=modifieu
+   gus()
+   nbPara=parametres(ptrSym)
+   i=1
+   while i<=nbPara
+      //   sym=(BCJ_Symbole)parent.vSym.elementAt(ptrSym+i);
+      gen(typ[ptrSym+i]+cvDim(dym[ptrSym+i])+" "+identif[ptrSym+i])
+      if i<nbPara
+         gen(",")
+      end if
+      i=i+1
+   end while
+   gen(")")
+   if u=="exception"
+      gus()
+      gen("throws Exception")
+      bException[ptrSymProcFonctionCourante]=true
+   end if
+   gen("{")
+   signatur=genSignature(nomProc,ptrSym+1,nbPara)
+   if symProto!=-1
+      if mode[symProto]!=PROTO_FONCTION
+         err("Fonction deja definie")
+      end if
+      if signature[symProto]!=signatur
+         err("Incoherence de parametres entre le prototype et la declaration")
+      end if
+      //GG comparer avec dclProc ???
+   end if
+   signature[ptrSym]=signatur
+   nbParam[ptrSym]=nbPara
+   while dclVariable(ptrSym)
+   end while
+   b=listeInst()
+   i=ptrSym+1
+   while i<nbSym
+      existe[i]=false
+      i=i+1
+   end while
+   gen("}")
+   bDclGlobales=true
+   bCodeLocal=false
+   ptrSymProcFonctionCourante=-1
+   s("end")
+   s("func")
+   return true
+end func
+
+func boolean listeDcl()
+   boolean b
+   b=false
+   while dclVariable(ptrSymClasse) or dclProcedure() or dclFonction() //GGor dclProto()
+      b=true
+   end while
+   return b
+end func
+
+func boolean classe()
+   //GGwhile dclType())
+   //end while
+   while listeDcl() or listeInst() or codeJava()
+   end while
+   return true
+end func
+
+proc compiler(string typ,string path,boolean bMain)exception
+   string nomJava,codemain,codeconstructeur,classename
+   //genericindenter gi
+   pl("Compilation ................................= "+typ+"="+path)
+   classename=pathToType(path)
+   pathSourceCourant=path
+   open(heritageInterface,"tmpheritageinterface.tmp",1)
+   open(dclGlobales,"tmpdclglobales.tmp",1)
+   open(codeLocal,"tmpcodelocal.tmp",1)
+   open(codeGlobal,"tmpcodeglobal.tmp",1)
+   open(wImport,"tmpwimport.tmp",1)
+   bTry=0
+   raz(pile)
+   ptrSymClasse=nbSym
+   bDclGlobales=true
+   bCodeLocal=false
+   //memNumLigne=-1
+   ptrSymProcFonctionCourante=-1
+   if rech(0,typ)==-1
+      ajout(" ",0,typ,TYPE," ",typ,typ,0)
+   end if
+   start(lex,getFileString(path),true)
+   gus()
+   if classe()==false
+      err("Classe incorrecte")
+   end if
+   if u!=""
+      err("Erreur de syntaxe")
+   end if
+   nbLignesCompilees=nbLignesCompilees+getNum(lex)
+   close(wImport)
+   close(heritageInterface)
+   close(dclGlobales)
+   close(codeGlobal)
+   close(codeLocal)
+   nomJava=classename
+   codemain="cbsystem.setArgs(args);"
+   try
+     //println(directoryPath+"main.txt")
+      codemain=codemain+getFileString(directoryPath+"main.txt")
+   catch
+   end catch
+   try
+      codeconstructeur=getFileString(directoryPath+"newmain.txt")
+   catch
+   end catch
+   if bMain
+      putFileString(nomJava+".java",
+      getFileString("tmpwimport.tmp")+
+      "\npublic class "+nomJava+" "+
+      getFileString("tmpheritageinterface.tmp")+"\n{\n"+
+      "public static void main(String[]args)"+
+      "\n{\n"+codemain+"\n"+
+      "new "+nomJava+"();"+
+      "\n}\n"+
+      getFileString("tmpdclglobales.tmp")+"\n"+nomJava+"()\n{\n"+codeconstructeur+"\n"+
+      getFileString("tmpcodeglobal.tmp")+"\n}\n"+
+      getFileString("tmpcodelocal.tmp")+"\n}\n")
+   else
+      putFileString(nomJava+".java",
+      getFileString("tmpwimport.tmp")+"\npublic class "+nomJava+" "+
+      getFileString("tmpheritageinterface.tmp")+"\n{\n"+
+      getFileString("tmpdclglobales.tmp")+"\n"+nomJava+"()\n{\n"+
+      getFileString("tmpcodeglobal.tmp")+"\n}\n"+
+      getFileString("tmpcodelocal.tmp")+"\n}\n")
+   end if
+   //BCJ_JavaBeautifier.jb(nomSource+".java",false);
+   //indenterUnModule(gi,nomJava+".java","{","}","",3,false)
+   saveSym(typ,path)
+end proc
+
+proc compilerLesFichiers()exception
+   int i,n
+   boolean b
+   nbLignesCompilees=0
+   genException=0
+   n=size(vtyp)
+   for i while i<n
+      b=i==n-1 and bMain
+      if elementAt(vcompil,i)=="true"
+         compiler(elementAt(vtyp,i),elementAt(vpath,i),b)
+      else
+         loadSym(elementAt(vtyp,i),elementAt(vpath,i))
+      end if
+   end for
+end proc
+
+proc demarrer()exception
+   startChrono()
+   initConstantes()
+   analyseLigneCommande()
+   if pathSource==""
+      usage()
+   end if
+   initSymTable()
+   listeFichiersACompiler()
+   compilerLesFichiers()
+   if bSym
+      affSym()
+   end if
+   affDuree()
+   pl("*** COMPILATION REUSSIE ***")
+end proc
+//--- MAIN ---------------------------------------------
+
+try
+   demarrer()
+catch
+   println(exceptionToString())
+   exit()
+end catch

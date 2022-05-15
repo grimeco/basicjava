@@ -1,0 +1,116 @@
+<html><body><a name="tablematieres"></a><h1><center>textfile</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#close">close</a></td>
+</tr><tr>
+<td><a href="#getFileArray">getFileArray</a></td>
+</tr><tr>
+<td><a href="#getFileString">getFileString</a></td>
+</tr><tr>
+<td><a href="#getLineNumber">getLineNumber</a></td>
+</tr><tr>
+<td><a href="#open">open</a></td>
+</tr><tr>
+<td><a href="#openTmp">openTmp</a></td>
+</tr><tr>
+<td><a href="#print">print</a></td>
+</tr><tr>
+<td><a href="#println">println</a></td>
+</tr><tr>
+<td><a href="#putFileArray">putFileArray</a></td>
+</tr><tr>
+<td><a href="#putFileString">putFileString</a></td>
+</tr><tr>
+<td><a href="#readLine">readLine</a></td>
+</tr><tr>
+<td><a href="#setTmp">setTmp</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>textfile</b> est implemente dans le fichier source <b>bc/core/cbtextfile.bcj</b>.<br>
+<hr><a name="open"></a><b>proc open(textfile fichier,string nom,int mode)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Ouvre un fichier.
+   Mode
+   0 INPUT                 Lecture
+   1 OUTPUT                Creation
+   2 EXTEND                Ajout de lignes a la fin du fichier
+   3 OUTPUT TEMPORARY FILE Creation d'un fichier temporaire detruit a la fin de l'execution de l'application
+</b>
+<hr><a name="setTmp"></a><b>proc setTmp(string nomRepTmp)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Initialise le nom du repertoire repTmp contenant les fichiers temporaires,
+   par defaut, ce nom est egal a "tmptmp"
+</b>
+<hr><a name="openTmp"></a><b>func string openTmp(textfile fichier,string nom,int mode)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="repTmp+"/"+nomUtilisateur+"/"+nom+stamp"></a><b>
+   cree un fichier temporaire avec generation automatique du nom:
+   repTmp+"/"+nomUtilisateur+"/"+nom+stamp()
+   le parametre mode ne sert a rien, il est conserve pour compatibilite
+   avec l'open classique
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="readLine"></a><b>func boolean readLine(textfile fichier,string ligne)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="open"></a><b>
+   Lit une ligne
+   Retourne vrai si OK
+   Retourne faux si on est arrive en fin de fichier
+   Exemple:
+   textfile fich
+   string ligne
+   boolean b
+   try
+      open(fich,"toto.txt",0)
+      b=readLine(fich,ligne)
+      while b
+         println(ligne)
+         b=readLine(fich,ligne)
+      end while
+      close(fich)
+   catch
+      println(exceptionToString())
+   end catch
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="close"></a><b>proc close(textfile fichier)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Fermeture du fichier
+</b>
+<hr><a name="print"></a><b>proc print(textfile fichier,string d)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Ecrit dans le fichier sans passer a la ligne
+</b>
+<hr><a name="println"></a><b>proc println(textfile fichier,string d)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Ecrit dans le fichier en passant a la ligne
+</b>
+<hr><a name="getLineNumber"></a><b>func int getLineNumber(string nomFichier)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne le nombre de lignes du fichier
+</b>
+<hr><a name="getFileArray"></a><b>func string[] getFileArray(string nomFichier)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Charger un tableau directement
+</b>
+<hr><a name="putFileArray"></a><b>proc putFileArray(string nomFichier,string[] t)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Ecrit le contenu d'un tableau
+</b>
+<hr><a name="putFileString"></a><b>proc putFileString(string nomFichier,string data)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Ecrit un fichier contenant la chaine data
+</b>
+<hr><a name="getFileString"></a><b>func string getFileString(string nomFichier)exception</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+Retourne le contenu d'un fichier texte</b>
+</pre></body></html>

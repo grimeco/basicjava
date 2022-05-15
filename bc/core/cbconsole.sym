@@ -1,0 +1,10 @@
+print	cbconsole		print;Scbstring;	public static 	P	 	 	1	0	true	false
+d	cbconsole	cbstring			V	S	 	0	0	false	false
+println	cbconsole		println;Scbstring;	public static 	P	 	 	1	0	true	false
+d	cbconsole	cbstring			V	S	 	0	0	false	false
+readLine	cbconsole	cbstring	readLine;	public static 	F	S	 	0	0	true	false
+r	cbconsole	cbstring			V	S	 	0	0	false	false
+readPassword	cbconsole	cbstring	readPassword;	public static 	F	S	 	0	0	true	false
+r	cbconsole	cbstring			V	S	 	0	0	false	false
+i	cbconsole	cbint			V	S	 	0	0	false	false
+n	cbconsole	cbint			V	S	 	0	0	false	false

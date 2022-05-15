@@ -1,0 +1,49 @@
+IDENTIFICATEUR	cblexical	cbstring			V	S	A	0	0	true	false
+ENTIER	cblexical	cbstring			V	S	A	0	0	true	false
+REEL	cblexical	cbstring			V	S	A	0	0	true	false
+LITTERAL	cblexical	cbstring			V	S	A	0	0	true	false
+SYMBOLE	cblexical	cbstring			V	S	A	0	0	true	false
+COMMENTAIRE	cblexical	cbstring			V	S	A	0	0	true	false
+BOOLEEN	cblexical	cbstring			V	S	A	0	0	true	false
+d	cblexical	cbstring			V	S	A	0	0	true	false
+u	cblexical	cbstring			V	S	A	0	0	true	false
+c	cblexical	cbstring			V	S	A	0	0	true	false
+typus	cblexical	cbstring			V	S	A	0	0	true	false
+id	cblexical	cbint			V	S	A	0	0	true	false
+nd	cblexical	cbint			V	S	A	0	0	true	false
+numligne	cblexical	cbint			V	S	A	0	0	true	false
+nomFichier	cblexical	cbstring			V	S	A	0	0	true	false
+noComment	cblexical	cbboolean			V	S	A	0	0	true	false
+demarrerLexico	cblexical		demarrerLexico;Scblexical;Scbstring;	public static 	P	 	 	2	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+data	cblexical	cbstring			V	S	 	0	0	false	false
+start	cblexical		start;Scblexical;Scbstring;Scbboolean;	public static 	P	 	 	3	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+data	cblexical	cbstring			V	S	 	0	0	false	false
+noComment	cblexical	cbboolean			V	S	 	0	0	false	false
+erreur	cblexical		erreur;Scblexical;Scbstring;	public static 	P	 	 	2	0	true	true
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+msg	cblexical	cbstring			V	S	 	0	0	false	false
+getc	cblexical		getc;Scblexical;	public static 	P	 	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+lirc	cblexical		lirc;Scblexical;	public static 	P	 	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+rangc	cblexical		rangc;Scblexical;	public static 	P	 	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+rangcar	cblexical		rangcar;Scblexical;	public static 	P	 	 	1	0	true	true
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+eliminerEspace	cblexical	cbboolean	eliminerEspace;Scblexical;	public static 	F	S	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+eliminerCommentaire	cblexical	cbboolean	eliminerCommentaire;Scblexical;	public static 	F	S	 	1	0	true	true
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+bcontinue	cblexical	cbboolean			V	S	 	0	0	false	false
+us	cblexical	cbstring	us;Scblexical;	public static 	F	S	 	1	0	true	true
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+w	cblexical	cbstring			V	S	 	0	0	false	false
+carfin	cblexical	cbstring			V	S	 	0	0	false	false
+getType	cblexical	cbstring	getType;Scblexical;	public static 	F	S	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+getNum	cblexical	cbint	getNum;Scblexical;	public static 	F	S	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false
+getPos	cblexical	cbint	getPos;Scblexical;	public static 	F	S	 	1	0	true	false
+lex	cblexical	cblexical			V	S	 	0	0	false	false

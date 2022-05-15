@@ -1,0 +1,49 @@
+java
+   boolean val;
+   cbboolean(boolean b)
+   {
+   val=b;
+   }
+   static boolean get(cbboolean d)
+   {
+   return d.val;
+   }
+end java
+
+proc public set(boolean r,boolean d)
+   java
+      r.val=d.val;
+   end java
+end  proc
+
+func public boolean and(boolean op1,boolean op2)
+   boolean r
+   java
+      r.val=op1.val && op2.val;
+   end java
+   return r
+end func
+
+func public boolean or(boolean op1,boolean op2)
+   boolean r
+   java
+      r.val=op1.val || op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpeq(boolean op1,boolean op2)
+   boolean r
+   java
+      r.val=op1.val == op2.val;
+   end java
+   return r
+end func
+
+func public boolean cmpne(boolean op1,boolean op2)
+   boolean r
+   java
+      r.val=op1.val != op2.val;
+   end java
+   return r
+end func

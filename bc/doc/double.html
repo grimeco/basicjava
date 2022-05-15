@@ -1,0 +1,151 @@
+<html><body><a name="tablematieres"></a><h1><center>double</center></h1>
+<hr><h3>Procedures et fonctions</h3>
+<pre><table border="1"><tr>
+<td><a href="#abs">abs</a></td>
+</tr><tr>
+<td><a href="#acos">acos</a></td>
+</tr><tr>
+<td><a href="#asin">asin</a></td>
+</tr><tr>
+<td><a href="#atan">atan</a></td>
+</tr><tr>
+<td><a href="#atan2">atan2</a></td>
+</tr><tr>
+<td><a href="#cos">cos</a></td>
+</tr><tr>
+<td><a href="#cosh">cosh</a></td>
+</tr><tr>
+<td><a href="#exp">exp</a></td>
+</tr><tr>
+<td><a href="#log">log</a></td>
+</tr><tr>
+<td><a href="#pow">pow</a></td>
+</tr><tr>
+<td><a href="#sin">sin</a></td>
+</tr><tr>
+<td><a href="#sinh">sinh</a></td>
+</tr><tr>
+<td><a href="#sqrt">sqrt</a></td>
+</tr><tr>
+<td><a href="#tan">tan</a></td>
+</tr><tr>
+<td><a href="#tanh">tanh</a></td>
+</tr></table></pre><hr>
+<pre>Le module <b>double</b> est implemente dans le fichier source <b>bc/core/cbdouble.bcj</b>.<br>
+<hr><b>Instruction d'affectation<br>double r,d<br>r=d</b>
+<hr><b>Operateurs</b>
+boolean ( double &lt;  double )
+boolean ( double &lt;= double )
+boolean ( double >  double )
+boolean ( double >= double )
+boolean ( double ==  double )
+boolean ( double != double )
+double ( double +  double )
+double ( double - double )
+double ( double /  double )
+double ( double *  double )
+double ( - double )
+<b>
+Le type double definit des nombres reels sur 8 octets.
+Type             Nombre     Nombre            Intervalle
+d'octets   chiffres
+significatifs
+byte    Entier   1          3                 -128 a 127
+short   Entier   2          5                 -32768 a 32767
+int     Entier   4          10                -2 147 483 648 a 2 147 483 647
+long    Entier   8          19                -9 223 372 036 854 775 808 a 9223372036854775807
+float   flottant 4          7
+double  flottant 8          15</b>
+<hr><a name="abs"></a><b>func double abs(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+retourne la valeur absolue</b>
+<hr><a name="sin"></a><b>func double sin(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur du sinus de op (op exprime en radians)
+   Exemple:
+   double x,y
+   x=3.1415926
+   y=sin(x/2.0)
+   println("Sin PI/2 "+dtos(y))
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="cos"></a><b>func double cos(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur du cosinus de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="tan"></a><b>func double tan(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de la tangente de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="asin"></a><b>func double asin(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de l'arc sinus de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="acos"></a><b>func double acos(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de l'arc cosinus de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="atan"></a><b>func double atan(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de l'arc tangente de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="atan2"></a><b>func double atan2(double y,double x)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Returns the angle theta from the conversion of rectangular coordinates (x, y) to polar coordinates (r, theta). 
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="sinh"></a><b>func double sinh(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur du sinus hyperboliquede op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="cosh"></a><b>func double cosh(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur du cosinus hyperboliquede op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="tanh"></a><b>func double tanh(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de la tangente hyperbolique de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="sqrt"></a><b>func double sqrt(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de la racine carree de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="exp"></a><b>func double exp(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur de l'exponentielle a base e de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="log"></a><b>func double log(double op)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name=""></a><b>
+   Retourne la valeur du logarithme a base e de op (op exprime en radians)
+</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<hr><a name="pow"></a><b>func double pow(double op,double exposant)</b>
+<a href="#tablematieres">Retour a la liste procedures et fonctions</a>
+<b>
+   Retourne la valeur de op a la puissance exposant
+</b>
+</pre></body></html>

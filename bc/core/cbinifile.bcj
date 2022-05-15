@@ -1,0 +1,140 @@
+
+/*!
+Structure d'un fichier ini
+- une ligne commencant par // est un commentaire
+- un fichier ini peut comporter plusieurs sections:
+[nom de section]
+- une section contient des definitions:
+motcle=valeur
+- Une section peut comporter plusieurs fois le meme mot-cle.
+*/
+string nomFichier
+string[] tLignes
+
+proc public open(inifile fichier,string nom)exception
+   /*!
+   Ouvre et charge en memoire un fichier ini.
+   Ensuite, on peut utiliser toutes les fonctions decrites dans ce module.
+   Il n'y a pas de close a faire
+   Exemple:
+   inifile fich
+   string w
+   try
+      open(fich,"toto.ini")
+      w=getWord(fich,"general","nom")
+   catch
+      println(exceptionToString())
+   end catch
+   */
+   int i,n
+   fichier.nomFichier=nom
+   fichier.tLignes=getFileArray(nom)
+   n=length(fichier.tLignes)
+   for i while i<n
+      fichier.tLignes[i]=trim(fichier.tLignes[i])
+   end for
+end proc
+
+func public string[] getSections(inifile fichier)
+   /*!
+   Retourne les noms de sections
+   */
+   string ligne
+   stringvector v
+   int i,n
+   n=length(fichier.tLignes)
+   for i while i<n
+      ligne=fichier.tLignes[i]
+      if startsWith(ligne,"[")
+         add(v,substring(ligne,1,size(ligne)-1))
+      end if
+   end for
+   return vtos(v)
+end func
+
+func public string[] getWords(inifile fichier,string nomSection, string motCle)
+   /*!
+   Si motCle == "" la fonction retourne tous les mots de la section
+   */
+   string ligne,sectionCourante,sectionCritere
+   int i,n
+   string[]t
+   stringvector v
+   boolean bCopie
+   dim t[0]
+   sectionCourante=""
+   sectionCritere="["+nomSection+"]"
+   for i while i<length(fichier.tLignes)
+      ligne=fichier.tLignes[i]
+      switch
+      case startsWith(ligne,"[")
+         sectionCourante=ligne
+      case startsWith(ligne,"//")
+      default
+         if sectionCourante==sectionCritere
+            n=indexOf(ligne,"=")
+            bCopie=false
+            if n!=-1
+               if motCle==""
+                  bCopie=true
+               else
+                  bCopie=substring(ligne,0,n)==motCle
+               end if
+            end if
+            if bCopie
+               add(v,substring(ligne,n+1,size(ligne)))
+            end if
+         end if
+      end switch
+   end for
+   return vtos(v)
+end func
+
+func public string getFirstWord(inifile fichier,string nomSection, string motCle)exception
+   /*!
+   Provoque une exception si non trouve
+   */
+   string[]t
+   t=getWords(fichier,nomSection,motCle)
+   return t[0]
+end func
+
+proc public setFirstWord(inifile fichier,string nomSection,string motCle,string valeur)exception
+/*!
+Modifie un fichier ini
+en remplacant le premier mot d'une section par la valeur specifiee
+Pas d'erreur si le mot-cle n'existe pas
+*/
+   int i,n
+   boolean bContinue
+   string w,wSection,sectionCourante
+   n=length(fichier.tLignes)
+   bContinue=true
+   sectionCourante=""
+   wSection="["+nomSection+"]"
+   for i while i<n and bContinue
+      w=fichier.tLignes[i]
+      if startsWith(w,"[")
+         sectionCourante=w
+      else
+         if sectionCourante==wSection and startsWith(w,motCle+"=")
+            fichier.tLignes[i]=motCle+"="+valeur
+            bContinue=false
+         end if
+      end if
+   end for
+   putFileArray(fichier.nomFichier,fichier.tLignes)
+end proc
+
+func public string getWord(inifile fichier,string nomSection, string motCle)
+   /*!
+   Retourne "null" si non trouve
+   */
+   string[]t
+   try
+      t=getWords(fichier,nomSection,motCle)
+      return t[0]
+   catch
+      return "null"
+   end catch
+end func
