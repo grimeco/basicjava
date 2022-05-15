@@ -1,3 +1,0 @@
-[zip]
-proto=proc filesToZip(string nomArchive,string[] listeNoms)exception
-proto=$L *  Cree un fichier zip contenant tous les fichiers definis par listeNoms$L
