@@ -3,7 +3,7 @@ Le langage Basilic est un langage procédural visant à offrir une syntaxe simpl
 
 La documentation est disponible sur le site [grimeco](https://grimeco.fr)
 
-The Basilic language is a procedural language aiming to offer a simple syntax similar to that of the Basic language, but making it possible to exploit all the resources available in the Java language. Basilic is implemented as a scripting language. A "compiler" translates basil code into java code. 
+The Basilic language is a procedural language aiming to offer a simple syntax similar to that of the Basic language, but making it possible to exploit all the resources available in the Java language. Basilic is implemented as a scripting language. A "compiler" translates basilic code into java code. 
 
 The documentation is available on the [grimeco](https://grimeco.fr) website
 
