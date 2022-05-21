@@ -1,0 +1,2 @@
+// code execute au debut du constructeur main
+cbsystem.racine=this;

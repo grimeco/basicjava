@@ -1,0 +1,3 @@
+// Code execute au debut de la methode main
+
+
