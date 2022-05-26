@@ -1,0 +1,36 @@
+import java.net.*;
+import java.io.*;
+
+proc public getInternet(string http,string nomfichier)exception
+   /*!
+   Recupere dans un fichier texte, le contenu d'une page web.
+   Exemple:
+   try
+      getInternet("http://www.google.fr","google.html")
+   catch
+      println(errorToMessage())
+   end catch
+   */
+   java
+      URL url;
+      HttpURLConnection connexion;
+      InputStream flux;
+      FileOutputStream fich=null;
+      int n;
+      byte[]b=new byte[8192];
+      url=new URL(http.val);
+      connexion=(HttpURLConnection)url.openConnection();
+      connexion.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
+      connexion.connect();
+      flux=connexion.getInputStream();
+      fich=new FileOutputStream(nomfichier.val);
+      n=flux.read(b);
+      while(n!=-1)
+      {
+         fich.write(b,0,n);
+         n=flux.read(b);
+      }
+      fich.close();
+      flux.close();
+   end java
+end proc
