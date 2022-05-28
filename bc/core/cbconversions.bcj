@@ -1,6 +1,7 @@
 import java.util.*;
 import java.text.*;
 import java.math.*;
+import java.nio.charset.*;
 
 func public string btos(boolean op)
    /*!
@@ -73,7 +74,7 @@ Convertit un long en double
 */
    double r
    java
-      r.val=new Double(""+d.val);
+      r.val=d.val;
    end java
    return r
 end func
@@ -455,3 +456,13 @@ func public int[]initIntArray(string valeurs)
    return initIntArraySep(valeurs,",")
 end func
 
+func public string utf8ToString(string op)
+   /*!
+   Convertit en chaîne une donnée codée en UTF8
+   */
+   string r
+   java
+      r.val=new String(op.val.getBytes(),Charset.forName("UTF-8"));
+   end java
+   return r
+end func
