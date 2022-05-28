@@ -42,3 +42,82 @@ proc public filesToZip(string nomArchive, string[] listeNoms)exception
       out.close();
    end java
 end proc
+
+func public string[] getZipEntries(string nomArchive)exception
+   /*!
+   Chaque élement de tableau contient trois propriétés:
+   name, size et compressedsize
+   Exemple:
+   name=projets/meteovoyage/images/dodsicones/d11.png;size=551;compressedsize=531;
+   */
+   stringvector v
+   string w
+   java
+      ZipFile zip=new ZipFile(new File(nomArchive.val));
+      for(Enumeration e=zip.entries();e.hasMoreElements();)
+      {
+         ZipEntry entry=(ZipEntry)e.nextElement();
+         w.val="name="+entry.getName()+";"+
+               "size="+ entry.getSize()+";"+
+               "compressedsize="+entry.getCompressedSize()+";";
+    end java           
+         add(v,w)
+    java     
+       }
+       zip.close();  
+    end java
+    return vtos(v)
+end func
+
+proc public zipToFile(string nomArchive,string repDestination,string nomFichierAExtraire)exception
+   /*!
+   Si repDestination=="" décompression dans le répertoire courant
+   */
+   string wrep,w
+   wrep=replace(repDestination,"\\","/")
+   if endsWith(wrep,"/")==false
+      if wrep!=""
+         wrep=wrep+"/"
+      end if
+   end if
+   java
+      BufferedOutputStream dest;
+      FileInputStream file_decompress;
+      ZipInputStream zis;
+      ZipEntry entree;
+      FileOutputStream fos;
+      byte data[] ;
+      int n,MAXBLOC=4096;
+      //String w;
+      data=new byte[MAXBLOC] ;
+      file_decompress=new FileInputStream(nomArchive.val);
+      zis=new ZipInputStream(new BufferedInputStream(file_decompress));
+      entree=zis.getNextEntry();
+      while(entree!=null)
+      {
+         w.val=entree.getName();
+         end java     
+         if nomFichierAExtraire==w
+            w=wrep+w
+            createDirectories(w)
+            java
+            fos=new FileOutputStream(w.val);
+            dest=new BufferedOutputStream(fos, MAXBLOC);
+            n=zis.read(data, 0, MAXBLOC);
+            while(n!=-1)
+            {
+               dest.write(data, 0, n);
+               n=zis.read(data, 0, MAXBLOC);
+            }
+            dest.flush();
+            dest.close();
+            zis.close();
+            end java       
+            return
+         end if
+         java
+         entree=zis.getNextEntry();
+      }
+      zis.close();
+   end java
+end proc
