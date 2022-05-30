@@ -1,0 +1,678 @@
+
+
+func static string[] getFieldNames(string repbdd,string tablename)exception
+   /*!
+    * Retourne les noms des colonnes d'une table
+   */
+   string[] t
+   string w
+   w=getFileString(repbdd+"/"+tablename+".des")
+   w=replace(w,"\n","")
+   return getWords(w,"\t")
+end func   
+
+func static string s(lexical lex,string u,string mot)exception
+    if u!=mot
+       throwex("Mot attendu "+mot+" Mot courant "+u)
+    end if
+    return us(lex)   
+end func
+
+func static boolean existsTable(string repbdd,string nomtable)
+   return existsFile(repbdd+"/"+nomtable+".des") and existsFile(repbdd+"/"+nomtable+".dat") 
+end func
+
+func static string mefLit(string d)
+   if size(d)<2
+      return d
+   end if
+   return deleteLastChar(right(d,1))   
+end func
+
+func static int isColumn(string repbdd,string nomtable,string nomColonne)
+   string[] t
+   int i,n
+   try
+      t=getFieldNames(repbdd,nomtable)
+      n=length(t)
+      for i while i<n
+         if t[i]==nomColonne
+            return i
+         end if   
+      end for
+   catch
+      println(exceptionToString())
+   end catch
+   return -1
+end func
+
+func static string[] facteurSql(string repbdd,string nomtable,lexical lex,string mot,stringvector v)exception
+   string[] t
+   string u,typus,op
+   int num
+   dim t[2]
+   if mot==""
+      t[0]="*"
+      return t
+   end if   
+   if mot=="("
+      u=us(lex)
+      java
+         t=exprCond(repbdd,nomtable,lex,u,v);
+      end java
+      if t[0]!="OK"
+         return t
+      end if   
+      t[0]="OK"
+      t[1]=s(lex,t[1],")")
+      return t
+   end if
+   // nom de colonne
+   typus=getType(lex)
+   switch
+      case typus=="I"
+           num=isColumn(repbdd,nomtable,mot)
+           if num==-1
+              throwex("Nom de colonne inconnu "+mot)
+           end if
+           add(v,"C"+itos(num))
+           u=us(lex)
+      default
+         t[0]="*"
+         return t
+   end switch
+   // operateur
+   switch
+   case 
+   u=="==" or u=="=" or 
+   u=="!=" or u=="<>" or 
+   u=="<=" or u=="<" or 
+   u==">" or u==">=" or 
+   u=="contains"  or u=="nocontains" or
+   u=="startswith" or u=="nostartswith" or
+   u=="endswith" or u=="noendswith" or 
+   u=="dateeq" or u=="datene" or
+   u=="datelt" or u=="datele" or 
+   u=="dategt" or u=="datege"
+   op="O"+u   
+   default
+      throwex("operateur incorrect "+u)
+   end switch
+   u=us(lex)
+   // litteral
+   typus=getType(lex)
+   switch
+      case typus=="L"
+           add(v,"L"+deleteLastChar(right(u,1)))
+           u=us(lex)
+      default
+         t[0]="*"
+         return t
+   end switch
+   add(v,op)
+   t[0]="OK"
+   t[1]=u
+   return t
+end func
+
+func static string[] termeSql(string repbdd,string nomtable,lexical lex,string mot,stringvector v)exception
+     string[] t
+     string u
+     dim t[2]
+     t=facteurSql(repbdd,nomtable,lex,mot,v)
+     if t[0]!="OK"
+        return t
+     end if
+     u=t[1]   
+     while u=="and"
+         u=us(lex)
+         t=facteurSql(repbdd,nomtable,lex,u,v)
+         if t[0]!="OK"
+            throwex("terme incorrect apres OR")
+         end if
+         add(v,"Oand")
+     end while
+     return t
+end func
+
+func static string[] exprCond(string repbdd,string nomtable,lexical lex,string mot,stringvector v)exception
+     string[] t
+     string u
+     t=termeSql(repbdd,nomtable,lex,mot,v)
+     if t[0]!="OK"
+        return t
+     end if
+     u=t[1]   
+     while u=="or"
+         u=us(lex)
+         t=termeSql(repbdd,nomtable,lex,u,v)
+         if t[0]!="OK"
+            throwex("terme incorrect apres OR")
+         end if
+         add(v,"Oor")
+     end while
+     return t
+end func
+
+func static boolean evalPostFixe(string[] tpf,string[] tval,boolean ignorecase)exception
+   stringstack pile
+   int i,n
+   string w,typ,val,op1,op2
+   n=length(tpf)
+   for i while i<n
+      w=tpf[i]
+      typ=charAt(w,0)
+      val=right(w,1)
+      switch
+         case typ=="L"
+              if ignorecase
+                 val=toLowerCase(val)
+              end if   
+              push(pile,val)
+         case typ=="C"
+               if ignorecase
+                    push(pile,toLowerCase(tval[stoi(val)]))
+               else
+                  push(pile,tval[stoi(val)])
+               end if   
+         case typ=="O"
+            op2=pop(pile)
+            op1=pop(pile)
+            switch
+            case val=="==" or val=="="
+                 push(pile,btos(op1==op2))
+            case val=="!=" or val=="<>"
+                 push(pile,btos(op1!=op2))
+            case val=="<" 
+                 push(pile,btos(op1<op2))     
+            case val=="<=" 
+                 push(pile,btos(op1<=op2))     
+            case val==">" 
+                 push(pile,btos(op1>op2))     
+            case val==">=" 
+                 push(pile,btos(op1>=op2))  
+            case val=="contains"
+                 push(pile,btos(indexOf(op1,op2)!=-1))
+            case val=="nocontains"
+                 push(pile,btos(indexOf(op1,op2)==-1))
+            case val=="startswith"
+                 push(pile,btos(startsWith(op1,op2)))
+            case val=="nostartswith"
+                 push(pile,btos(startsWith(op1,op2)==false))
+             case val=="endswith"
+                 push(pile,btos(endsWith(op1,op2)))
+            case val=="noendswith"
+                 push(pile,btos(endsWith(op1,op2)==false))
+            case val=="dateeq"
+                 push(pile,btos(compareDate(op1,op2)=="="))
+            case val=="datene"
+                 push(pile,btos(compareDate(op1,op2)!="="))
+            case val=="datelt"
+                 push(pile,btos(compareDate(op1,op2)=="<"))
+            case val=="datege"
+                 push(pile,btos(compareDate(op1,op2)!="<"))
+            case val=="dategt"
+                 push(pile,btos(compareDate(op1,op2)==">"))
+            case val=="datele"
+                 push(pile,btos(compareDate(op1,op2)!=">"))
+            case val=="and"
+                 push(pile,btos(stob(op1)and stob(op2)))
+            case val=="or"
+                 push(pile,btos(stob(op1)or stob(op2)))
+            default
+               throwex("EVAL PF Code op inconnu "+val)
+            end switch
+         default
+      end switch
+   end for
+   return stob(pop(pile))
+end func
+
+func public boolean instSelect(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout)exception
+   string typus,w,u,nomtable
+   stringvector vwhere,vcol
+   textfile fin,fout
+   boolean b,bfirst,bwhere,beval
+   string[] postfixe,tw
+   int[] tnumcol
+   int nbcol,i
+   if mot!="select"
+      return false
+   end if
+   u=us(lex)   // select
+   if u=="first"
+      bfirst=true
+      u=us(lex)
+   else
+      bfirst=false   
+   end if
+   if u=="*"
+      u=us(lex)
+      dim tnumcol[0]
+      dim tw[0]
+      nbcol=0
+   else
+      typus=getType(lex)
+      if typus!="I" or u=="from"
+         throwex("* ou identificateur attendu apres select, mot "+u)
+      end if
+      add(vcol,u)
+      u=us(lex)
+      while u==","
+         u=us(lex)
+         typus=getType(lex)
+         if typus!="I" or u=="from"
+            throwex("* ou identificateur attendu apres select, mot "+u)
+         end if
+         add(vcol,u)
+         u=us(lex)
+      end while
+      tw=vtos(vcol)
+      nbcol=length(tw)
+      dim tnumcol[nbcol]
+   end if
+  // u=s(lex,u,"*")
+   nomtable=s(lex,u,"from")
+   if existsTable(repbdd,nomtable)==false
+      throwex("Table non trouvee "+nomtable)
+   end if
+   for i while i<nbcol
+       tnumcol[i]=isColumn(repbdd,nomtable,tw[i])
+       if tnumcol[i]==-1
+          throwex("Nom de colonne incorrect "+tw[i]+" pour la table "+nomtable)
+       end if
+   end for
+   u=us(lex)
+   if u=="where"
+      bwhere=true
+      u=s(lex,u,"where")
+      tw=exprCond(repbdd,nomtable,lex,u,vwhere)   
+      postfixe=vtos(vwhere)
+   else
+      dim tw[0]
+      dim postfixe[0]
+      bwhere=false
+      beval=true
+   end if   
+   open(fin,repbdd+"/"+nomtable+".dat",0)
+   open(fout,pathout,1)
+   b=readLine(fin,w)
+   while b
+      if bwhere
+         tw=getWords(w,"\t")
+         beval=evalPostFixe(postfixe,tw,ignorecase)
+      end if
+      if beval   
+         if nbcol!=0
+            w=""
+            for i while i<nbcol
+                w=w+"\t"+tw[tnumcol[i]]
+            end for
+            w=right(w,1)
+         end if
+         println(fout,w)   
+         if bfirst
+           b=false
+         end if  
+      end if
+      if b
+         b=readLine(fin,w)
+      end if   
+   end while
+   close(fin)
+   close(fout)
+   return true
+end func
+
+func public boolean instDelete(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout)exception
+   string w,u,nomtable
+   stringvector vwhere
+   textfile fin,fout
+   boolean b
+   string[] postfixe,tw
+   if mot!="delete"
+      return false
+   end if
+   nomtable=us(lex)   // delete
+   if existsTable(repbdd,nomtable)==false
+      throwex("Table non trouvee "+nomtable)
+   end if
+   u=us(lex)
+   u=s(lex,u,"where")
+   tw=exprCond(repbdd,nomtable,lex,u,vwhere)
+   postfixe=vtos(vwhere)
+   open(fin,repbdd+"/"+nomtable+".dat",0)
+   open(fout,"sqltmp.dat",1)
+   b=readLine(fin,w)
+   while b
+      tw=getWords(w,"\t")
+      if evalPostFixe(postfixe,tw,ignorecase)==false
+         println(fout,w)
+      end if
+      b=readLine(fin,w)
+   end while
+   close(fin)
+   close(fout)
+   copyFile("sqltmp.dat",repbdd+"/"+nomtable+".dat")
+   return true
+end func
+
+func public boolean instUpdate(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout)exception
+   string w,u,nomtable,typus
+   stringvector vwhere,vval,vcol
+   textfile fin,fout
+   boolean b
+   string[] postfixe,tw,tval
+   int[] tcol
+   int i,nbcoltot,nbcolmaj,numcol
+   if mot!="update"
+      return false
+   end if
+   nomtable=us(lex)   // update
+   if existsTable(repbdd,nomtable)==false
+      throwex("Table non trouvee "+nomtable)
+   end if
+   tw=getFieldNames(repbdd,nomtable)
+   nbcoltot=length(tw)
+   u=us(lex)
+   u=s(lex,u,"set")
+   numcol=isColumn(repbdd,nomtable,u)
+   if numcol==-1
+      throwex("Nom de colonne inconnu "+u)
+   end if
+   add(vcol,itos(numcol))
+   u=us(lex)
+   u=s(lex,u,"=")
+   typus=getType(lex)
+   if typus!="L"
+      throwex("Type de valeur incorrecte "+u)
+   end if
+   add(vval,mefLit(u))
+   u=us(lex)
+   while u==","
+      u=us(lex)
+      numcol=isColumn(repbdd,nomtable,u)
+      if numcol==-1
+         throwex("Nom de colonne inconnu "+u)
+      end if
+      add(vcol,itos(numcol))
+      u=us(lex)
+      u=s(lex,u,"=")
+      typus=getType(lex)
+      if typus!="L"
+         throwex("Type de valeur incorrecte "+u)
+      end if
+      add(vval,mefLit(u))
+      u=us(lex)
+   end while
+   tw=vtos(vcol)
+   tval=vtos(vval)
+   nbcolmaj=length(tw)
+   dim tcol[nbcolmaj]
+   for i while i<nbcolmaj
+     tcol[i]=stoi(tw[i])
+   end for
+   u=s(lex,u,"where")
+   tw=exprCond(repbdd,nomtable,lex,u,vwhere)
+   postfixe=vtos(vwhere)
+   open(fin,repbdd+"/"+nomtable+".dat",0)
+   open(fout,"sqltmp.dat",1)
+   b=readLine(fin,w)
+   while b
+      tw=getWords(w,"\t")
+      if evalPostFixe(postfixe,tw,ignorecase)
+         for i while i<nbcolmaj
+             tw[tcol[i]]=tval[i]
+         end for
+         w=""
+         for i while i<nbcoltot
+            w=w+"\t"+tw[i]
+         end for
+         w=right(w,1)
+      end if
+      println(fout,w)
+      b=readLine(fin,w)
+   end while
+   close(fin)
+   close(fout)
+   copyFile("sqltmp.dat",repbdd+"/"+nomtable+".dat")
+   return true
+end func
+
+func static boolean instShow(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout) exception
+   string u
+   string[] t
+   int i,n
+   textfile fout
+   if mot!="show"
+      return false
+   end if
+   u=us(lex)
+   if u=="tables"
+      t=getSuffixeDirectory(repbdd,".des")
+   else  
+      u=s(lex,u,"columns")
+      u=s(lex,u,"from")
+      t=getFieldNames(repbdd,u)
+   end if   
+   n=length(t)
+   open(fout,pathout,1)
+   for i while i<n
+       t[i]=replace(t[i],".des","")
+       print(fout,t[i])
+       if i<n-1
+          println(fout,"")
+       end if   
+   end for
+   close(fout)
+   return true
+end func
+
+func static boolean instCreateTable(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout) exception
+   string w,typus,u,nomTable,path
+   stringvector v
+   int i,n
+   string[] t
+   if mot!="create"
+      return false
+   end if   
+   u=us(lex) // create
+   nomTable=s(lex,u,"table")
+   u=us(lex)
+   u=s(lex,u,"(")
+   typus=getType(lex)
+   if typus!="I"
+      throwex("Identificateur attendu "+u)
+   end if
+   if contains(v,u)
+      throwex("Nom de colonne deja defini "+u)
+   end if
+   add(v,u)
+   u=us(lex)
+   while u==","
+      u=us(lex)
+      typus=getType(lex)
+      if typus!="I"
+         throwex("Identificateur attendu "+u)
+      end if
+      if contains(v,u)
+         throwex("Nom de colonne deja defini "+u)
+      end if
+      add(v,u)
+      u=us(lex)
+   end while
+   u=s(lex,u,")")
+   path=repbdd+"/"+nomTable
+   if existsTable(repbdd,nomTable)
+      throwex("Table deja definie : "+nomTable)
+   end if
+   putFileString(path+".dat","")
+   t=vtos(v)
+   n=length(t)
+   w=""
+   for i while i<n
+      w=w+"\t"+t[i]
+   end for  
+   w=right(w,1)
+   putFileString(path+".des",w)    
+   return true
+end func
+
+func static boolean instInsert(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout)exception
+   string u,typus,nomTable,w
+   int nbval,nbcol
+   string[] t
+   textfile fout
+   if mot!="insert"
+      return false
+   end if   
+   u=us(lex)
+   nomTable=s(lex,u,"into")
+   u=us(lex)
+   u=s(lex,u,"values")
+   u=s(lex,u,"(")
+   typus=getType(lex)
+   if typus!="L"
+      throwex("Litteral attendu "+u)
+   end if
+   w=mefLit(u)
+   u=us(lex)
+   nbval=1
+   while u==","
+      u=us(lex)
+      typus=getType(lex)
+      if typus!="L"
+         throwex("Identificateur attendu "+u)
+      end if
+      w=w+"\t"+mefLit(u)
+      nbval=nbval+1
+      u=us(lex)
+   end while
+   u=s(lex,u,")")
+   if existsTable(repbdd,nomTable)==false
+      throwex("Table non trouvee "+nomTable)
+   end if
+   t=getFieldNames(repbdd,nomTable)
+   nbcol=length(t) 
+   if nbcol!=nbval
+      throwex("Nombre de valeurs different du nombre de champs")
+   end if     
+   open(fout,repbdd+"/"+nomTable+".dat",2)
+   println(fout,w)
+   close(fout)
+   return true 
+end func
+
+func static boolean instDropTable(string repbdd,lexical lex,string mot,boolean ignorecase,string pathout)exception 
+   string u,nomTable
+   if mot!="drop"
+      return false
+   end if
+   u=us(lex)
+   nomTable=s(lex,u,"table")
+   if existsTable(repbdd,nomTable)==false
+      throwex("Table non trouvee "+nomTable)
+   end if
+   deleteFile(repbdd+"/"+nomTable+".dat")   
+   deleteFile(repbdd+"/"+nomTable+".des")   
+   return true   
+end func
+
+func public string runSql(string repbdd,string cmd,boolean ignorecase,string pathout)
+   /*!
+    * Execute une requete sql
+    *    repbdd     : repertoire contenant les tables
+    *    cmd        : requete sql
+    *    ignorecase : si true les expressions apres WHERE sont evaluees en ignorant la casse
+    *    pathout    : chemin du fichier tabule contenant les resultats
+    * Retourne
+    *    OK    si la requete s'est executee sans probleme
+    *    sinon message d'erreur
+    * 
+    *  Requetes possibles:
+    * 
+    *  select [first] liste Colonnes from nomTable [where expressionConditionnelle]
+    *        liste Colonnes:
+    *                * pour toutes les colonnes ou
+    *                suite de noms de colonnes separes par des virgules
+    *  create table nomTable ( suite de noms de colonnes separes par des virgules )
+    *       ex: create table rep (nom,telephone)
+    *  insert into nomTable values( suite de litteraux separes par des virgules )
+    *  delete nomTable where expressionConditionnelle
+    *  update nomTable set idcol = litteral  where expressionConditionnelle 
+    *                     ^----- , --------+
+    *  drop table nomTable 
+    *  show columns from nomTable
+    *  show tables
+    * 
+    *  Expression conditionnelle:
+    *        comparaison elementaire:
+    *              nom de colonne operateur litteral
+    *        operateurs ( de meme priorite )
+    *              = == < <= > >= != <> 
+    *              contains nocontains 
+    *              startswith nostartswith
+    *              endswith noendswith     
+    *              datene dateeq datele datege datelt dategt
+    *         operateurs ( priorite decroissante )  
+    *              and
+    *              or   
+    *       on peut utiliser ( ) pour forcer les priorites
+    */
+   lexical lex
+   string u,typus
+   try   
+      start(lex,cmd,false)
+      u=us(lex)
+      switch
+      case instSelect(repbdd,lex,u,ignorecase,pathout) 
+      case instShow(repbdd,lex,u,ignorecase,pathout) 
+      case instCreateTable(repbdd,lex,u,ignorecase,pathout) 
+      case instInsert(repbdd,lex,u,ignorecase,pathout) 
+      case instDelete(repbdd,lex,u,ignorecase,pathout) 
+      case instDropTable(repbdd,lex,u,ignorecase,pathout) 
+      case instUpdate(repbdd,lex,u,ignorecase,pathout) 
+      default
+         return "instruction sql non reconnaissable"
+      end switch
+   catch
+      return exceptionToMessage()
+   end catch  
+   return "OK"
+end func
+
+proc public debugSql(string repbdd,string requete,boolean ignorecase,string pathout)
+/*!
+* Exécute une requete Sql et affiche les résultats de son exécution
+*/
+   string retcode
+   println(requete)
+   startChrono()
+   try
+      putFileString(pathout,"")
+   catch
+      println("Impossible de supprimer les donnees du fichier ["+pathout+"]")
+   end catch
+   retcode=runSql(repbdd,requete,ignorecase,pathout)
+   println("Duree "+topChrono())
+   try
+      print(getFileArray(pathout))
+   catch
+      println("Impossible de lire le fichier ["+pathout+"]")
+   end catch
+   println("Retcode "+retcode)
+   println("-----------------------------------------------------")
+end proc
+
+func public string selectFirst(string repbdd,string nomTable,string nomColonne,string valColonne)exception
+/*!
+* Recherche la premiere ligne de la table pour un nom et une valeur de colonne donnes
+*/
+   string requete,retcode
+   requete="select first * from "+nomTable+" where "+nomColonne+"='"+valColonne+"'"
+   retcode=runSql(repbdd,requete,true,"sqlresults.txt")
+   if retcode!="OK"
+      throwex(retcode)
+   end if
+   return getFileString("sqlresults.txt")
+end func
