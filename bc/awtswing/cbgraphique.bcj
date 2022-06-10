@@ -1,1 +1,277 @@
+import java.awt.*;
+import javax.swing.*;
+import javax.imageio.*;
+import java.awt.image.*;
+import java.io.*;
+java   
+   BufferedImage val;
+   Graphics2D g;
+end java
 
+/*!
+Permet par programme de creer une image jpg et de la sauvegarder sur disque
+Example:
+graphique g
+int[]tx,ty
+try
+   create(g,800,600)
+   setColor(g,255,0,0)
+   fillRect(g,0,0,800,600)
+   setColor(g,0,255,0)
+   fill3DRect(g,200,150,400,300,false)
+   setColor(g,0,0,255)
+   setFont(g,"name=Courier new;style=gi;size=32")
+   drawString(g,"Hello",200,100)
+   setColor(g,255,255,255)
+   drawLine(g,0,0,800-1,600-1)
+   setColor(g,0,0,0)
+   drawCircle(g,400-80,300-80,160)
+   dim tx[3]
+   dim ty[3]
+   tx[0]=10 ty[0]=10
+   tx[1]=400 ty[1]=10
+   tx[2]=200 ty[2]=400
+   fillPolygon(g,tx,ty)
+   save(g,"demo.jpg")
+catch
+   println(exceptionToString())
+end catch
+*/
+
+proc public create(graphique graphe,int largeur,int hauteur)exception
+   java
+      graphe.val=new BufferedImage(largeur.val,hauteur.val,BufferedImage.TYPE_INT_RGB);
+      graphe.g=(Graphics2D)graphe.val.getGraphics();
+   end java
+end proc
+
+proc public setColor(graphique graphe,int r,int g,int b)
+   java
+      graphe.g.setColor(new Color(r.val,g.val,b.val));
+   end java
+end proc
+
+proc public setStroke(graphique graphe,int stroke)
+   java
+      graphe.g.setStroke(new BasicStroke((float)stroke.val));
+   end java
+end proc
+
+proc public setFont(graphique graphe,string fonteProprietes)exception
+   /*!
+   fonteProprietes:
+   name=monospaced;style=normal;size=12;
+   style :
+   n      g    i        gi
+   normal,gras,italique,gras_italique
+   */
+   string nomFonte,style
+   int taille,iStyle
+   nomFonte=stringProperty(fonteProprietes,"name")
+   style=toLowerCase(stringProperty(fonteProprietes,"style"))
+   taille=intProperty(fonteProprietes,"size")
+   switch
+   case style=="normal" or style=="n"
+      iStyle=0
+   case style=="gras" or style=="g"
+      iStyle=1
+   case style=="italique" or style=="i"
+      iStyle=2
+   case style=="gras_italique" or style=="gi"
+      iStyle=3
+   default
+      throwex("Style incorrect")
+   end switch
+   java
+      graphe.g.setFont(new Font(nomFonte.val,iStyle.val,taille.val));
+   end java
+end proc
+
+proc public drawString(graphique graphe,string data,int x,int y)
+   java
+      graphe.g.drawString(data.val,x.val,y.val);
+   end java
+end proc
+
+proc public drawLine(graphique graphe,int x1, int y1, int x2, int y2)
+   java
+      graphe.g.drawLine(x1.val,y1.val,x2.val,y2.val);
+   end java
+end proc
+
+proc public drawOval(graphique graphe,int x, int y, int w, int h)
+   java
+      graphe.g.drawOval(x.val,y.val,w.val,h.val);
+   end java
+end proc
+
+proc public drawCircle(graphique graphe,int x, int y, int r)
+   drawOval(graphe,x,y,r,r)
+end proc
+
+proc public drawRect(graphique graphe,int x, int y, int w, int h)
+   java
+      graphe.g.drawRect(x.val,y.val,w.val,h.val);
+   end java
+end proc
+
+proc public drawRoundRect(graphique graphe,int x, int y, int w, int h, int arcWidth, int arcHeight)
+   java
+      graphe.g.drawRoundRect(x.val,y.val,w.val,h.val,arcWidth.val,arcHeight.val);
+   end java
+end proc
+
+proc public drawImage(graphique graphe,string cheminImage,int x,int y,int w,int h)
+/*!
+Si w==0 et h==0 l'image n'est pas redimensionee
+*/
+   java
+      ImageIcon r;
+      r=new ImageIcon(cheminImage.val);
+   end java
+   if w!=0 and h!=0
+      java
+         r.setImage(r.getImage().getScaledInstance(w.val,h.val,java.awt.Image.SCALE_AREA_AVERAGING));
+      end java
+   end if
+   java
+      graphe.g.drawImage(r.getImage(),x.val,y.val,null);
+   end java
+end proc
+
+proc public drawPolyline(graphique graphe,int[] xPoints,int[] yPoints)
+   /*!
+   Draws a sequence of connected lines defined by arrays of x and y coordinates.
+   Each pair of (x, y) coordinates defines a point.
+   The figure is not closed if the first point differs from the last point.
+   */
+   int nPoints,i,w
+   nPoints=length(xPoints)
+   java
+      int[]tx=new int[nPoints.val];
+      int[]ty=new int[nPoints.val];
+   end java
+   for i while i<nPoints
+      w=xPoints[i]
+      java
+         tx[i.val]=w.val;
+      end java
+      w=yPoints[i]
+      java
+         ty[i.val]=w.val;
+      end java
+   end for
+   java
+      graphe.g.drawPolyline(tx,ty,nPoints.val);
+   end java
+end proc
+
+proc public drawPolygon(graphique graphe,int[] xPoints,int[] yPoints)
+   /*!
+   Draws a closed polygon defined by arrays of x and y coordinates.
+   Each pair of (x, y) coordinates defines a point.
+   This method draws the polygon defined by nPoint line segments,
+   where the first nPoint - 1 line segments are line segments
+   from (xPoints[i - 1], yPoints[i - 1]) to (xPoints[i], yPoints[i]), for 1 <= i <= nPoints.
+   The figure is automatically closed by drawing a line connecting
+   the final point to the first point, if those points are different.
+   */
+   int nPoints,i,w
+   nPoints=length(xPoints)
+   java
+      int[]tx=new int[nPoints.val];
+      int[]ty=new int[nPoints.val];
+   end java
+   for i while i<nPoints
+      w=xPoints[i]
+      java
+         tx[i.val]=w.val;
+      end java
+      w=yPoints[i]
+      java
+         ty[i.val]=w.val;
+      end java
+   end for
+   java
+      graphe.g.drawPolygon(tx,ty,nPoints.val);
+   end java
+end proc
+
+proc public fillRect(graphique graphe,int x,int y,int w,int h)
+   java
+      graphe.g.fillRect(x.val,y.val,w.val,h.val);
+   end java
+end proc
+
+proc public fill3DRect(graphique graphe,int x,int y,int w,int h,boolean bRaised)
+   java
+      graphe.g.fill3DRect(x.val,y.val,w.val,h.val,bRaised.val);
+   end java
+end proc
+
+proc public fillRoundRect(graphique graphe,int x,int y,int w,int h,int arcWidth,int arcHeight)
+   java
+      graphe.g.fillRoundRect(x.val,y.val,w.val,h.val,arcWidth.val,arcHeight.val);
+   end java
+end proc
+
+proc public fillOval(graphique graphe,int x, int y, int w, int h)
+   java
+      graphe.g.fillOval(x.val,y.val,w.val,h.val);
+   end java
+end proc
+
+proc public fillCircle(graphique graphe,int x, int y, int r)
+   fillOval(graphe,x,y,r,r)
+end proc
+
+proc public fillPolygon(graphique graphe,int[] xPoints,int[] yPoints)
+   /*!
+   Fills a closed polygon defined by arrays of x and y coordinates.
+   Each pair of (x, y) coordinates defines a point.
+   This method draws the polygon defined by nPoint line segments,
+   where the first nPoint - 1 line segments are line segments
+   from (xPoints[i - 1], yPoints[i - 1]) to (xPoints[i], yPoints[i]), for 1 <= i <= nPoints.
+   The figure is automatically closed by drawing a line connecting
+   the final point to the first point, if those points are different.
+   */
+   int nPoints,i,w
+   nPoints=length(xPoints)
+   java
+      int[]tx=new int[nPoints.val];
+      int[]ty=new int[nPoints.val];
+   end java
+   for i while i<nPoints
+      w=xPoints[i]
+      java
+         tx[i.val]=w.val;
+      end java
+      w=yPoints[i]
+      java
+         ty[i.val]=w.val;
+      end java
+   end for
+   java
+      graphe.g.fillPolygon(tx,ty,nPoints.val);
+   end java
+end proc
+
+proc public save(graphique graphe,string cheminImage)exception
+   /*!
+   cheminImage doit avoir le suffixe .jpg
+   */
+   java
+      ImageIO.write(graphe.val, "JPG", new File(cheminImage.val));
+   end java
+end proc
+
+proc public drawLigneHori(graphique g,int ligne,int largeur,string libelle,int r,int gg,int b)
+   int i
+   setColor(g,r,gg,b)
+   drawString(g,libelle,10,ligne)
+   i=0
+   while i<largeur
+      drawLine(g,i*5,ligne,i*5+5,ligne)
+      i=i+5
+   end while
+end proc
